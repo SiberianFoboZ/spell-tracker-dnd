@@ -3,6 +3,9 @@ plugins {
     // org.jetbrains.kotlin.android не указываем явно: AGP 9.x авто-применяет
     // его, если плагин есть в classpath (объявлен в pluginManagement).
     id("org.jetbrains.kotlin.plugin.compose")
+    // KSP: обрабатывает Kotlin-аннотации (Room @Database/@Dao/@Entity и т.п.)
+    // и генерирует SpellDatabase_Impl во время компиляции.
+    id("com.google.devtools.ksp")
 }
 
 android {
@@ -102,7 +105,8 @@ dependencies {
     implementation(libs.androidx.navigation.compose)
 
     implementation(libs.androidx.room.runtime)
-    annotationProcessor(libs.androidx.room.compiler)
+    // KSP-процессор для Room (заменяет annotationProcessor — тот не работает на Kotlin)
+    ksp(libs.androidx.room.compiler)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
