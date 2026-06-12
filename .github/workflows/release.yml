@@ -1,0 +1,73 @@
+# GitHub Actions workflow для Spell Tracker.
+# Триггер: push тега вида v* (например, v1.0.0) или ручной запуск.
+# Что делает:
+#   1. Поднимает JDK 21 (Gradle 9.3.1 + AGP 9.1.1 требуют именно 21)
+#   2. Ставит Android SDK 36 (compileSdk = 36)
+#   3. Собирает release APK
+#   4. Создаёт GitHub Release и прикрепляет APK
+name: Build and Release APK
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+
+      # Android SDK 36 (compileSdk в build.gradle.kts) + build-tools + licenses.
+      - name: Setup Android SDK
+        uses: android-actions/setup-android@v3
+        with:
+          api-level: 36
+          build-tools-version: '36.0.0'
+          auto-accept-licenses: true
+
+      # Кэширование зависимостей Gradle между ранами.
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          cache-read-only: ${{ github.ref != 'refs/heads/main' }}
+
+      - name: Make gradlew executable
+        run: chmod +x ./gradlew
+
+      # ВАЖНО: -Dorg.gradle.java.home=$JAVA_HOME перебивает локальный
+      # Windows-путь из gradle.properties (его нет на Linux-раннере,
+      # Gradle бы упал при старте демона).
+      - name: Build release APK
+        run: ./gradlew assembleRelease --no-daemon -Dorg.gradle.java.home=$JAVA_HOME
+
+      - name: Verify APK
+        run: |
+          ls -la app/build/outputs/apk/release/
+          if ! ls app/build/outputs/apk/release/spell-tracker-v*.apk 1> /dev/null 2>&1; then
+            echo "::error::spell-tracker-v*.apk not found in app/build/outputs/apk/release/"
+            exit 1
+          fi
+
+      # Имя релиза берётся из тега (например, v1.0.0 → "Spell Tracker v1.0.0").
+      # generate_release_notes: true — GitHub сам соберёт список изменений
+      # из PR/коммитов между тегами.
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.ref_name }}
+          name: "Spell Tracker ${{ github.ref_name }}"
+          generate_release_notes: true
+          files: app/build/outputs/apk/release/spell-tracker-v*.apk
+          fail_on_unmatched_files: true
