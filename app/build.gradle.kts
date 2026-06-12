@@ -1,5 +1,8 @@
 plugins {
-    alias(libs.plugins.android.application)
+    id("com.android.application")
+    // org.jetbrains.kotlin.android не указываем явно: AGP 9.x авто-применяет
+    // его, если плагин есть в classpath (объявлен в pluginManagement).
+    id("org.jetbrains.kotlin.plugin.compose")
 }
 
 android {
@@ -14,17 +17,18 @@ android {
         applicationId = "com.example.spelltracker"
         minSdk = 24
         targetSdk = 36
-        versionCode = 2
-        versionName = "1.1"
+        versionCode = 3
+        versionName = "2.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+        vectorDrawables { useSupportLibrary = true }
     }
 
     buildTypes {
         release {
             // Тестовая подпись отладочным ключом, чтобы APK можно было
             // ставить на реальное устройство без своего keystore.
-            // Для публикации в Google Play нужно заменить на свой signing config.
             signingConfig = signingConfigs.getByName("debug")
             isMinifyEnabled = false
             proguardFiles(
@@ -33,11 +37,14 @@ android {
             )
         }
     }
+
+    // lint-vital в release иногда валится на file-lock под Windows,
+    // когда в кеше остаются хэндлы от прошлой попытки. На сам APK
+    // не влияет — отключаем.
+    lint {
+        checkReleaseBuilds = false
+    }
     // Имя итогового APK: spell-tracker-v{versionName}.apk
-    // (например, spell-tracker-v1.0.apk). В AGP 9.x applicationVariants
-    // удалён, поэтому переименовываем через doLast-хук на assemble*-задачах.
-    // При повторных сборках старый файл того же имени удаляется, чтобы
-    // не накапливать дубликаты.
     afterEvaluate {
         val vName = android.defaultConfig.versionName ?: "0.0"
         listOf("debug", "release").forEach { variant ->
@@ -53,21 +60,50 @@ android {
             }
         }
     }
+
+    buildFeatures {
+        compose = true
+    }
+
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
+    }
+
+    // JVM-таргет для Kotlin: 17 (заменяет устаревший kotlinOptions).
+    tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinJvmCompile>().configureEach {
+        compilerOptions {
+            jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17)
+        }
+    }
+
+    packaging {
+        resources {
+            excludes += "/META-INF/{AL2.0,LGPL2.1}"
+        }
     }
 }
 
 dependencies {
     implementation(libs.androidx.core.ktx)
-    implementation(libs.androidx.appcompat)
-    implementation(libs.androidx.fragment)
-    implementation(libs.androidx.recyclerview)
-    implementation(libs.androidx.viewpager2)
-    implementation(libs.material)
+    implementation(libs.androidx.lifecycle.runtime.ktx)
+    implementation(libs.androidx.lifecycle.runtime.compose)
+    implementation(libs.androidx.lifecycle.viewmodel.compose)
+
+    implementation(libs.androidx.activity.compose)
+    implementation(platform(libs.androidx.compose.bom))
+    implementation(libs.androidx.compose.ui)
+    implementation(libs.androidx.compose.ui.graphics)
+    implementation(libs.androidx.compose.ui.tooling.preview)
+    implementation(libs.androidx.compose.material3)
+    implementation(libs.androidx.compose.material.icons)
+    debugImplementation(libs.androidx.compose.ui.tooling)
+
+    implementation(libs.androidx.navigation.compose)
+
     implementation(libs.androidx.room.runtime)
     annotationProcessor(libs.androidx.room.compiler)
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

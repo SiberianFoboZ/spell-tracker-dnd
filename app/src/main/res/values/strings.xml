@@ -1,49 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Spell Tracker</string>
-    <string name="title_spells">Заклинания</string>
-    <string name="title_spell_detail">Заклинание</string>
-    <string name="open_drawer">Открыть меню</string>
-    <string name="close_drawer">Закрыть меню</string>
-    <string name="btn_open_spells">Заклинания</string>
-    <string name="btn_reset_used">Сброс</string>
-    <string name="nav_prepared">Подготовлено</string>
-    <string name="nav_all">Все заклинания</string>
-    <string name="nav_group_by_level">По уровню</string>
-    <string name="nav_cantrips">Заговоры</string>
-    <string name="nav_lvl1">1 ур.</string>
-    <string name="nav_lvl2">2 ур.</string>
-    <string name="nav_lvl3">3 ур.</string>
-    <string name="nav_lvl4">4 ур.</string>
-    <string name="nav_lvl5">5 ур.</string>
-    <string name="nav_lvl6">6 ур.</string>
-    <string name="nav_lvl7">7 ур.</string>
-    <string name="nav_lvl8">8 ур.</string>
-    <string name="nav_lvl9">9 ур.</string>
-    <string name="classes_header">Уровни классов</string>
-    <string name="effective_caster_level">Уровень заклинателя: %1$d</string>
-    <string name="class_bard">Бард</string>
-    <string name="class_wizard">Волшебник</string>
-    <string name="class_druid">Друид</string>
-    <string name="class_cleric">Жрец</string>
-    <string name="class_warlock">Колдун</string>
-    <string name="class_paladin">Паладин</string>
-    <string name="class_sorcerer">Чародей</string>
-    <string name="class_ranger">Следопыт</string>
-    <string name="class_artificer">Изобретатель</string>
-    <string name="pact_magic_title">Магия договора</string>
-    <string name="pact_magic_subtitle_format">%1$d ячеек %2$d ур.</string>
-    <string name="search_hint">Поиск заклинания</string>
-    <string name="subtitle">PHB Multiclass Tracker</string>
-    <string name="effective_level_label">Эффект. уровень заклинателя</string>
-    <string name="section_classes">Классы</string>
-    <string name="section_slots">Ячейки заклинаний</string>
-    <string name="slot_subtitle">использовано / всего ячеек</string>
-    <string name="btn_use">Исп.</string>
-    <string name="btn_restore">Восст.</string>
-
-    <!-- Фильтр уровней/режимов на экране «Заклинания» -->
-    <string name="filter_all">Все</string>
-    <string name="filter_cantrips">Заг.</string>
-    <string name="filter_prepared">Подг.</string>
 </resources>

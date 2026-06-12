@@ -1,4 +1,5 @@
-// Top-level build file where you can add configuration options common to all sub-projects/modules.
-plugins {
-    alias(libs.plugins.android.application) apply false
-}
+// Top-level build file.
+// В AGP 9.x плагин Kotlin авто-применяется Android Gradle Plugin, если
+// он в classpath. Чтобы избежать «extension already registered», здесь
+// не объявляем никаких плагинов вообще — все версии заданы в
+// settings.gradle.kts -> pluginManagement.plugins.
