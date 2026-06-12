@@ -40,6 +40,7 @@ import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -253,37 +254,74 @@ private fun ClassCard(
                 color = if (hasCasting) AppColors.Gold else AppColors.TextGreyDark,
                 fontSize = 10.sp,
             )
-            BasicTextField(
-                value = level.toString(),
-                onValueChange = { raw ->
-                    val v = raw.filter { it.isDigit() }.take(2).toIntOrNull() ?: 0
-                    onLevelChange(v.coerceIn(0, 20))
-                },
-                singleLine = true,
-                textStyle = TextStyle(
-                    color = if (level > 0) AppColors.Gold else AppColors.TextGrey,
-                    fontSize = 22.sp,
-                    fontWeight = FontWeight.Bold,
-                    textAlign = TextAlign.Center,
-                ),
-                cursorBrush = SolidColor(AppColors.Gold),
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                modifier = Modifier.fillMaxWidth().height(32.dp),
-                decorationBox = { inner ->
-                    Box(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(32.dp)
-                            .background(
-                                color = AppColors.BgDark.copy(alpha = 0.6f),
-                                shape = RoundedCornerShape(8.dp),
-                            ),
-                        contentAlignment = Alignment.Center,
-                    ) { inner() }
-                }
+            LevelInput(
+                level = level,
+                onLevelChange = onLevelChange,
             )
         }
     }
+}
+
+/**
+ * Поле ввода уровня класса.
+ *
+ * Использует локальное состояние [text] для курсора и отображения,
+ * чтобы BasicTextField не сбрасывал позицию курсора при каждом
+ * рекомпозе. При изменении `level` извне (например, после сброса)
+ * локальный текст синхронизируется через [LaunchedEffect].
+ *
+ * Принимает только цифры, не больше 2 символов (диапазон 0..20).
+ */
+@Composable
+private fun LevelInput(
+    level: Int,
+    onLevelChange: (Int) -> Unit,
+) {
+    var text by remember { mutableStateOf(level.toString()) }
+
+    // Если level изменился извне (сброс, загрузка) — обновим локальный
+    // текст, но только если он реально отличается, чтобы не сбивать
+    // пользовательский ввод.
+    LaunchedEffect(level) {
+        if (text.toIntOrNull() != level) {
+            text = level.toString()
+        }
+    }
+
+    BasicTextField(
+        value = text,
+        onValueChange = { raw ->
+            // Только цифры, максимум 2 символа
+            val filtered = raw.filter { it.isDigit() }.take(2)
+            text = filtered
+            val v = filtered.toIntOrNull() ?: 0
+            onLevelChange(v.coerceIn(0, 20))
+        },
+        singleLine = true,
+        textStyle = TextStyle(
+            color = if (level > 0) AppColors.Gold else AppColors.TextGrey,
+            fontSize = 20.sp,
+            fontWeight = FontWeight.Bold,
+            textAlign = TextAlign.Center,
+        ),
+        cursorBrush = SolidColor(AppColors.Gold),
+        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(32.dp),
+        decorationBox = { inner ->
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(32.dp)
+                    .background(
+                        color = AppColors.BgDark.copy(alpha = 0.6f),
+                        shape = RoundedCornerShape(8.dp),
+                    ),
+                contentAlignment = Alignment.Center,
+            ) { inner() }
+        }
+    )
 }
 
 private fun formatFactor(info: Classes.Info): String = when {

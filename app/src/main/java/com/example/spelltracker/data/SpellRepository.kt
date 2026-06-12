@@ -14,8 +14,9 @@ import kotlinx.coroutines.withContext
  * Единая точка доступа к Room-базе со справочником заклинаний.
  *
  * Приложение запускает [ensureInitialized] при старте, и если БД пуста —
- * парсит все JSON из assets и заливает их в таблицу `spells`. После этого
- * [initialized] становится true, и ViewModel-ы могут реагировать.
+ * парсит `spells.csv` из assets и заливает все заклинания в таблицу
+ * `spells`. После этого [initialized] становится true, и ViewModel-ы
+ * могут реагировать.
  */
 class SpellRepository(context: Context) {
 
@@ -30,10 +31,10 @@ class SpellRepository(context: Context) {
     fun ensureInitialized() {
         scope.launch {
             if (dao.count() == 0) {
-                val allSpells = Classes.ALL.flatMap { info ->
-                    SpellParser.loadFromAsset(appContext, info.id, info.assetFile)
+                val allSpells = SpellParser.loadFromAssets(appContext)
+                if (allSpells.isNotEmpty()) {
+                    dao.insertAll(allSpells)
                 }
-                dao.insertAll(allSpells)
             }
             _initialized.value = true
         }
