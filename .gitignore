@@ -42,6 +42,9 @@ google-services.json
 .externalNativeBuild
 .cxx/
 
+# === Локальная документация (не для публичного репо) ===
+STATUS.md
+
 # === Разное ===
 .DS_Store
 Thumbs.db
