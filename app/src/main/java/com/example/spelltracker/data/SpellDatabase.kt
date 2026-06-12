@@ -8,18 +8,16 @@ import androidx.room.RoomDatabase
 /**
  * Room-база со справочником заклинаний.
  *
- * Версия 2 (поднята после перехода на KSP — старая БД, оставшаяся
- * на устройстве от v1.x, имеет другой identity hash, и Room отказывается
- * её открывать).
- *
- * На случай любых будущих несовместимостей схемы при апдейтах
- * используется [fallbackToDestructiveMigration] — при несовпадении
- * identity hash Room просто пересоздаст БД. Потеря данных не страшна,
- * потому что заклинания — это справочник, который репозиторий
- * перезаливает из assets/spells.csv при первом запуске
- * (см. SpellRepository.ensureInitialized).
+ * Версия 3 (поднята с 2, чтобы вынудить реимпорт из assets/spells.csv).
+ * У пользователей, обновивших приложение с v2.0.0, в `spells.db` мог
+ * остаться урезанный набор данных — без заклинаний 6-9 уровней
+ * (БД залилась при первой установке, а CSV мог пополниться позже,
+ * при этом `fallbackToDestructiveMigration` срабатывает ТОЛЬКО при
+ * смене схемы, а не при смене данных). `fallbackToDestructiveMigration`
+ * уничтожит старую БД, и при следующем старте заклинания перечитаются
+ * из assets/spells.csv. Потеря данных не страшна — это справочник.
  */
-@Database(entities = [Spell::class], version = 2, exportSchema = false)
+@Database(entities = [Spell::class], version = 3, exportSchema = false)
 abstract class SpellDatabase : RoomDatabase() {
 
     abstract fun spellDao(): SpellDao

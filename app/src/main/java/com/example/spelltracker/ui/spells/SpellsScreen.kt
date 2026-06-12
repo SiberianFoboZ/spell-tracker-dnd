@@ -256,8 +256,8 @@ private fun PreparedToggleAction(
             badge = {
                 if (preparedCount > 0) {
                     Badge(
-                        containerColor = AppColors.Purple,
-                        contentColor = AppColors.TextWhite,
+                        containerColor = AppColors.Gold,
+                        contentColor = AppColors.BgDark,
                     ) { Text(preparedCount.toString()) }
                 }
             }
@@ -282,8 +282,11 @@ private fun FilterButton(
     onClick: () -> Unit,
 ) {
     val hasAnyFilter = selectedClassCount > 0 || hasLevel
-    val borderColor = if (hasAnyFilter) AppColors.PurpleLight else AppColors.Outline
-    val iconTint = if (hasAnyFilter) AppColors.PurpleLight else AppColors.Gold
+    // Активная кнопка фильтра подсвечивается золотом: более насыщенная
+    // обводка (GoldDeep) + всегда золотая иконка. Неактивная — обычный
+    // outline и всё равно золотая иконка (брендовый цвет).
+    val borderColor = if (hasAnyFilter) AppColors.GoldDeep else AppColors.Outline
+    val iconTint = AppColors.Gold
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -318,12 +321,12 @@ private fun FilterButton(
                     modifier = Modifier
                         .size(22.dp)
                         .clip(RoundedCornerShape(11.dp))
-                        .background(AppColors.PurpleLight),
+                        .background(AppColors.Gold),
                     contentAlignment = Alignment.Center,
                 ) {
                     Text(
                         selectedClassCount.toString(),
-                        color = AppColors.TextWhite,
+                        color = AppColors.BgDark,
                         fontSize = 11.sp,
                         fontWeight = FontWeight.Bold,
                     )
@@ -488,9 +491,9 @@ private fun ClassCheckRow(
             checked = selected,
             onCheckedChange = onCheckedChange,
             colors = CheckboxDefaults.colors(
-                checkedColor = AppColors.Purple,
+                checkedColor = AppColors.Gold,
                 uncheckedColor = AppColors.Outline,
-                checkmarkColor = AppColors.TextWhite,
+                checkmarkColor = AppColors.BgDark,
             ),
         )
         Spacer(Modifier.size(8.dp))
@@ -502,6 +505,7 @@ private fun ClassCheckRow(
     }
 }
 
+@Suppress("UNUSED_PARAMETER")
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 private fun LevelChipsFlow(
@@ -521,7 +525,11 @@ private fun LevelChipsFlow(
             selected = selected == null,
             onClick = { onSelect(null) },
         )
-        (0..9).filter { it in availableLevels }.forEach { lvl ->
+        // Показываем все 0-9 независимо от наличия данных в БД: после
+        // реимпорта spells.db версией 3 там есть заклинания 0-9. Если в
+        // каком-то уровне данных нет, фильтр просто даст пустой результат
+        // и пользователь увидит «Ничего не найдено».
+        (0..9).forEach { lvl ->
             LevelChipMini(
                 label = spellLevelLabel(lvl),
                 selected = selected == lvl,
@@ -537,9 +545,9 @@ private fun LevelChipMini(
     selected: Boolean,
     onClick: () -> Unit,
 ) {
-    val bg = if (selected) AppColors.Purple else AppColors.CardBg
-    val border = if (selected) AppColors.PurpleLight else AppColors.Outline
-    val fg = if (selected) AppColors.TextWhite else AppColors.TextGrey
+    val bg = if (selected) AppColors.Gold else AppColors.CardBg
+    val border = if (selected) AppColors.GoldDeep else AppColors.Outline
+    val fg = if (selected) AppColors.BgDark else AppColors.TextGrey
     Box(
         modifier = Modifier
             .clip(RoundedCornerShape(20.dp))
