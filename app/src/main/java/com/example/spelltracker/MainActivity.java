@@ -84,12 +84,12 @@ public class MainActivity extends AppCompatActivity {
             if (resId == 0) continue;
             TextInputEditText et = findViewById(resId);
             classInputs.put(info.id, et);
-            // Поле по умолчанию показывает плейсхолдер «0» («нет уровня»).
-            // При фокусе плейсхолдер стирается, при потере фокуса
-            // восстанавливается, если пользователь ничего не ввёл.
-            // Цифровая клавиатура включается через android:inputType="number"
-            // в activity_main.xml.
-            et.setText("0");
+            // Поля показывают сохранённый уровень (или «0», если класс
+            // ещё не выбран — это «нет уровня»). При фокусе плейсхолдер
+            // «0» стирается, при потере фокуса восстанавливается, если
+            // пользователь ничего не ввёл. Цифровая клавиатура включается
+            // через android:inputType="number" в activity_main.xml.
+            et.setText(String.valueOf(storage.getClassLevel(info.id)));
             et.setOnFocusChangeListener((v, hasFocus) -> {
                 TextInputEditText editText = (TextInputEditText) v;
                 String cur = editText.getText() == null ? "" : editText.getText().toString();
@@ -163,24 +163,38 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        // Поля при открытии экрана показывают плейсхолдер «0».
-        // setText("0") дёргает TextWatcher, который сохраняет «0» в storage
-        // (см. afterTextChanged), тем самым сбрасывая эффективный уровень
-        // заклинателя к 0. Если пользователь хочет оставить прежний уровень,
-        // он вводит число заново — после первого ввода TextWatcher запишет
-        // реальное значение в storage и дальше оно переживёт перезапуск.
+        // Заполняем поля сохранёнными значениями. Раньше здесь все
+        // поля сбрасывались в «0», из-за чего TextWatcher затирал в
+        // storage реальные уровни при возврате с экрана «Заклинания».
         for (Info info : Classes.ALL) {
             TextInputEditText et = classInputs.get(info.id);
             if (et != null) {
-                et.setText("0");
+                et.setText(String.valueOf(storage.getClassLevel(info.id)));
             }
         }
-        // Пересчитываем ячейки на случай, если состояние изменилось вне этого экрана.
+        // Пересчитываем ячейки на случай, если состояние изменилось
+        // вне этого экрана.
         storage.applySlotTable();
         storage.applyWarlockSlots();
         updateEffectiveLevel();
         updatePactMagic();
         refresh();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        // Снимаем фокус с активного EditText, чтобы OnFocusChangeListener
+        // сработал до выхода с экрана: он либо ничего не сделает (если
+        // в поле есть число), либо восстановит плейсхолдер «0» и сохранит
+        // его через TextWatcher (если пользователь стёр значение, но не
+        // убрал фокус вручную). Без этого при переходе на экран
+        // «Заклинания» поле могло бы вернуться в неконсистентном
+        // состоянии.
+        View focused = getCurrentFocus();
+        if (focused != null) {
+            focused.clearFocus();
+        }
     }
 
     private void updateEffectiveLevel() {

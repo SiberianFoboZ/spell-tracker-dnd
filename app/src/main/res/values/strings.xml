@@ -5,8 +5,8 @@
     <string name="title_spell_detail">Заклинание</string>
     <string name="open_drawer">Открыть меню</string>
     <string name="close_drawer">Закрыть меню</string>
-    <string name="btn_open_spells">Открыть заклинания</string>
-    <string name="btn_reset_used">Сбросить использование</string>
+    <string name="btn_open_spells">Заклинания</string>
+    <string name="btn_reset_used">Сброс</string>
     <string name="nav_prepared">Подготовлено</string>
     <string name="nav_all">Все заклинания</string>
     <string name="nav_group_by_level">По уровню</string>
@@ -41,4 +41,9 @@
     <string name="slot_subtitle">использовано / всего ячеек</string>
     <string name="btn_use">Исп.</string>
     <string name="btn_restore">Восст.</string>
+
+    <!-- Фильтр уровней/режимов на экране «Заклинания» -->
+    <string name="filter_all">Все</string>
+    <string name="filter_cantrips">Заг.</string>
+    <string name="filter_prepared">Подг.</string>
 </resources>

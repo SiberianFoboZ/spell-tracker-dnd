@@ -49,3 +49,4 @@ STATUS.md
 .DS_Store
 Thumbs.db
 vcs.xml
+build_log.txt  
