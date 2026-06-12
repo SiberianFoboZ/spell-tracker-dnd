@@ -24,9 +24,13 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Bookmark
+import androidx.compose.material.icons.filled.BookmarkBorder
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.Badge
+import androidx.compose.material3.BadgedBox
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CheckboxDefaults
 import androidx.compose.material3.CircularProgressIndicator
@@ -86,6 +90,30 @@ fun SpellsScreen(
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, "Назад", tint = AppColors.TextWhite)
                     }
                 },
+                actions = {
+                    // Кнопка «Только подготовленные» со счётчиком.
+                    // Активна, когда выбран этот режим; подсвечивается золотом.
+                    val active = state.showPreparedOnly
+                    val tint = if (active) AppColors.Gold else AppColors.TextWhite
+                    IconButton(onClick = { viewModel.togglePreparedOnly() }) {
+                        BadgedBox(
+                            badge = {
+                                if (state.preparedCount > 0) {
+                                    androidx.compose.material3.Badge(
+                                        containerColor = AppColors.Purple,
+                                        contentColor = AppColors.TextWhite,
+                                    ) { Text(state.preparedCount.toString()) }
+                                }
+                            }
+                        ) {
+                            Icon(
+                                imageVector = if (active) Icons.Filled.Bookmark else Icons.Filled.BookmarkBorder,
+                                contentDescription = if (active) "Показать все" else "Только подготовленные",
+                                tint = tint,
+                            )
+                        }
+                    }
+                },
                 colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
                     containerColor = AppColors.BgPurpleDeep,
                 ),
@@ -133,8 +161,16 @@ fun SpellsScreen(
                         }
                         if (state.visibleSpells.isEmpty()) {
                             item {
+                                val msg = when {
+                                    state.showPreparedOnly && state.preparedCount == 0 ->
+                                        "Отметьте заклинания галочкой в общем списке, чтобы они появились здесь."
+                                    state.showPreparedOnly ->
+                                        "Нет подготовленных заклинаний, подходящих под фильтры."
+                                    else ->
+                                        "Ничего не найдено по выбранным фильтрам."
+                                }
                                 Text(
-                                    "Ничего не найдено по выбранным фильтрам.",
+                                    msg,
                                     color = AppColors.TextGrey,
                                     fontSize = 13.sp,
                                     modifier = Modifier.padding(16.dp),

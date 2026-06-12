@@ -1,6 +1,7 @@
 package com.example.spelltracker.data
 
 import android.content.Context
+import org.json.JSONArray
 import java.io.BufferedReader
 import java.io.InputStreamReader
 import java.nio.charset.StandardCharsets
@@ -24,26 +25,75 @@ import java.nio.charset.StandardCharsets
  *   11 Описание (\f внутри записи → перенос строки)
  *   13 «На более высоком уровне»
  *   15 Уровень (число 0..9)
+ *
+ * Помимо CSV, при инициализации подтягиваются per-class JSON-файлы
+ * `class_<id>.json` (bard, cleric, druid, paladin, ranger, sorcerer,
+ * warlock, wizard, artificer) — списки заклинаний каждого класса.
+ * Используются для правильного заполнения поля [Spell.classes], без
+ * них фильтр «по классу» в UI не отличает заклинания разных классов
+ * и показывает всё при любом выборе.
  */
 object SpellParser {
 
     private const val ASSET_FILE = "spells.csv"
+    private const val CLASS_FILE_PREFIX = "class_"
+    private const val CLASS_FILE_SUFFIX = ".json"
+
+    /** Все id классов, для которых есть per-class JSON. */
+    private val CLASS_IDS = listOf(
+        "bard", "cleric", "druid", "paladin", "ranger",
+        "sorcerer", "warlock", "wizard", "artificer",
+    )
 
     /**
-     * Загрузить все заклинания из assets/spells.csv.
-     * Все заклинания помечаются как принадлежащие ко всем классам
-     * (через `classes` = список id через запятую), чтобы фильтр
-     * «по классу» в UI работал как «показать всё».
+     * Загрузить все заклинания из assets/spells.csv и прикрепить к каждому
+     * список классов из per-class JSON. Если заклинание не нашлось ни в
+     * одном class_*.json, оставляем ему «все классы» (как раньше) — иначе
+     * оно пропадёт из фильтра «Все» и пользователь его не увидит.
      */
     fun loadFromAssets(context: Context): List<Spell> {
+        val classMap = loadClassMap(context)
         val raw = readAllLines(context)
         val spells = ArrayList<Spell>(raw.size)
         for (line in raw) {
             if (line.isBlank()) continue
-            val s = parseLine(line) ?: continue
+            val s = parseLine(line, classMap) ?: continue
             spells.add(s)
         }
         return spells
+    }
+
+    /**
+     * Считывает все class_<id>.json и строит словарь spell_name (lower) →
+     * список class_id. Если файлы не нашлись — возвращает пустую карту
+     * (тогда все заклинания попадут в «все классы»).
+     */
+    private fun loadClassMap(context: Context): Map<String, List<String>> {
+        val result = HashMap<String, MutableList<String>>()
+        for (id in CLASS_IDS) {
+            val path = "$CLASS_FILE_PREFIX$id$CLASS_FILE_SUFFIX"
+            val names = try {
+                readJsonStringArray(context, path)
+            } catch (e: Exception) {
+                continue  // файла нет — пропускаем этот класс
+            }
+            for (name in names) {
+                val key = name.trim().lowercase()
+                if (key.isEmpty()) continue
+                result.getOrPut(key) { ArrayList() }.add(id)
+            }
+        }
+        return result
+    }
+
+    private fun readJsonStringArray(context: Context, path: String): List<String> {
+        BufferedReader(
+            InputStreamReader(context.assets.open(path), StandardCharsets.UTF_8)
+        ).use { br ->
+            val text = br.readText()
+            val arr = JSONArray(text)
+            return (0 until arr.length()).map { arr.getString(it) }
+        }
     }
 
     // ─────────── Чтение файла ───────────
@@ -140,7 +190,7 @@ object SpellParser {
         return fields
     }
 
-    private fun parseLine(line: String): Spell? {
+    private fun parseLine(line: String, classMap: Map<String, List<String>>): Spell? {
         val f = splitCsvLine(line)
         if (f.size < 16) return null
         val name = f[0].trim()
@@ -154,9 +204,15 @@ object SpellParser {
         // и фильтр «избранное» работал между запусками.
         val id = name.hashCode().toLong() and 0x7FFFFFFF
 
-        // classes — все 9 классов, чтобы фильтр «по классу» показывал
-        // все заклинания при любом выборе (справочник общий).
-        val classes = Classes.ALL.joinToString(",") { it.id }
+        // classes — ищем заклинание в per-class JSON-ах (по имени в
+        // нижнем регистре). Если нашлось — пишем только те классы, к
+        // которым оно реально относится. Если не нашлось — оставляем
+        // «все классы», чтобы фильтр «Все» не прятал неизвестные
+        // заклинания (на случай SRD-имен, которых нет в наших списках,
+        // или если class_*.json потеряются при обновлении).
+        val classIds = classMap[name.lowercase()]
+        val classes = classIds?.joinToString(",")
+            ?: Classes.ALL.joinToString(",") { it.id }
 
         return Spell(
             id = id,

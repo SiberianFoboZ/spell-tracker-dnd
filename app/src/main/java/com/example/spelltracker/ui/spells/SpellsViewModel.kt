@@ -35,6 +35,8 @@ data class SpellsState(
     val search: String = "",
     val mode: FilterMode = FilterMode.BY_CLASS,
     val preparedIds: Set<Long> = emptySet(),
+    val showPreparedOnly: Boolean = false,  // вкл. «только подготовленные»
+    val preparedCount: Int = 0,             // счётчик в TopAppBar
 )
 
 /**
@@ -69,7 +71,11 @@ class SpellsViewModel(application: Application) : AndroidViewModel(application) 
         }
         // Реактивно обновляем видимый список при изменении фильтров/поиска
         combine(_state, storage.prepared) { s, prep ->
-            s.copy(preparedIds = prep, visibleSpells = applyFilters(s.allSpells, s))
+            s.copy(
+                preparedIds = prep,
+                preparedCount = prep.size,
+                visibleSpells = applyFilters(s.allSpells, s),
+            )
         }.onEach { _state.value = it }.launchIn(viewModelScope)
     }
 
@@ -77,6 +83,7 @@ class SpellsViewModel(application: Application) : AndroidViewModel(application) 
         val needle = s.search.trim().lowercase()
         return all
             .asSequence()
+            .filter { s.showPreparedOnly.not() || s.preparedIds.contains(it.id) }
             .filter { s.selectedLevel == null || it.level == s.selectedLevel }
             .filter { s.selectedClassIds.isEmpty() || s.selectedClassIds.any { id -> it.classes.contains(id) } }
             .filter { needle.isEmpty() || it.name.lowercase().contains(needle) }
@@ -87,6 +94,8 @@ class SpellsViewModel(application: Application) : AndroidViewModel(application) 
         _state.value = _state.value.copy(
             mode = mode,
             selectedLevel = if (mode == FilterMode.BY_LEVEL) _state.value.selectedLevel else null,
+            // выходим из «только подготовленные» при смене режима фильтра
+            showPreparedOnly = false,
         )
     }
 
@@ -102,6 +111,10 @@ class SpellsViewModel(application: Application) : AndroidViewModel(application) 
 
     fun setSearch(q: String) {
         _state.value = _state.value.copy(search = q)
+    }
+
+    fun togglePreparedOnly() {
+        _state.value = _state.value.copy(showPreparedOnly = !_state.value.showPreparedOnly)
     }
 
     fun togglePrepared(spellId: Long) {
