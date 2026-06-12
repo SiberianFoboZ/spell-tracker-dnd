@@ -219,7 +219,7 @@ fun SpellsScreen(
             onDismissRequest = { showFilterSheet = false },
             sheetState = sheetState,
             shape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp),
-            containerColor = AppColors.BgPurpleDeep,
+            containerColor = AppColors.BgDark,    // darker, matches SpellsScreen body (was BgPurpleDeep = top-bar tone),
             contentColor = AppColors.TextWhite,
             dragHandle = { BottomSheetDefaults.DragHandle() },
             scrimColor = Color.Black.copy(alpha = 0.55f),
@@ -375,7 +375,7 @@ private fun FilterBottomSheetContent(
             Text(
                 "Фильтры",
                 color = AppColors.TextWhite,
-                fontSize = 18.sp,
+                fontSize = 20.sp,
                 fontWeight = FontWeight.SemiBold,
                 modifier = Modifier.weight(1f),
             )
@@ -383,7 +383,7 @@ private fun FilterBottomSheetContent(
                 Icon(
                     Icons.Filled.Close,
                     contentDescription = "Закрыть",
-                    tint = AppColors.TextGrey,
+                    tint = AppColors.TextWhite,
                 )
             }
         }
@@ -413,7 +413,6 @@ private fun FilterBottomSheetContent(
 
         HorizontalDivider(
             color = AppColors.Outline,
-            modifier = Modifier.padding(top = 8.dp),
         )
 
         // Секция: Уровень
@@ -433,7 +432,7 @@ private fun FilterBottomSheetContent(
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 16.dp, vertical = 16.dp),
+                .padding(start = 16.dp, end = 16.dp, top = 24.dp, bottom = 16.dp),
         ) {
             Row(
                 modifier = Modifier
@@ -471,7 +470,7 @@ private fun SectionTitle(text: String) {
         color = AppColors.TextGrey,
         fontSize = 12.sp,
         fontWeight = FontWeight.SemiBold,
-        modifier = Modifier.padding(start = 20.dp, end = 20.dp, top = 16.dp, bottom = 8.dp),
+        modifier = Modifier.padding(start = 20.dp, end = 20.dp, top = 24.dp, bottom = 8.dp),
     )
 }
 
@@ -484,8 +483,12 @@ private fun ClassCheckRow(
     Row(
         modifier = Modifier
             .fillMaxWidth()
+            .padding(horizontal = 12.dp, vertical = 3.dp)                  // 3.dp outer for card stack spacing
+            .clip(RoundedCornerShape(12.dp))                              // 12.dp corners — matches SpellRow card style
+            .background(AppColors.CardBg)                                 // dark card bg — same as SpellRow
+            .border(1.dp, AppColors.Outline, RoundedCornerShape(12.dp))   // thin outline — same as SpellRow
             .clickable { onCheckedChange(!selected) }
-            .padding(start = 8.dp, end = 16.dp, top = 6.dp, bottom = 6.dp),
+            .padding(horizontal = 16.dp, vertical = 10.dp),               // 16.dp internal padding per request
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Checkbox(
@@ -569,16 +572,16 @@ private fun LevelChipMini(
             )
         },
         colors = FilterChipDefaults.filterChipColors(
-            containerColor = AppColors.CardBg,
+            containerColor = AppColors.CardBg,                            // unselected: dark background
             labelColor = AppColors.TextGrey,
-            selectedContainerColor = AppColors.Purple,
-            selectedLabelColor = AppColors.TextWhite,
+            selectedContainerColor = AppColors.Gold,                      // selected: GOLD background (like «VIII» level badge on main screen)
+            selectedLabelColor = AppColors.BgDark,                        // dark text on gold — high contrast
         ),
         border = FilterChipDefaults.filterChipBorder(
             enabled = true,
             selected = selected,
-            borderColor = AppColors.Outline,
-            selectedBorderColor = AppColors.PurpleLight,
+            borderColor = AppColors.TextWhite,                            // unselected: WHITE border per request «белая рамка»
+            selectedBorderColor = AppColors.Gold,                         // selected: gold border matches bg
         ),
     )
 }
