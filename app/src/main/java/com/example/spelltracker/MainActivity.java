@@ -16,7 +16,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.spelltracker.Classes.Info;
-import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
 
@@ -36,6 +35,7 @@ public class MainActivity extends AppCompatActivity {
     private SlotAdapter adapter;
     private SpellStorage storage;
     private TextView tvEffectiveLevel;
+    private TextView tvEffectiveLevelValue;
     private final Map<String, TextInputEditText> classInputs = new HashMap<>();
 
     private View pactMagicSection;
@@ -55,8 +55,7 @@ public class MainActivity extends AppCompatActivity {
 
         storage = new SpellStorage(this);
 
-        MaterialToolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+        // Тулбар убран в редизайне (заголовок теперь — TextView в activity_main.xml).
 
         // Нижний отступ под системную навигацию добавляем к панели кнопок.
         View bottomRow = findViewById(R.id.bottom_buttons_row);
@@ -68,6 +67,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
         tvEffectiveLevel = findViewById(R.id.tv_effective_level);
+        tvEffectiveLevelValue = findViewById(R.id.tv_effective_level_value);
 
         // Карточка pact magic
         pactMagicSection = findViewById(R.id.pact_magic_section);
@@ -186,6 +186,7 @@ public class MainActivity extends AppCompatActivity {
     private void updateEffectiveLevel() {
         int eff = storage.computeCasterLevel();
         tvEffectiveLevel.setText(getString(R.string.effective_caster_level, eff));
+        tvEffectiveLevelValue.setText(String.valueOf(eff));
     }
 
     /** Показ/скрытие и обновление карточки pact magic. */

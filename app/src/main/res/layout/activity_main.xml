@@ -1,273 +1,226 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.core.widget.NestedScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:background="@drawable/bg_screen_gradient"
+    android:fillViewport="true">
 
-    <com.google.android.material.appbar.MaterialToolbar
-        android:id="@+id/toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        app:title="@string/app_name" />
-
-    <TextView
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:orientation="vertical"
         android:paddingStart="16dp"
         android:paddingEnd="16dp"
-        android:paddingTop="8dp"
-        android:paddingBottom="4dp"
-        android:text="@string/classes_header"
-        android:textAppearance="?attr/textAppearanceSubtitle1" />
+        android:paddingTop="32dp"
+        android:paddingBottom="16dp">
 
-    <!-- Row 1: Бард, Волшебник -->
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:paddingStart="8dp"
-        android:paddingEnd="8dp">
-
-        <com.google.android.material.textfield.TextInputLayout
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
-            android:layout_width="0dp"
-            android:layout_weight="1"
+        <!-- Заголовок -->
+        <TextView
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="4dp"
-            android:layout_marginEnd="4dp"
-            android:hint="@string/class_bard">
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/et_bard"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:inputType="number"
-                android:maxLength="2"
-                android:gravity="center" />
-        </com.google.android.material.textfield.TextInputLayout>
-
-        <com.google.android.material.textfield.TextInputLayout
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
-            android:layout_width="0dp"
-            android:layout_weight="1"
+            android:text="@string/app_name"
+            android:textSize="30sp"
+            android:textStyle="bold"
+            android:textColor="@color/text_white" />
+        <TextView
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="4dp"
-            android:layout_marginEnd="4dp"
-            android:hint="@string/class_wizard">
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/et_wizard"
-                android:layout_width="match_parent"
+            android:text="@string/subtitle"
+            android:textSize="13sp"
+            android:textColor="@color/text_grey"
+            android:layout_marginTop="2dp"
+            android:layout_marginBottom="18dp" />
+
+        <!-- Панель «Эффективный уровень заклинателя» -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:padding="14dp"
+            android:layout_marginBottom="18dp"
+            android:background="@drawable/bg_effective_level">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_weight="1"
                 android:layout_height="wrap_content"
-                android:inputType="number"
-                android:maxLength="2"
-                android:gravity="center" />
-        </com.google.android.material.textfield.TextInputLayout>
+                android:orientation="vertical">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/effective_level_label"
+                    android:textSize="13sp"
+                    android:textColor="@color/text_white" />
+                <TextView
+                    android:id="@+id/tv_effective_level"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:textSize="12sp"
+                    android:textColor="@color/text_white" />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/tv_effective_level_value"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="34sp"
+                android:textStyle="bold"
+                android:textColor="@color/gold"
+                android:text="0" />
+        </LinearLayout>
+
+        <!-- Секция: Классы -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/section_classes"
+            android:paddingStart="14dp"
+            android:paddingEnd="14dp"
+            android:paddingTop="8dp"
+            android:paddingBottom="8dp"
+            android:textStyle="bold"
+            android:textSize="14sp"
+            android:textColor="@color/text_white"
+            android:background="@drawable/bg_section_chip" />
+
+        <GridLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:columnCount="3"
+            android:useDefaultMargins="false"
+            android:layout_marginTop="12dp"
+            android:layout_marginBottom="8dp">
+
+            <!-- Ряд 1: Bard, Wizard, Druid -->
+            <LinearLayout style="@style/ClassCardStyle" android:background="@drawable/bg_class_card">
+                <TextView style="@style/ClassNameStyle" android:text="@string/class_bard" />
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/et_bard"
+                    style="@style/ClassInputStyle" />
+            </LinearLayout>
+
+            <LinearLayout style="@style/ClassCardStyle" android:background="@drawable/bg_class_card">
+                <TextView style="@style/ClassNameStyle" android:text="@string/class_wizard" />
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/et_wizard"
+                    style="@style/ClassInputStyle" />
+            </LinearLayout>
+
+            <LinearLayout style="@style/ClassCardStyle" android:background="@drawable/bg_class_card">
+                <TextView style="@style/ClassNameStyle" android:text="@string/class_druid" />
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/et_druid"
+                    style="@style/ClassInputStyle" />
+            </LinearLayout>
+
+            <!-- Ряд 2: Cleric, Warlock, Paladin -->
+            <LinearLayout style="@style/ClassCardStyle" android:background="@drawable/bg_class_card_mc">
+                <TextView style="@style/ClassNameStyle" android:text="@string/class_cleric" />
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/et_cleric"
+                    style="@style/ClassInputStyle" />
+            </LinearLayout>
+
+            <LinearLayout style="@style/ClassCardStyle" android:background="@drawable/bg_class_card_mc">
+                <TextView style="@style/ClassNameStyle" android:text="@string/class_warlock" />
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/et_warlock"
+                    style="@style/ClassInputStyle" />
+            </LinearLayout>
+
+            <LinearLayout style="@style/ClassCardStyle" android:background="@drawable/bg_class_card">
+                <TextView style="@style/ClassNameStyle" android:text="@string/class_paladin" />
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/et_paladin"
+                    style="@style/ClassInputStyle" />
+            </LinearLayout>
+
+            <!-- Ряд 3: Ranger, Sorcerer, Artificer -->
+            <LinearLayout style="@style/ClassCardStyle" android:background="@drawable/bg_class_card">
+                <TextView style="@style/ClassNameStyle" android:text="@string/class_ranger" />
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/et_ranger"
+                    style="@style/ClassInputStyle" />
+            </LinearLayout>
+
+            <LinearLayout style="@style/ClassCardStyle" android:background="@drawable/bg_class_card">
+                <TextView style="@style/ClassNameStyle" android:text="@string/class_sorcerer" />
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/et_sorcerer"
+                    style="@style/ClassInputStyle" />
+            </LinearLayout>
+
+            <LinearLayout style="@style/ClassCardStyle" android:background="@drawable/bg_class_card_mc">
+                <TextView style="@style/ClassNameStyle" android:text="@string/class_artificer" />
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/et_artificer"
+                    style="@style/ClassInputStyle" />
+            </LinearLayout>
+        </GridLayout>
+
+        <!-- Pact Magic (включается из MainActivity при warlockLevel > 0) -->
+        <include layout="@layout/item_pact_magic" />
+
+        <!-- Секция: Ячейки заклинаний -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/section_slots"
+            android:paddingStart="14dp"
+            android:paddingEnd="14dp"
+            android:paddingTop="8dp"
+            android:paddingBottom="8dp"
+            android:textStyle="bold"
+            android:textSize="14sp"
+            android:textColor="@color/text_white"
+            android:background="@drawable/bg_section_chip"
+            android:layout_marginTop="12dp" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/slots_recycler"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:nestedScrollingEnabled="false"
+            android:layout_marginTop="8dp" />
+
+        <!-- Нижние кнопки -->
+        <LinearLayout
+            android:id="@+id/bottom_buttons_row"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="18dp"
+            android:layout_marginBottom="8dp">
+
+            <Button
+                android:id="@+id/btn_reset_used"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="48dp"
+                android:text="@string/btn_reset_used"
+                android:textAllCaps="false"
+                android:textStyle="bold"
+                android:textColor="@color/bg_dark"
+                android:background="@drawable/bg_button_gold"
+                android:layout_marginEnd="6dp"
+                android:stateListAnimator="@null" />
+
+            <Button
+                android:id="@+id/btn_open_spells"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="48dp"
+                android:text="@string/btn_open_spells"
+                android:textAllCaps="false"
+                android:textStyle="bold"
+                android:textColor="@color/purple_light"
+                android:background="@drawable/bg_button_outline"
+                android:layout_marginStart="6dp"
+                android:stateListAnimator="@null" />
+        </LinearLayout>
     </LinearLayout>
-
-    <!-- Row 2: Друид, Жрец -->
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:paddingStart="8dp"
-        android:paddingEnd="8dp">
-
-        <com.google.android.material.textfield.TextInputLayout
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="4dp"
-            android:layout_marginEnd="4dp"
-            android:hint="@string/class_druid">
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/et_druid"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:inputType="number"
-                android:maxLength="2"
-                android:gravity="center" />
-        </com.google.android.material.textfield.TextInputLayout>
-
-        <com.google.android.material.textfield.TextInputLayout
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="4dp"
-            android:layout_marginEnd="4dp"
-            android:hint="@string/class_cleric">
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/et_cleric"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:inputType="number"
-                android:maxLength="2"
-                android:gravity="center" />
-        </com.google.android.material.textfield.TextInputLayout>
-    </LinearLayout>
-
-    <!-- Row 3: Колдун, Паладин -->
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:paddingStart="8dp"
-        android:paddingEnd="8dp">
-
-        <com.google.android.material.textfield.TextInputLayout
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="4dp"
-            android:layout_marginEnd="4dp"
-            android:hint="@string/class_warlock">
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/et_warlock"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:inputType="number"
-                android:maxLength="2"
-                android:gravity="center" />
-        </com.google.android.material.textfield.TextInputLayout>
-
-        <com.google.android.material.textfield.TextInputLayout
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="4dp"
-            android:layout_marginEnd="4dp"
-            android:hint="@string/class_paladin">
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/et_paladin"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:inputType="number"
-                android:maxLength="2"
-                android:gravity="center" />
-        </com.google.android.material.textfield.TextInputLayout>
-    </LinearLayout>
-
-    <!-- Row 4: Чародей + пустая ячейка -->
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:paddingStart="8dp"
-        android:paddingEnd="8dp"
-        android:paddingBottom="4dp">
-
-        <com.google.android.material.textfield.TextInputLayout
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="4dp"
-            android:layout_marginEnd="4dp"
-            android:hint="@string/class_sorcerer">
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/et_sorcerer"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:inputType="number"
-                android:maxLength="2"
-                android:gravity="center" />
-        </com.google.android.material.textfield.TextInputLayout>
-
-        <Space
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="4dp"
-            android:layout_marginEnd="4dp" />
-    </LinearLayout>
-
-    <!-- Row 5: Следопыт, Изобретатель -->
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:paddingStart="8dp"
-        android:paddingEnd="8dp"
-        android:paddingBottom="4dp">
-
-        <com.google.android.material.textfield.TextInputLayout
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="4dp"
-            android:layout_marginEnd="4dp"
-            android:hint="@string/class_ranger">
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/et_ranger"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:inputType="number"
-                android:maxLength="2"
-                android:gravity="center" />
-        </com.google.android.material.textfield.TextInputLayout>
-
-        <com.google.android.material.textfield.TextInputLayout
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="4dp"
-            android:layout_marginEnd="4dp"
-            android:hint="@string/class_artificer">
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/et_artificer"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:inputType="number"
-                android:maxLength="2"
-                android:gravity="center" />
-        </com.google.android.material.textfield.TextInputLayout>
-    </LinearLayout>
-
-    <TextView
-        android:id="@+id/tv_effective_level"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingStart="16dp"
-        android:paddingEnd="16dp"
-        android:paddingTop="4dp"
-        android:paddingBottom="4dp"
-        android:textAppearance="?attr/textAppearanceSubtitle2" />
-
-    <include layout="@layout/item_pact_magic" />
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/slots_recycler"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:clipToPadding="false"
-        android:paddingTop="4dp" />
-
-    <LinearLayout
-        android:id="@+id/bottom_buttons_row"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:padding="8dp">
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btn_open_spells"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/btn_open_spells" />
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btn_reset_used"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:layout_marginStart="8dp"
-            android:text="@string/btn_reset_used" />
-    </LinearLayout>
-</LinearLayout>
+</androidx.core.widget.NestedScrollView>

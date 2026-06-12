@@ -34,4 +34,11 @@
     <string name="pact_magic_title">Магия договора</string>
     <string name="pact_magic_subtitle_format">%1$d ячеек %2$d ур.</string>
     <string name="search_hint">Поиск заклинания</string>
+    <string name="subtitle">PHB Multiclass Tracker</string>
+    <string name="effective_level_label">Эффект. уровень заклинателя</string>
+    <string name="section_classes">Классы</string>
+    <string name="section_slots">Ячейки заклинаний</string>
+    <string name="slot_subtitle">использовано / всего ячеек</string>
+    <string name="btn_use">Исп.</string>
+    <string name="btn_restore">Восст.</string>
 </resources>
