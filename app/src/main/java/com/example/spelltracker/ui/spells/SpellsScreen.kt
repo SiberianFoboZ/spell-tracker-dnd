@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
-import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -20,6 +19,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -39,6 +39,8 @@ import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CheckboxDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FilterChip
+import androidx.compose.material3.FilterChipDefaults
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -347,7 +349,6 @@ private fun FilterButton(
 // Bottom Sheet content: фильтры классов и уровней
 // =============================================================
 
-@OptIn(ExperimentalLayoutApi::class)
 @Composable
 private fun FilterBottomSheetContent(
     state: SpellsState,
@@ -505,64 +506,81 @@ private fun ClassCheckRow(
     }
 }
 
-@Suppress("UNUSED_PARAMETER")
-@OptIn(ExperimentalLayoutApi::class)
 @Composable
 private fun LevelChipsFlow(
-    availableLevels: Set<Int>,
+    @Suppress("UNUSED_PARAMETER") availableLevels: Set<Int>,
     selected: Int?,
     onSelect: (Int?) -> Unit,
 ) {
-    FlowRow(
+    // Горизонтальный скролл: все 11 чипов (Все + Заговор + I-IX) всегда
+    // отображаются, даже если не помещаются в одну строку. Узкие экраны
+    // получают плавный horizontal-scroll, широкие — всё на одном ряду.
+    LazyRow(
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 16.dp),
         horizontalArrangement = Arrangement.spacedBy(8.dp),
-        verticalArrangement = Arrangement.spacedBy(8.dp),
+        contentPadding = PaddingValues(horizontal = 4.dp, vertical = 4.dp),
     ) {
-        LevelChipMini(
-            label = "Все",
-            selected = selected == null,
-            onClick = { onSelect(null) },
-        )
+        item(key = "all") {
+            LevelChipMini(
+                label = "Все",
+                selected = selected == null,
+                onClick = { onSelect(null) },
+            )
+        }
         // Показываем все 0-9 независимо от наличия данных в БД: после
         // реимпорта spells.db версией 3 там есть заклинания 0-9. Если в
         // каком-то уровне данных нет, фильтр просто даст пустой результат
         // и пользователь увидит «Ничего не найдено».
+        // Показываем все 0-9 (10 чипов). Данные для уровней 6-9 уже
+        // есть в assets/spells.csv (122 заклинания суммарно), и version=3
+        // в SpellDatabase гарантирует реимпорт при первом запуске.
         (0..9).forEach { lvl ->
-            LevelChipMini(
-                label = spellLevelLabel(lvl),
-                selected = selected == lvl,
-                onClick = { onSelect(lvl) },
-            )
+            item(key = "lv-$lvl") {
+                LevelChipMini(
+                    label = spellLevelLabel(lvl),
+                    selected = selected == lvl,
+                    onClick = { onSelect(lvl) },
+                )
+            }
         }
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun LevelChipMini(
     label: String,
     selected: Boolean,
     onClick: () -> Unit,
 ) {
-    val bg = if (selected) AppColors.Gold else AppColors.CardBg
-    val border = if (selected) AppColors.GoldDeep else AppColors.Outline
-    val fg = if (selected) AppColors.BgDark else AppColors.TextGrey
-    Box(
-        modifier = Modifier
-            .clip(RoundedCornerShape(20.dp))
-            .background(bg)
-            .border(1.dp, border, RoundedCornerShape(20.dp))
-            .clickable(onClick = onClick)
-            .padding(horizontal = 14.dp, vertical = 8.dp),
-    ) {
-        Text(
-            label,
-            color = fg,
-            fontSize = 12.sp,
-            fontWeight = FontWeight.SemiBold,
-        )
-    }
+    // Material 3 FilterChip с фиолетовой палитрой — единый стиль для
+    // «Все», «Заговор» и I-IX. Не выбран: тёмный фон + серый текст.
+    // Выбран: фиолетовая заливка + светлый текст + фиолетовая рамка.
+    FilterChip(
+        selected = selected,
+        onClick = onClick,
+        label = {
+            Text(
+                label,
+                fontSize = 12.sp,
+                fontWeight = FontWeight.SemiBold,
+            )
+        },
+        colors = FilterChipDefaults.filterChipColors(
+            containerColor = AppColors.CardBg,
+            labelColor = AppColors.TextGrey,
+            selectedContainerColor = AppColors.Purple,
+            selectedLabelColor = AppColors.TextWhite,
+        ),
+        border = FilterChipDefaults.filterChipBorder(
+            enabled = true,
+            selected = selected,
+            borderColor = AppColors.Outline,
+            selectedBorderColor = AppColors.PurpleLight,
+        ),
+    )
 }
 
 // =============================================================

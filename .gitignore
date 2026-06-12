@@ -52,3 +52,13 @@ vcs.xml
 build_log.txt  
 build_compose.log  
 build_log.txt  
+
+# Diagnostic Python scripts (not part of build)
+analyze_assets.py
+analyze_result.txt
+check_levels.py
+patch_spells_screen.py
+debug_regex.py
+inspect_*.py
+verify_patch.py
+build.log
