@@ -158,3 +158,73 @@ app/build/outputs/apk/release/spell-tracker-v1.0.apk
   что иконка отображается в лаунчере корректно
 - При обновлении дизайна иконки — править vector drawables в `drawable/`
   и/или `tools/gen_icons.py` (для PNG-фолбэков)
+
+---
+
+## ✅ Этап 9. Git + GitHub Actions — **ЗАВЕРШЁН**
+
+### Что сделано
+
+#### 1. Подключение git
+- Локальный bare-артефакт (файлы `HEAD`, `config`, `description`, `hooks`,
+  `info`, `objects`, `refs`, `FETCH_HEAD` лежали в корне проекта) — удалён
+- `local.properties`, `.idea/`, `build/`, `app/build/`, `*.log`, `*.jks` —
+  добавлены в `.gitignore` (уже были базовые правила Android Studio,
+  расширили под наш проект)
+- Remote настроен: `github → git@github.com:SiberianFoboZ/spell-tracker-dnd.git`
+
+#### 2. SSH-доступ к GitHub (PuTTY + Pageant)
+Проблема: OpenSSH-овский `ssh-agent` не видел ключ, потому что ключ
+загружен в **Pageant** (PuTTY-agent), а не в OpenSSH-agent.
+Решение: прописали `core.sshCommand` в `git config --global`:
+
+```
+C:/Program Files/PuTTY/plink.exe -i C:/Users/vk241/.ssh/github.ppk
+```
+
+Теперь Git ходит через `plink.exe` → `pageant` → GitHub.
+Проверено: `git ls-remote github HEAD` → отдаёт коммит.
+
+#### 3. GitHub Actions workflow
+Создан `.github/workflows/release.yml`:
+
+- **Триггер**: push тега вида `v*` (например, `v1.0.0`) или ручной запуск
+  через UI (`workflow_dispatch`)
+- **Среда**: `ubuntu-latest` + Temurin JDK 21 + Android SDK API 36
+- **Сборка**: `./gradlew assembleRelease` с override
+  `-Dorg.gradle.java.home=$JAVA_HOME` (иначе Gradle пытается открыть
+  Windows-путь из `gradle.properties` и падает)
+- **Публикация**: `softprops/action-gh-release@v2` создаёт релиз с
+  тегом и прикрепляет `app/build/outputs/apk/release/spell-tracker-v*.apk`
+- `generate_release_notes: true` — GitHub сам собирает changelog
+  из PR/коммитов между тегами
+
+### Текущее состояние репозитория
+```
+main
+├─ cc02316  Add GitHub Actions release workflow
+├─ 254812f  Expand .gitignore: cover .idea/, build/, logs, keystores
+├─ cf86f74  spell tracker. first mvp version
+└─ (LICENSE, README.md из GitHub)
+```
+
+Push: `cc02316..cc02316` — `main` синхронизирован с GitHub.
+
+---
+
+## ⏭️ Следующий шаг
+- **Протестировать CI** — создать тег `v1.0.0` и убедиться, что workflow
+  собирает APK и публикует релиз:
+  ```bash
+  cd C:\Users\vk241\AndroidStudioProjects\Spelltracker
+  git tag v1.0.0
+  git push github v1.0.0
+  ```
+  Открыть <https://github.com/SiberianFoboZ/spell-tracker-dnd/actions>
+  и проверить, что:
+  1. workflow запустился;
+  2. шаг «Build release APK» прошёл;
+  3. в разделе Releases появился релиз `v1.0.0` с прикреплённым APK.
+- При баге в CI — прислать логи failed-шага, починим.
+- Для будущих релизов (`v1.0.1`, `v1.1.0` и т.д.) — бампить
+  `versionName` в `app/build.gradle.kts` перед тегированием.
