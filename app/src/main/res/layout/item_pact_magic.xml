@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/pact_magic_section"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginStart="8dp"
+    android:layout_marginEnd="8dp"
+    android:layout_marginTop="4dp"
+    android:layout_marginBottom="4dp"
+    android:visibility="gone"
+    app:cardCornerRadius="10dp"
+    app:cardElevation="2dp"
+    app:cardUseCompatPadding="false">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="12dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/pact_magic_title"
+                android:textAppearance="?attr/textAppearanceHeadline6"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tv_pact_magic_count"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:minWidth="64dp"
+                android:gravity="end"
+                android:textAppearance="?attr/textAppearanceHeadline6"
+                android:textColor="?attr/colorPrimary" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/tv_pact_magic_subtitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:textAppearance="?attr/textAppearanceCaption" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:orientation="horizontal"
+            android:weightSum="2">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_pact_use"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginEnd="4dp"
+                android:minWidth="0dp"
+                android:insetTop="0dp"
+                android:insetBottom="0dp"
+                android:text="Исп." />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_pact_restore"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginStart="4dp"
+                android:minWidth="0dp"
+                android:insetTop="0dp"
+                android:insetBottom="0dp"
+                android:text="Восст." />
+        </LinearLayout>
+    </LinearLayout>
+
+</com.google.android.material.card.MaterialCardView>
