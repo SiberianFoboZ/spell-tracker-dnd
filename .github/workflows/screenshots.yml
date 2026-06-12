@@ -1,0 +1,96 @@
+# Генерация скриншотов приложения в эмуляторе.
+# Запуск: вручную через GitHub UI (Actions → Screenshots → Run workflow)
+# или через CLI: gh workflow run screenshots.yml
+# Результат — артефакт `screenshots/*.png`, который можно скачать.
+#
+# Этот workflow НЕ блокирует релиз (release.yml работает независимо).
+# Он нужен, чтобы получить настоящие снимки экрана для README без
+# ручного запуска эмулятора.
+name: Screenshots
+
+on:
+  workflow_dispatch:
+
+jobs:
+  screenshots:
+    runs-on: macos-latest  # Android-эмулятор быстрее на macOS
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+
+      - name: Setup Android SDK
+        uses: android-actions/setup-android@v3
+        with:
+          api-level: 30
+          build-tools-version: '30.0.3'
+          target: google_apis
+          arch: x86_64
+          force-avd-creation: false
+          emulator-options: -no-window -no-audio -no-boot-anim -gpu swiftshader_indirect
+          script: echo "Generated AVD snapshot for caching."
+
+      - name: Create AVD
+        run: |
+          echo "no" | avdmanager create avd \
+            --force \
+            --name test_avd \
+            --package "system-images;android-30;google_apis;x86_64" \
+            --device "pixel_4"
+          $ANDROID_HOME/emulator/emulator -list-avds
+
+      - name: Start emulator
+        run: |
+          $ANDROID_HOME/emulator/emulator -avd test_avd -no-window -no-audio \
+            -no-boot-anim -gpu swiftshader_indirect -no-snapshot &
+          adb wait-for-device
+          adb shell input keyevent 82  # разблокировка экрана
+          # Ждём полной загрузки
+          for i in {1..60}; do
+            BOOT=$(adb shell getprop sys.boot_completed 2>/dev/null | tr -d '\r')
+            if [ "$BOOT" = "1" ]; then
+              echo "Emulator ready after $i attempts"
+              break
+            fi
+            sleep 5
+          done
+
+      - name: Build and install debug APK
+        run: |
+          ./gradlew assembleDebug --no-daemon -Dorg.gradle.java.home=$JAVA_HOME
+          adb install -r app/build/outputs/apk/debug/app-debug.apk
+
+      - name: Capture screenshots
+        run: |
+          mkdir -p screenshots
+          # Главный экран
+          adb shell am start -n com.example.spelltracker/.MainActivity
+          sleep 5
+          adb shell screencap -p /sdcard/main.png
+          adb pull /sdcard/main.png screenshots/main.png
+          # Drawer
+          adb shell input swipe 0 500 540 500  # свайп вправо
+          sleep 2
+          adb shell screencap -p /sdcard/drawer.png
+          adb pull /sdcard/drawer.png screenshots/drawer.png
+          # Список заклинаний
+          adb shell input keyevent KEYCODE_BACK
+          sleep 1
+          adb shell am start -n com.example.spelltracker/.SpellsActivity
+          sleep 4
+          adb shell screencap -p /sdcard/spells.png
+          adb pull /sdcard/spells.png screenshots/spells.png
+
+      - name: Upload screenshots
+        uses: actions/upload-artifact@v4
+        with:
+          name: screenshots
+          path: screenshots/*.png
+          if-no-files-found: error
