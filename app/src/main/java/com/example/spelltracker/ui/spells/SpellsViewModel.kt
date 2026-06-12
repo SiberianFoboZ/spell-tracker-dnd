@@ -120,4 +120,32 @@ class SpellsViewModel(application: Application) : AndroidViewModel(application) 
     fun togglePrepared(spellId: Long) {
         storage.setPrepared(spellId, !storage.isPrepared(spellId))
     }
+
+    /**
+     * Сбросить фильтр по классам (выбрать «Все классы»).
+     * Используется чекбоксом "Все классы" в Bottom Sheet.
+     */
+    fun clearClassFilter() {
+        _state.value = _state.value.copy(selectedClassIds = emptySet())
+    }
+
+    /**
+     * Сбросить фильтр по уровню заклинания.
+     * Используется чипом "Все" в секции уровней внутри Bottom Sheet.
+     */
+    fun clearLevelFilter() {
+        _state.value = _state.value.copy(selectedLevel = null)
+    }
+
+    /**
+     * Сбросить фильтры по классам и уровню одним вызовом.
+     * НЕ сбрасывает режим «только подготовленные» — он управляется
+     * отдельной иконкой закладки в TopAppBar.
+     */
+    fun resetFilters() {
+        _state.value = _state.value.copy(
+            selectedClassIds = emptySet(),
+            selectedLevel = null,
+        )
+    }
 }

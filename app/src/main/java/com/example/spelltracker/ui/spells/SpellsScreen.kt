@@ -6,6 +6,8 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -16,10 +18,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -27,26 +27,35 @@ import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Bookmark
 import androidx.compose.material.icons.filled.BookmarkBorder
 import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.FilterList
+import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.Search
-import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.Badge
 import androidx.compose.material3.BadgedBox
+import androidx.compose.material3.BottomSheetDefaults
+import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CheckboxDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.FilterChip
-import androidx.compose.material3.FilterChipDefaults
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -58,21 +67,45 @@ import androidx.compose.ui.unit.sp
 import com.example.spelltracker.data.Classes
 import com.example.spelltracker.data.Spell
 import com.example.spelltracker.ui.theme.AppColors
+import kotlinx.coroutines.launch
 
 /**
- * Экран списка заклинаний.
+ * Экран списка заклинаний с Material 3 Bottom Sheet для фильтров.
+ *
+ * Главная кнопка "Класс" открывает [FilterBottomSheetContent] —
+ * Bottom Sheet с чекбоксами классов, чипами уровней и кнопкой
+ * "Сбросить фильтры". Закладка "Только подготовленные" осталась
+ * в тулбаре как отдельный быстрый toggle.
  *
  *  ┌──────────────────────────────────┐
- *  │ ←  Заклинания                    │  ← TopAppBar
+ *  │ ←  Заклинания              🔖   │  ← TopAppBar
  *  │ [🔍 Поиск по названию        ]   │
- *  │ Класс | Уровень                  │  ← переключатель режима
- *  │ [Все] [Бард] [Волшебник] …        │  ← чипы фильтра
+ *  │ [≡ Фильтр ▾]                     │  ← одна кнопка-фильтр
  *  │ ────────────────────────────────  │
  *  │ ☑ Заговор 1 — Огненный снаряд    │  ← список
  *  │ ☐ Заговор 0 — Свет               │
  *  └──────────────────────────────────┘
+ *
+ *  Bottom Sheet при нажатии на "≡ Фильтр ▾":
+ *  ┌──────────────────────────────────┐
+ *  │ ─── (drag handle) ───            │
+ *  │ Фильтры                     ✕   │
+ *  │ ─────────────────────────────    │
+ *  │ Класс                            │
+ *  │ ☑ Все классы                     │
+ *  │ ☐ Бард                           │
+ *  │ ☐ Волшебник                      │
+ *  │ ☐ Друид                          │
+ *  │ ☐ Жрец                           │
+ *  │ ...                              │
+ *  │ ─────────────────────────────    │
+ *  │ Уровень                          │
+ *  │ [Все] [Заговор] [I] [II] [III]…  │
+ *  │ ─────────────────────────────    │
+ *  │ [↻ Сбросить фильтры]             │
+ *  └──────────────────────────────────┘
  */
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
 fun SpellsScreen(
     viewModel: SpellsViewModel,
@@ -80,39 +113,35 @@ fun SpellsScreen(
     onOpenSpell: (Long) -> Unit,
 ) {
     val state by viewModel.state.collectAsState()
+    var showFilterSheet by remember { mutableStateOf(false) }
+    val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+    val scope = rememberCoroutineScope()
 
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
-                title = { Text("Заклинания", color = AppColors.TextWhite, fontWeight = FontWeight.SemiBold) },
+                title = {
+                    Text(
+                        "Заклинания",
+                        color = AppColors.TextWhite,
+                        fontWeight = FontWeight.SemiBold,
+                    )
+                },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, "Назад", tint = AppColors.TextWhite)
+                        Icon(
+                            Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = "Назад",
+                            tint = AppColors.TextWhite,
+                        )
                     }
                 },
                 actions = {
-                    // Кнопка «Только подготовленные» со счётчиком.
-                    // Активна, когда выбран этот режим; подсвечивается золотом.
-                    val active = state.showPreparedOnly
-                    val tint = if (active) AppColors.Gold else AppColors.TextWhite
-                    IconButton(onClick = { viewModel.togglePreparedOnly() }) {
-                        BadgedBox(
-                            badge = {
-                                if (state.preparedCount > 0) {
-                                    androidx.compose.material3.Badge(
-                                        containerColor = AppColors.Purple,
-                                        contentColor = AppColors.TextWhite,
-                                    ) { Text(state.preparedCount.toString()) }
-                                }
-                            }
-                        ) {
-                            Icon(
-                                imageVector = if (active) Icons.Filled.Bookmark else Icons.Filled.BookmarkBorder,
-                                contentDescription = if (active) "Показать все" else "Только подготовленные",
-                                tint = tint,
-                            )
-                        }
-                    }
+                    PreparedToggleAction(
+                        showPreparedOnly = state.showPreparedOnly,
+                        preparedCount = state.preparedCount,
+                        onToggle = viewModel::togglePreparedOnly,
+                    )
                 },
                 colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
                     containerColor = AppColors.BgPurpleDeep,
@@ -125,7 +154,7 @@ fun SpellsScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(padding)
-                .background(AppColors.BgDark)
+                .background(AppColors.BgDark),
         ) {
             if (state.isLoading) {
                 Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
@@ -137,11 +166,11 @@ fun SpellsScreen(
                         value = state.search,
                         onChange = viewModel::setSearch,
                     )
-                    ModeSwitcher(
-                        mode = state.mode,
-                        onMode = viewModel::setMode,
+                    FilterButton(
+                        selectedClassCount = state.selectedClassIds.size,
+                        hasLevel = state.selectedLevel != null,
+                        onClick = { showFilterSheet = true },
                     )
-                    FilterChipsRow(state, viewModel)
                     LazyColumn(
                         modifier = Modifier
                             .weight(1f)
@@ -182,7 +211,355 @@ fun SpellsScreen(
             }
         }
     }
+
+    if (showFilterSheet) {
+        ModalBottomSheet(
+            onDismissRequest = { showFilterSheet = false },
+            sheetState = sheetState,
+            shape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp),
+            containerColor = AppColors.BgPurpleDeep,
+            contentColor = AppColors.TextWhite,
+            dragHandle = { BottomSheetDefaults.DragHandle() },
+            scrimColor = Color.Black.copy(alpha = 0.55f),
+        ) {
+            FilterBottomSheetContent(
+                state = state,
+                onToggleClass = viewModel::toggleClass,
+                onClearClasses = viewModel::clearClassFilter,
+                onSelectLevel = viewModel::setLevel,
+                onClearLevel = viewModel::clearLevelFilter,
+                onReset = viewModel::resetFilters,
+                onClose = {
+                    scope.launch {
+                        sheetState.hide()
+                        showFilterSheet = false
+                    }
+                },
+            )
+        }
+    }
 }
+
+// =============================================================
+// Top-bar bookmark (иконка закладки)
+// =============================================================
+
+@Composable
+private fun PreparedToggleAction(
+    showPreparedOnly: Boolean,
+    preparedCount: Int,
+    onToggle: () -> Unit,
+) {
+    val tint = if (showPreparedOnly) AppColors.Gold else AppColors.TextWhite
+    IconButton(onClick = onToggle) {
+        BadgedBox(
+            badge = {
+                if (preparedCount > 0) {
+                    Badge(
+                        containerColor = AppColors.Purple,
+                        contentColor = AppColors.TextWhite,
+                    ) { Text(preparedCount.toString()) }
+                }
+            }
+        ) {
+            Icon(
+                imageVector = if (showPreparedOnly) Icons.Filled.Bookmark else Icons.Filled.BookmarkBorder,
+                contentDescription = if (showPreparedOnly) "Показать все" else "Только подготовленные",
+                tint = tint,
+            )
+        }
+    }
+}
+
+// =============================================================
+// Top-level filter button (открывает Bottom Sheet)
+// =============================================================
+
+@Composable
+private fun FilterButton(
+    selectedClassCount: Int,
+    hasLevel: Boolean,
+    onClick: () -> Unit,
+) {
+    val hasAnyFilter = selectedClassCount > 0 || hasLevel
+    val borderColor = if (hasAnyFilter) AppColors.PurpleLight else AppColors.Outline
+    val iconTint = if (hasAnyFilter) AppColors.PurpleLight else AppColors.Gold
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 12.dp, vertical = 8.dp),
+    ) {
+        Row(
+            modifier = Modifier
+                .clip(RoundedCornerShape(12.dp))
+                .background(AppColors.CardBg)
+                .border(1.dp, borderColor, RoundedCornerShape(12.dp))
+                .clickable(onClick = onClick)
+                .padding(horizontal = 16.dp, vertical = 12.dp),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Icon(
+                imageVector = Icons.Filled.FilterList,
+                contentDescription = null,
+                tint = iconTint,
+                modifier = Modifier.size(20.dp),
+            )
+            Spacer(Modifier.size(10.dp))
+            Text(
+                text = "Класс",
+                color = AppColors.TextWhite,
+                fontSize = 14.sp,
+                fontWeight = FontWeight.SemiBold,
+                modifier = Modifier.weight(1f),
+            )
+            // Бейдж с числом выбранных классов (только если > 1).
+            if (selectedClassCount > 1) {
+                Box(
+                    modifier = Modifier
+                        .size(22.dp)
+                        .clip(RoundedCornerShape(11.dp))
+                        .background(AppColors.PurpleLight),
+                    contentAlignment = Alignment.Center,
+                ) {
+                    Text(
+                        selectedClassCount.toString(),
+                        color = AppColors.TextWhite,
+                        fontSize = 11.sp,
+                        fontWeight = FontWeight.Bold,
+                    )
+                }
+                Spacer(Modifier.size(8.dp))
+            }
+            Text(
+                "▾",
+                color = AppColors.TextGrey,
+                fontSize = 14.sp,
+                fontWeight = FontWeight.SemiBold,
+            )
+        }
+    }
+}
+
+// =============================================================
+// Bottom Sheet content: фильтры классов и уровней
+// =============================================================
+
+@OptIn(ExperimentalLayoutApi::class)
+@Composable
+private fun FilterBottomSheetContent(
+    state: SpellsState,
+    onToggleClass: (String) -> Unit,
+    onClearClasses: () -> Unit,
+    onSelectLevel: (Int?) -> Unit,
+    onClearLevel: () -> Unit,
+    onReset: () -> Unit,
+    onClose: () -> Unit,
+) {
+    val allChecked = state.selectedClassIds.isEmpty()
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .windowInsetsPadding(WindowInsets.navigationBars),
+    ) {
+        // Заголовок + кнопка закрыть
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(start = 20.dp, end = 8.dp, top = 4.dp, bottom = 4.dp),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Text(
+                "Фильтры",
+                color = AppColors.TextWhite,
+                fontSize = 18.sp,
+                fontWeight = FontWeight.SemiBold,
+                modifier = Modifier.weight(1f),
+            )
+            IconButton(onClick = onClose) {
+                Icon(
+                    Icons.Filled.Close,
+                    contentDescription = "Закрыть",
+                    tint = AppColors.TextGrey,
+                )
+            }
+        }
+
+        HorizontalDivider(color = AppColors.Outline)
+
+        // Секция: Класс
+        SectionTitle("Класс")
+        // Чекбокс "Все классы" — клик очищает выбор конкретных классов.
+        ClassCheckRow(
+            label = "Все классы",
+            selected = allChecked,
+            onCheckedChange = { wantChecked ->
+                if (wantChecked && !allChecked) onClearClasses()
+                // Когда уже выбрано "Все" — клик игнорируется (снимать
+                // нечего; снять можно только выбрав хотя бы один класс).
+            },
+        )
+        state.classes.forEach { info ->
+            val checked = state.selectedClassIds.contains(info.id)
+            ClassCheckRow(
+                label = info.name,
+                selected = checked,
+                onCheckedChange = { _ -> onToggleClass(info.id) },
+            )
+        }
+
+        HorizontalDivider(
+            color = AppColors.Outline,
+            modifier = Modifier.padding(top = 8.dp),
+        )
+
+        // Секция: Уровень
+        SectionTitle("Уровень")
+        LevelChipsFlow(
+            availableLevels = state.availableLevels,
+            selected = state.selectedLevel,
+            onSelect = { lvl ->
+                if (lvl == null) onClearLevel() else onSelectLevel(lvl)
+            },
+        )
+
+        Spacer(Modifier.height(8.dp))
+        HorizontalDivider(color = AppColors.Outline)
+
+        // Кнопка "Сбросить фильтры" внизу
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp, vertical = 16.dp),
+        ) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clip(RoundedCornerShape(12.dp))
+                    .background(AppColors.CardBg)
+                    .border(1.dp, AppColors.Outline, RoundedCornerShape(12.dp))
+                    .clickable(onClick = onReset)
+                    .padding(vertical = 14.dp),
+                horizontalArrangement = Arrangement.Center,
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Icon(
+                    imageVector = Icons.Filled.Refresh,
+                    contentDescription = null,
+                    tint = AppColors.Gold,
+                    modifier = Modifier.size(20.dp),
+                )
+                Spacer(Modifier.size(10.dp))
+                Text(
+                    "Сбросить фильтры",
+                    color = AppColors.TextWhite,
+                    fontSize = 14.sp,
+                    fontWeight = FontWeight.SemiBold,
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun SectionTitle(text: String) {
+    Text(
+        text = text,
+        color = AppColors.TextGrey,
+        fontSize = 12.sp,
+        fontWeight = FontWeight.SemiBold,
+        modifier = Modifier.padding(start = 20.dp, end = 20.dp, top = 16.dp, bottom = 8.dp),
+    )
+}
+
+@Composable
+private fun ClassCheckRow(
+    label: String,
+    selected: Boolean,
+    onCheckedChange: (Boolean) -> Unit,
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable { onCheckedChange(!selected) }
+            .padding(start = 8.dp, end = 16.dp, top = 6.dp, bottom = 6.dp),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Checkbox(
+            checked = selected,
+            onCheckedChange = onCheckedChange,
+            colors = CheckboxDefaults.colors(
+                checkedColor = AppColors.Purple,
+                uncheckedColor = AppColors.Outline,
+                checkmarkColor = AppColors.TextWhite,
+            ),
+        )
+        Spacer(Modifier.size(8.dp))
+        Text(
+            label,
+            color = AppColors.TextWhite,
+            fontSize = 14.sp,
+        )
+    }
+}
+
+@OptIn(ExperimentalLayoutApi::class)
+@Composable
+private fun LevelChipsFlow(
+    availableLevels: Set<Int>,
+    selected: Int?,
+    onSelect: (Int?) -> Unit,
+) {
+    FlowRow(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp),
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+        verticalArrangement = Arrangement.spacedBy(8.dp),
+    ) {
+        LevelChipMini(
+            label = "Все",
+            selected = selected == null,
+            onClick = { onSelect(null) },
+        )
+        (0..9).filter { it in availableLevels }.forEach { lvl ->
+            LevelChipMini(
+                label = spellLevelLabel(lvl),
+                selected = selected == lvl,
+                onClick = { onSelect(lvl) },
+            )
+        }
+    }
+}
+
+@Composable
+private fun LevelChipMini(
+    label: String,
+    selected: Boolean,
+    onClick: () -> Unit,
+) {
+    val bg = if (selected) AppColors.Purple else AppColors.CardBg
+    val border = if (selected) AppColors.PurpleLight else AppColors.Outline
+    val fg = if (selected) AppColors.TextWhite else AppColors.TextGrey
+    Box(
+        modifier = Modifier
+            .clip(RoundedCornerShape(20.dp))
+            .background(bg)
+            .border(1.dp, border, RoundedCornerShape(20.dp))
+            .clickable(onClick = onClick)
+            .padding(horizontal = 14.dp, vertical = 8.dp),
+    ) {
+        Text(
+            label,
+            color = fg,
+            fontSize = 12.sp,
+            fontWeight = FontWeight.SemiBold,
+        )
+    }
+}
+
+// =============================================================
+// Поле поиска
+// =============================================================
 
 @Composable
 private fun SearchField(value: String, onChange: (String) -> Unit) {
@@ -205,148 +582,9 @@ private fun SearchField(value: String, onChange: (String) -> Unit) {
     )
 }
 
-@Composable
-private fun ModeSwitcher(mode: FilterMode, onMode: (FilterMode) -> Unit) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 12.dp, vertical = 4.dp),
-        horizontalArrangement = Arrangement.spacedBy(8.dp),
-    ) {
-        ModePill("Класс",  mode == FilterMode.BY_CLASS)  { onMode(FilterMode.BY_CLASS) }
-        ModePill("Уровень", mode == FilterMode.BY_LEVEL) { onMode(FilterMode.BY_LEVEL) }
-    }
-}
-
-@Composable
-private fun ModePill(text: String, selected: Boolean, onClick: () -> Unit) {
-    val bg = if (selected) AppColors.Purple else Color.Transparent
-    val border = if (selected) AppColors.PurpleLight else AppColors.Outline
-    Box(
-        modifier = Modifier
-            .clip(RoundedCornerShape(20.dp))
-            .background(bg)
-            .border(1.dp, border, RoundedCornerShape(20.dp))
-            .clickable(onClick = onClick)
-            .padding(horizontal = 16.dp, vertical = 6.dp),
-    ) {
-        Text(
-            text = text,
-            color = if (selected) AppColors.TextWhite else AppColors.TextGrey,
-            fontSize = 12.sp,
-            fontWeight = FontWeight.SemiBold,
-        )
-    }
-}
-
-@Composable
-private fun FilterChipsRow(state: SpellsState, vm: SpellsViewModel) {
-    LazyRow(
-        modifier = Modifier.fillMaxWidth(),
-        contentPadding = PaddingValues(horizontal = 12.dp, vertical = 8.dp),
-        horizontalArrangement = Arrangement.spacedBy(6.dp),
-    ) {
-        if (state.mode == FilterMode.BY_CLASS) {
-            item {
-                ClassChip(
-                    label = "Все",
-                    selected = state.selectedClassIds.isEmpty(),
-                    onClick = { vm.toggleClass("") },   // сигнал «сбросить»
-                )
-            }
-            items(state.classes, key = { it.id }) { info ->
-                ClassChip(
-                    label = info.name,
-                    selected = state.selectedClassIds.contains(info.id),
-                    onClick = { vm.toggleClass(info.id) },
-                )
-            }
-        } else {
-            // режим BY_LEVEL: чипы уровней 0..9 (по доступности)
-            item {
-                LevelChip(
-                    label = "Все",
-                    level = null,
-                    selected = state.selectedLevel == null,
-                    available = true,
-                    onClick = { vm.setLevel(null) },
-                )
-            }
-            val ordered = (0..9).filter { it in state.availableLevels }
-            items(ordered) { lvl ->
-                LevelChip(
-                    label = spellLevelLabel(lvl),
-                    level = lvl,
-                    selected = state.selectedLevel == lvl,
-                    available = true,
-                    onClick = { vm.setLevel(lvl) },
-                )
-            }
-        }
-    }
-}
-
-@Composable
-private fun ClassChip(label: String, selected: Boolean, onClick: () -> Unit) {
-    // Используем FilterChip из Material 3
-    FilterChip(
-        selected = selected,
-        onClick = onClick,
-        label = { Text(label, fontSize = 12.sp) },
-        colors = FilterChipDefaults.filterChipColors(
-            containerColor = AppColors.CardBg,
-            labelColor = AppColors.TextGrey,
-            selectedContainerColor = AppColors.Purple,
-            selectedLabelColor = AppColors.TextWhite,
-        ),
-        border = FilterChipDefaults.filterChipBorder(
-            enabled = true,
-            selected = selected,
-            borderColor = AppColors.Outline,
-            selectedBorderColor = AppColors.PurpleLight,
-        ),
-    )
-}
-
-@Composable
-private fun LevelChip(
-    label: String,
-    level: Int?,
-    selected: Boolean,
-    available: Boolean,
-    onClick: () -> Unit,
-) {
-    val bg = when {
-        selected -> AppColors.Gold
-        available -> AppColors.CardBg
-        else -> AppColors.BgDark
-    }
-    val fg = when {
-        selected -> AppColors.BgDark
-        available -> AppColors.TextGrey
-        else -> AppColors.TextGreyDark
-    }
-    Box(
-        modifier = Modifier
-            .clip(RoundedCornerShape(20.dp))
-            .background(bg)
-            .clickable(enabled = available, onClick = onClick)
-            .padding(horizontal = 14.dp, vertical = 8.dp),
-    ) {
-        Text(label, color = fg, fontSize = 12.sp, fontWeight = FontWeight.SemiBold)
-    }
-}
-
-private fun spellLevelLabel(level: Int): String = when (level) {
-    0 -> "Заговор"
-    else -> romanLevel(level)
-}
-
-private fun romanLevel(n: Int): String = when (n) {
-    1 -> "I"; 2 -> "II"; 3 -> "III"; 4 -> "IV"
-    5 -> "V"; 6 -> "VI"; 7 -> "VII"; 8 -> "VIII"; 9 -> "IX"
-    else -> n.toString()
-}
+// =============================================================
+// Строка заклинания в списке
+// =============================================================
 
 @Composable
 private fun SpellRow(
@@ -418,4 +656,19 @@ private fun LevelBadge(level: Int) {
             fontWeight = FontWeight.Bold,
         )
     }
+}
+
+// =============================================================
+// Утилиты
+// =============================================================
+
+private fun spellLevelLabel(level: Int): String = when (level) {
+    0 -> "Заговор"
+    else -> romanLevel(level)
+}
+
+private fun romanLevel(n: Int): String = when (n) {
+    1 -> "I"; 2 -> "II"; 3 -> "III"; 4 -> "IV"
+    5 -> "V"; 6 -> "VI"; 7 -> "VII"; 8 -> "VIII"; 9 -> "IX"
+    else -> n.toString()
 }
