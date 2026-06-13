@@ -416,6 +416,9 @@ private fun FilterBottomSheetContent(
             }
         }
 
+        // Отступ перед разделителем — иначе последний ряд чипов
+        // (напр. «Изобретатель») ложится вплотную на линию.
+        Spacer(Modifier.height(8.dp))
         HorizontalDivider(color = AppColors.Outline)
 
         // Секция: Уровень — компактные чипы в FlowRow.
