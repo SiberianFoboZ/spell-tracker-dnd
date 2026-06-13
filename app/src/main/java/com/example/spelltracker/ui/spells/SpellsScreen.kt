@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -19,9 +20,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Bookmark
@@ -39,8 +41,6 @@ import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CheckboxDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.FilterChip
-import androidx.compose.material3.FilterChipDefaults
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -74,35 +74,32 @@ import kotlinx.coroutines.launch
 /**
  * Экран списка заклинаний с Material 3 Bottom Sheet для фильтров.
  *
- * Главная кнопка "Класс" открывает [FilterBottomSheetContent] —
- * Bottom Sheet с чекбоксами классов, чипами уровней и кнопкой
- * "Сбросить фильтры". Закладка "Только подготовленные" осталась
- * в тулбаре как отдельный быстрый toggle.
+ * Главная кнопка "Фильтры" открывает [FilterBottomSheetContent] —
+ * Bottom Sheet с компактными чипами классов и уровней (FlowRow).
+ * Закладка "Только подготовленные" осталась в тулбаре как отдельный
+ * быстрый toggle.
  *
  *  ┌──────────────────────────────────┐
  *  │ ←  Заклинания              🔖   │  ← TopAppBar
  *  │ [🔍 Поиск по названию        ]   │
- *  │ [≡ Фильтр ▾]                     │  ← одна кнопка-фильтр
+ *  │ [≡ Фильтры ▾]                    │  ← одна кнопка-фильтр
  *  │ ────────────────────────────────  │
  *  │ ☑ Заговор 1 — Огненный снаряд    │  ← список
  *  │ ☐ Заговор 0 — Свет               │
  *  └──────────────────────────────────┘
  *
- *  Bottom Sheet при нажатии на "≡ Фильтр ▾":
+ *  Bottom Sheet при нажатии на "≡ Фильтры ▾":
  *  ┌──────────────────────────────────┐
  *  │ ─── (drag handle) ───            │
  *  │ Фильтры                     ✕   │
  *  │ ─────────────────────────────    │
  *  │ Класс                            │
- *  │ ☑ Все классы                     │
- *  │ ☐ Бард                           │
- *  │ ☐ Волшебник                      │
- *  │ ☐ Друид                          │
- *  │ ☐ Жрец                           │
- *  │ ...                              │
+ *  │ [Все] [Бард] [Волшебник] [Друид] │  ← компактные чипы
+ *  │ [Жрец] [Чародей] [Паладин] …    │     (золото = выбрано)
  *  │ ─────────────────────────────    │
  *  │ Уровень                          │
- *  │ [Все] [Заговор] [I] [II] [III]…  │
+ *  │ [Все] [Заговор] [I] [II] [III]   │  ← компактные чипы
+ *  │ [IV] [V] [VI] [VII] [VIII] [IX]  │     FlowRow, всё видно
  *  │ ─────────────────────────────    │
  *  │ [↻ Сбросить фильтры]             │
  *  └──────────────────────────────────┘
@@ -219,7 +216,7 @@ fun SpellsScreen(
             onDismissRequest = { showFilterSheet = false },
             sheetState = sheetState,
             shape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp),
-            containerColor = AppColors.BgDark,    // darker, matches SpellsScreen body (was BgPurpleDeep = top-bar tone),
+            containerColor = AppColors.BgDark,    // dark — matches SpellsScreen body
             contentColor = AppColors.TextWhite,
             dragHandle = { BottomSheetDefaults.DragHandle() },
             scrimColor = Color.Black.copy(alpha = 0.55f),
@@ -285,8 +282,7 @@ private fun FilterButton(
 ) {
     val hasAnyFilter = selectedClassCount > 0 || hasLevel
     // Активная кнопка фильтра подсвечивается золотом: более насыщенная
-    // обводка (GoldDeep) + всегда золотая иконка. Неактивная — обычный
-    // outline и всё равно золотая иконка (брендовый цвет).
+    // обводка (GoldDeep). Иконка всегда золотая (брендовый цвет).
     val borderColor = if (hasAnyFilter) AppColors.GoldDeep else AppColors.Outline
     val iconTint = AppColors.Gold
     Box(
@@ -311,7 +307,7 @@ private fun FilterButton(
             )
             Spacer(Modifier.size(10.dp))
             Text(
-                text = "Класс",
+                text = "Фильтры",
                 color = AppColors.TextWhite,
                 fontSize = 14.sp,
                 fontWeight = FontWeight.SemiBold,
@@ -346,9 +342,10 @@ private fun FilterButton(
 }
 
 // =============================================================
-// Bottom Sheet content: фильтры классов и уровней
+// Bottom Sheet content: компактные чипы классов и уровней (FlowRow)
 // =============================================================
 
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 private fun FilterBottomSheetContent(
     state: SpellsState,
@@ -360,9 +357,13 @@ private fun FilterBottomSheetContent(
     onClose: () -> Unit,
 ) {
     val allChecked = state.selectedClassIds.isEmpty()
+    // Внутренний scroll: на очень маленьких экранах / при системной
+    // навигации вся форма (заголовок + классы + уровни + reset) может
+    // не поместиться — даём пользователю прокрутить содержимое.
     Column(
         modifier = Modifier
             .fillMaxWidth()
+            .verticalScroll(rememberScrollState())
             .windowInsetsPadding(WindowInsets.navigationBars),
     ) {
         // Заголовок + кнопка закрыть
@@ -390,40 +391,58 @@ private fun FilterBottomSheetContent(
 
         HorizontalDivider(color = AppColors.Outline)
 
-        // Секция: Класс
+        // Секция: Класс — компактные чипы в FlowRow.
+        // Первый чип "Все" сбрасывает выбор конкретных классов.
         SectionTitle("Класс")
-        // Чекбокс "Все классы" — клик очищает выбор конкретных классов.
-        ClassCheckRow(
-            label = "Все классы",
-            selected = allChecked,
-            onCheckedChange = { wantChecked ->
-                if (wantChecked && !allChecked) onClearClasses()
-                // Когда уже выбрано "Все" — клик игнорируется (снимать
-                // нечего; снять можно только выбрав хотя бы один класс).
-            },
-        )
-        state.classes.forEach { info ->
-            val checked = state.selectedClassIds.contains(info.id)
-            ClassCheckRow(
-                label = info.name,
-                selected = checked,
-                onCheckedChange = { _ -> onToggleClass(info.id) },
+        FlowRow(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp),
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp),
+        ) {
+            FilterChipMini(
+                label = "Все",
+                selected = allChecked,
+                onClick = { if (!allChecked) onClearClasses() },
             )
+            state.classes.forEach { info ->
+                val checked = state.selectedClassIds.contains(info.id)
+                FilterChipMini(
+                    label = info.name,
+                    selected = checked,
+                    onClick = { onToggleClass(info.id) },
+                )
+            }
         }
 
-        HorizontalDivider(
-            color = AppColors.Outline,
-        )
+        HorizontalDivider(color = AppColors.Outline)
 
-        // Секция: Уровень
+        // Секция: Уровень — компактные чипы в FlowRow.
+        // Все 11 чипов (Все + Заговор + I-IX) видны одновременно за счёт
+        // переноса строк. Данные для уровней 6-9 уже есть в assets/spells.csv,
+        // а version=3 в SpellDatabase гарантирует реимпорт при первом запуске.
         SectionTitle("Уровень")
-        LevelChipsFlow(
-            availableLevels = state.availableLevels,
-            selected = state.selectedLevel,
-            onSelect = { lvl ->
-                if (lvl == null) onClearLevel() else onSelectLevel(lvl)
-            },
-        )
+        FlowRow(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp),
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp),
+        ) {
+            FilterChipMini(
+                label = "Все",
+                selected = state.selectedLevel == null,
+                onClick = { onClearLevel() },
+            )
+            (0..9).forEach { lvl ->
+                FilterChipMini(
+                    label = spellLevelLabel(lvl),
+                    selected = state.selectedLevel == lvl,
+                    onClick = { onSelectLevel(lvl) },
+                )
+            }
+        }
 
         Spacer(Modifier.height(8.dp))
         HorizontalDivider(color = AppColors.Outline)
@@ -432,7 +451,7 @@ private fun FilterBottomSheetContent(
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(start = 16.dp, end = 16.dp, top = 24.dp, bottom = 16.dp),
+                .padding(start = 16.dp, end = 16.dp, top = 16.dp, bottom = 16.dp),
         ) {
             Row(
                 modifier = Modifier
@@ -470,120 +489,46 @@ private fun SectionTitle(text: String) {
         color = AppColors.TextGrey,
         fontSize = 12.sp,
         fontWeight = FontWeight.SemiBold,
-        modifier = Modifier.padding(start = 20.dp, end = 20.dp, top = 24.dp, bottom = 8.dp),
+        modifier = Modifier.padding(start = 20.dp, end = 20.dp, top = 16.dp, bottom = 8.dp),
     )
 }
 
+/**
+ * Компактный фильтр-чип: кликабельный бокс с надписью.
+ *
+ * Выбран:  фон Gold,    текст BgDark, рамка Gold    — золотая подсветка.
+ * Не выбран: фон CardBg, текст TextWhite, рамка Outline — нейтральный.
+ *
+ * Используется в обеих секциях (Класс и Уровень) фильтр-шита. FlowRow
+ * даёт перенос строк: 9 классов + «Все» умещаются в 2-3 ряда, а
+ * 11 уровней — в 2-3 ряда, итого вся форма помещается в Bottom Sheet
+ * даже на узких экранах.
+ */
 @Composable
-private fun ClassCheckRow(
-    label: String,
-    selected: Boolean,
-    onCheckedChange: (Boolean) -> Unit,
-) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 12.dp, vertical = 3.dp)                  // 3.dp outer for card stack spacing
-            .clip(RoundedCornerShape(12.dp))                              // 12.dp corners — matches SpellRow card style
-            .background(AppColors.CardBg)                                 // dark card bg — same as SpellRow
-            .border(1.dp, AppColors.Outline, RoundedCornerShape(12.dp))   // thin outline — same as SpellRow
-            .clickable { onCheckedChange(!selected) }
-            .padding(horizontal = 16.dp, vertical = 10.dp),               // 16.dp internal padding per request
-        verticalAlignment = Alignment.CenterVertically,
-    ) {
-        Checkbox(
-            checked = selected,
-            onCheckedChange = onCheckedChange,
-            colors = CheckboxDefaults.colors(
-                checkedColor = AppColors.Gold,
-                uncheckedColor = AppColors.Outline,
-                checkmarkColor = AppColors.BgDark,
-            ),
-        )
-        Spacer(Modifier.size(8.dp))
-        Text(
-            label,
-            color = AppColors.TextWhite,
-            fontSize = 14.sp,
-        )
-    }
-}
-
-@Composable
-private fun LevelChipsFlow(
-    @Suppress("UNUSED_PARAMETER") availableLevels: Set<Int>,
-    selected: Int?,
-    onSelect: (Int?) -> Unit,
-) {
-    // Горизонтальный скролл: все 11 чипов (Все + Заговор + I-IX) всегда
-    // отображаются, даже если не помещаются в одну строку. Узкие экраны
-    // получают плавный horizontal-scroll, широкие — всё на одном ряду.
-    LazyRow(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 16.dp),
-        horizontalArrangement = Arrangement.spacedBy(8.dp),
-        contentPadding = PaddingValues(horizontal = 4.dp, vertical = 4.dp),
-    ) {
-        item(key = "all") {
-            LevelChipMini(
-                label = "Все",
-                selected = selected == null,
-                onClick = { onSelect(null) },
-            )
-        }
-        // Показываем все 0-9 независимо от наличия данных в БД: после
-        // реимпорта spells.db версией 3 там есть заклинания 0-9. Если в
-        // каком-то уровне данных нет, фильтр просто даст пустой результат
-        // и пользователь увидит «Ничего не найдено».
-        // Показываем все 0-9 (10 чипов). Данные для уровней 6-9 уже
-        // есть в assets/spells.csv (122 заклинания суммарно), и version=3
-        // в SpellDatabase гарантирует реимпорт при первом запуске.
-        (0..9).forEach { lvl ->
-            item(key = "lv-$lvl") {
-                LevelChipMini(
-                    label = spellLevelLabel(lvl),
-                    selected = selected == lvl,
-                    onClick = { onSelect(lvl) },
-                )
-            }
-        }
-    }
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-private fun LevelChipMini(
+private fun FilterChipMini(
     label: String,
     selected: Boolean,
     onClick: () -> Unit,
 ) {
-    // Material 3 FilterChip с фиолетовой палитрой — единый стиль для
-    // «Все», «Заговор» и I-IX. Не выбран: тёмный фон + серый текст.
-    // Выбран: фиолетовая заливка + светлый текст + фиолетовая рамка.
-    FilterChip(
-        selected = selected,
-        onClick = onClick,
-        label = {
-            Text(
-                label,
-                fontSize = 12.sp,
-                fontWeight = FontWeight.SemiBold,
-            )
-        },
-        colors = FilterChipDefaults.filterChipColors(
-            containerColor = AppColors.CardBg,                            // unselected: dark background
-            labelColor = AppColors.TextGrey,
-            selectedContainerColor = AppColors.Gold,                      // selected: GOLD background (like «VIII» level badge on main screen)
-            selectedLabelColor = AppColors.BgDark,                        // dark text on gold — high contrast
-        ),
-        border = FilterChipDefaults.filterChipBorder(
-            enabled = true,
-            selected = selected,
-            borderColor = AppColors.TextWhite,                            // unselected: WHITE border per request «белая рамка»
-            selectedBorderColor = AppColors.Gold,                         // selected: gold border matches bg
-        ),
-    )
+    val bg = if (selected) AppColors.Gold else AppColors.CardBg
+    val fg = if (selected) AppColors.BgDark else AppColors.TextWhite
+    val border = if (selected) AppColors.Gold else AppColors.Outline
+    Box(
+        modifier = Modifier
+            .clip(RoundedCornerShape(20.dp))
+            .background(bg)
+            .border(1.dp, border, RoundedCornerShape(20.dp))
+            .clickable(onClick = onClick)
+            .padding(horizontal = 14.dp, vertical = 7.dp),
+        contentAlignment = Alignment.Center,
+    ) {
+        Text(
+            label,
+            color = fg,
+            fontSize = 12.sp,
+            fontWeight = FontWeight.SemiBold,
+        )
+    }
 }
 
 // =============================================================
