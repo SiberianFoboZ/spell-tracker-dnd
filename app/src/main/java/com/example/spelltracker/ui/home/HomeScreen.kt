@@ -1,16 +1,14 @@
 package com.example.spelltracker.ui.home
 
 import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.animateIntAsState
 import androidx.compose.animation.core.tween
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -36,18 +34,15 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.AutoStories
 import androidx.compose.material.icons.filled.Bed
 import androidx.compose.material.icons.filled.LocalCafe
-import androidx.compose.material.icons.filled.Remove
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Snackbar
@@ -70,7 +65,6 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
@@ -87,15 +81,22 @@ import kotlinx.coroutines.flow.collectLatest
  *   - Заголовок
  *   - Панель эффективного caster level (большая золотая цифра)
  *   - 3×3 сетку карточек классов с полем ввода уровня
- *   - Секцию пакт-магии (показывается, если warlock > 0) — кнопки +/-
- *   - Секцию «Ячейки заклинаний» — кликабельные золотые блоки (Этап 15)
+ *   - Секцию «Ячейки заклинаний» — кликабельные строки уровней (Этап 16)
+ *       * Обычные классы: I..IX
+ *       * Пакт-магия Колдуна: встроена в общий список (с подписью «Колдун»)
  *   - Нижнюю панель: «Короткий отдых» (Outlined) + «Длинный отдых» (Filled)
  *   - FAB → переход на экран «Заклинания»
  *
- * Состояния диалогов/уведомлений:
+ * Логика строк (Этап 16):
+ *   - Тап по **всей строке** уровня тратит первую доступную ячейку
+ *     (золотой блок становится серым по порядку слева направо).
+ *   - Тап по отдельному серому блоку **запрещён** — он не реактивен.
+ *   - Восстановление — только через кнопки отдыха в нижней панели.
+ *
+ * Состояния:
  *   - [restDialog]: подтверждение короткого/длинного отдыха (AlertDialog)
- *   - [snackbarHostState]: «Ячейки Колдуна восстановлены» / «Все ячейки
- *     восстановлены» (Material 3 Snackbar, single-flight через collectLatest)
+ *   - [snackbarHostState]: «Ячейки Колдуна восстановлены» /
+ *     «Все ячейки восстановлены» (Material 3 Snackbar)
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -177,17 +178,8 @@ fun HomeScreen(
                     item { Header() }
                     item { EffectiveLevelPanel(state.casterLevel) }
                     item { ClassesGrid(viewModel) }
-
-                    if (state.warlockLevel > 0) {
-                        item {
-                            PactMagicRow(
-                                state = state,
-                                onUse = viewModel::usePactSlot,
-                                onRestore = viewModel::restorePactSlot,
-                            )
-                        }
-                    }
-
+                    // Этап 16: пакт-магия Колдуна встроена в общий список
+                    // ниже — отдельной секции «Пакт-магия» больше нет.
                     item { SpellSlotsSection(state, viewModel) }
                 }
             }
@@ -430,73 +422,8 @@ private fun SectionTitle(text: String) {
 }
 
 // =============================================================
-// Пакт-магия (Колдун) — кнопки +/-, как в v2.1.x
-// =============================================================
-
-@Composable
-private fun PactMagicRow(
-    state: HomeState,
-    onUse: () -> Unit,
-    onRestore: () -> Unit,
-) {
-    Column {
-        SectionTitle("Пакт-магия")
-        Spacer(Modifier.height(10.dp))
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .clip(RoundedCornerShape(14.dp))
-                .background(AppColors.BgDark)
-                .border(1.dp, AppColors.GoldDeep, RoundedCornerShape(14.dp))
-                .padding(horizontal = 12.dp, vertical = 14.dp),
-        ) {
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Column(modifier = Modifier.weight(1f)) {
-                    Text(
-                        "Колдун: ${state.warlockLevel}",
-                        color = AppColors.TextGrey, fontSize = 12.sp,
-                    )
-                    Text(
-                        "${state.pactUsed} / ${state.pactSlots} ячеек ${state.pactSlotLevel}-го ур.",
-                        color = AppColors.Gold,
-                        fontSize = 18.sp,
-                        fontWeight = FontWeight.Bold,
-                    )
-                }
-                StepButton(icon = Icons.Filled.Remove, enabled = state.pactUsed > 0, onClick = onRestore)
-                Spacer(Modifier.width(8.dp))
-                StepButton(icon = Icons.Filled.Add, enabled = state.pactUsed < state.pactSlots, onClick = onUse)
-            }
-        }
-    }
-}
-
-@Composable
-private fun StepButton(
-    icon: ImageVector,
-    enabled: Boolean = true,
-    onClick: () -> Unit,
-) {
-    Box(
-        modifier = Modifier
-            .size(40.dp)
-            .clip(RoundedCornerShape(10.dp))
-            .background(if (enabled) AppColors.GoldDeep else AppColors.Outline),
-        contentAlignment = Alignment.Center,
-    ) {
-        IconButton(onClick = onClick, enabled = enabled) {
-            Icon(
-                imageVector = icon,
-                contentDescription = null,
-                tint = if (enabled) AppColors.BgDark else AppColors.TextGreyDark,
-                modifier = Modifier.size(20.dp),
-            )
-        }
-    }
-}
-
-// =============================================================
-// Ячейки заклинаний (Этап 15) — кликабельные золотые блоки
+// Ячейки заклинаний (Этап 16) — кликабельные строки уровней
+// (включая унифицированную пакт-магию Колдуна)
 // =============================================================
 
 @Composable
@@ -504,7 +431,7 @@ private fun SpellSlotsSection(state: HomeState, viewModel: HomeViewModel) {
     Column {
         SectionTitle("Ячейки заклинаний")
         Spacer(Modifier.height(10.dp))
-        if (state.slots.isEmpty()) {
+        if (state.allSlots.isEmpty()) {
             Text(
                 "Нет доступных ячеек — укажите уровень хотя бы одного заклинателя.",
                 color = AppColors.TextGrey,
@@ -512,13 +439,10 @@ private fun SpellSlotsSection(state: HomeState, viewModel: HomeViewModel) {
             )
         } else {
             Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
-                state.slots.forEach { slot ->
+                state.allSlots.forEach { slot ->
                     SpellSlotRow(
-                        level = slot.level,
-                        total = slot.total,
-                        used = slot.used,
-                        onUse = { viewModel.useSlot(slot.level) },
-                        onRestore = { viewModel.restoreSlot(slot.level) },
+                        slot = slot,
+                        onRowClick = { viewModel.onRowClick(slot) },
                     )
                 }
             }
@@ -527,119 +451,158 @@ private fun SpellSlotsSection(state: HomeState, viewModel: HomeViewModel) {
 }
 
 /**
- * Строка одной ступени заклинаний (уровень I..IX).
+ * Строка одной ступени заклинаний (Этап 16).
  *
- * Состоит из бэйджа с римским номером и [FlowRow] из
- * [SpellSlotBlock] — по одному на каждую ячейку. FlowRow нужен
- * для адаптивности: на совсем узких экранах блоки переносятся
- * на следующую строку, а не вылезают за край.
+ * Содержит:
+ *   - Бейдж с римским номером уровня (для Колдуна — чуть светлее
+ *     оттенок фона + подпись «Колдун» под бейджем).
+ *   - Ряд визуальных блоков [SpellSlotBlock] в [FlowRow]
+ *     (обёрнут для адаптивности на узких экранах).
+ *   - Счётчик «X / Y» под блоками (правый край).
+ *
+ * Кликабельна **вся строка** целиком. Тап гасит первую доступную
+ * (золотую) ячейку слева направо. Когда все ячейки потрачены —
+ * `clickable(enabled = false)`, рипл отключается.
  *
  * Цвет блока:
- *   - i < (total - used)   → gold (доступная ячейка)
+ *   - i < (total - used)   → gold (доступная)
  *   - i >= (total - used)  → серый (потраченная)
- *
- * Тап по gold-блоку → [onUse] (useSlot); тап по серому → [onRestore].
  */
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 private fun SpellSlotRow(
-    level: Int,
-    total: Int,
-    used: Int,
-    onUse: () -> Unit,
-    onRestore: () -> Unit,
+    slot: SlotInfo,
+    onRowClick: () -> Unit,
 ) {
-    Row(
+    val isAllSpent = slot.used >= slot.total
+    Column(
         modifier = Modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(12.dp))
             .background(AppColors.CardBg)
-            .border(1.dp, AppColors.Outline, RoundedCornerShape(12.dp))
-            .padding(horizontal = 12.dp, vertical = 12.dp),
-        verticalAlignment = Alignment.CenterVertically,
-    ) {
-        // Бэйдж уровня (I, II, ...)
-        Box(
-            modifier = Modifier
-                .size(40.dp)
-                .clip(RoundedCornerShape(8.dp))
-                .background(AppColors.PurpleDeep),
-            contentAlignment = Alignment.Center,
-        ) {
-            Text(
-                text = romanLevel(level),
-                color = AppColors.Gold,
-                fontSize = 16.sp,
-                fontWeight = FontWeight.Bold,
+            .border(
+                width = 1.dp,
+                color = if (isAllSpent) AppColors.TextGreyDark else AppColors.Outline,
+                shape = RoundedCornerShape(12.dp),
             )
-        }
-        Spacer(Modifier.width(14.dp))
-        // Ряд кликабельных блоков
-        FlowRow(
-            modifier = Modifier.weight(1f),
-            horizontalArrangement = Arrangement.spacedBy(6.dp),
-            verticalArrangement = Arrangement.spacedBy(6.dp),
+            .clickable(enabled = !isAllSpent) { onRowClick() }
+            .padding(horizontal = 12.dp, vertical = 12.dp),
+    ) {
+        // Верх: бейдж уровня + ряд блоков
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
         ) {
-            repeat(total) { i ->
-                val isUsedSlot = i >= (total - used)
-                SpellSlotBlock(
-                    used = isUsedSlot,
-                    onClick = {
-                        if (isUsedSlot) onRestore() else onUse()
-                    },
-                )
+            // Бейдж уровня + опциональная подпись «Колдун»
+            Column(
+                modifier = Modifier.width(56.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+            ) {
+                Box(
+                    modifier = Modifier
+                        .size(40.dp)
+                        .clip(RoundedCornerShape(8.dp))
+                        .background(
+                            // Пакт-магия чуть светлее — отличаем от обычных
+                            if (slot.isWarlock) AppColors.BgMid else AppColors.PurpleDeep
+                        ),
+                    contentAlignment = Alignment.Center,
+                ) {
+                    Text(
+                        text = romanLevel(slot.level),
+                        color = AppColors.Gold,
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.Bold,
+                    )
+                }
+                if (slot.isWarlock) {
+                    Spacer(Modifier.height(2.dp))
+                    Text(
+                        text = "Колдун",
+                        color = AppColors.TextGrey,
+                        fontSize = 9.sp,
+                        maxLines = 1,
+                    )
+                }
+            }
+            Spacer(Modifier.width(12.dp))
+            // Ряд визуальных блоков
+            FlowRow(
+                modifier = Modifier.weight(1f),
+                horizontalArrangement = Arrangement.spacedBy(6.dp),
+                verticalArrangement = Arrangement.spacedBy(6.dp),
+            ) {
+                repeat(slot.total) { i ->
+                    val isUsedSlot = i >= (slot.total - slot.used)
+                    SpellSlotBlock(used = isUsedSlot)
+                }
             }
         }
+        // Низ: счётчик X / Y, выровнен вправо
+        Spacer(Modifier.height(6.dp))
+        Text(
+            text = "${slot.used} / ${slot.total}",
+            color = if (isAllSpent) AppColors.TextGreyDark else AppColors.TextGrey,
+            fontSize = 12.sp,
+            fontWeight = FontWeight.Medium,
+            modifier = Modifier
+                .fillMaxWidth()
+                .align(Alignment.End),
+            textAlign = TextAlign.End,
+        )
     }
 }
 
 /**
- * Один кликабельный блок ячейки заклинания (Этап 15).
+ * Один визуальный блок ячейки заклинания (Этап 16).
  *
- * Визуально:
- *   - Активная ячейка  : золотой фон + золотая рамка + лёгкая тень (3dp)
- *   - Потраченная       : серый (SlotUsed) фон + тёмная рамка, без тени
+ * В отличие от Этапа 15, блок **не** обрабатывает клики —
+ * кликабельна вся [SpellSlotRow]. Блок чисто визуальный.
  *
  * Анимации:
- *   - `animateColorAsState`   — плавная смена цвета фона и рамки
- *   - `animateDpAsState`      — плавное появление/исчезновение тени
- *   - `animateFloatAsState`   — scale 1.0 ↔ 0.92 на нажатие (через
- *                               `collectIsPressedAsState`, без `indication`,
- *                               чтобы не было ripple поверх анимации)
+ *   - `animateColorAsState`   — плавная смена цвета фона/рамки (300 мс)
+ *   - `animateDpAsState`      — плавное появление/снятие тени (300 мс)
+ *   - `Animatable` + `LaunchedEffect(used)` — короткая «вспышка»
+ *     scale 1.0 → 0.92 → 1.0 при «зажигании» (только при spent=true)
+ *
+ * Восстановление (например, при длинном отдыхе) даёт обратный
+ * плавный переход цвета/тени, но без «вспышки» — это «затухание».
  */
 @Composable
-private fun SpellSlotBlock(
-    used: Boolean,
-    onClick: () -> Unit,
-) {
-    val interactionSource = remember { MutableInteractionSource() }
-    val isPressed by interactionSource.collectIsPressedAsState()
+private fun SpellSlotBlock(used: Boolean) {
+    val scale = remember { Animatable(1f) }
+    // «Вспышка» scale при смене used: false → true.
+    // При обратном переходе (rest) — без анимации, чтобы блок
+    // плавно «зажёгся» только через color/elevation.
+    LaunchedEffect(used) {
+        if (used) {
+            scale.animateTo(0.92f, animationSpec = tween(140))
+            scale.animateTo(1f, animationSpec = tween(180))
+        } else {
+            scale.snapTo(1f)
+        }
+    }
 
     val bg by animateColorAsState(
         targetValue = if (used) AppColors.SlotUsed else AppColors.Gold,
-        animationSpec = tween(200),
+        animationSpec = tween(300),
         label = "slotBg",
     )
     val edge by animateColorAsState(
         targetValue = if (used) AppColors.SlotUsedEdge else AppColors.GoldDeep,
-        animationSpec = tween(200),
+        animationSpec = tween(300),
         label = "slotEdge",
     )
     val elevation by animateDpAsState(
         targetValue = if (used) 0.dp else 3.dp,
-        animationSpec = tween(200),
+        animationSpec = tween(300),
         label = "slotElev",
-    )
-    val scale by animateFloatAsState(
-        targetValue = if (isPressed) 0.92f else 1f,
-        animationSpec = tween(120),
-        label = "slotScale",
     )
 
     Box(
         modifier = Modifier
             .size(48.dp)
-            .scale(scale)
+            .scale(scale.value)
             .shadow(
                 elevation = elevation,
                 shape = RoundedCornerShape(8.dp),
@@ -648,11 +611,7 @@ private fun SpellSlotBlock(
             )
             .clip(RoundedCornerShape(8.dp))
             .background(bg)
-            .border(1.dp, edge, RoundedCornerShape(8.dp))
-            .clickable(
-                interactionSource = interactionSource,
-                indication = null,
-            ) { onClick() },
+            .border(1.dp, edge, RoundedCornerShape(8.dp)),
     )
 }
 
@@ -680,7 +639,7 @@ private fun RestButtonsBar(
                 .weight(1f)
                 .height(52.dp),
             shape = RoundedCornerShape(14.dp),
-            border = BorderStroke(1.5.dp, AppColors.GoldDeep),
+            border = androidx.compose.foundation.BorderStroke(1.5.dp, AppColors.GoldDeep),
         ) {
             Icon(
                 Icons.Filled.LocalCafe,
