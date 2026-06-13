@@ -154,6 +154,39 @@ class SpellStorage(context: Context) {
         }
     }
 
+    // ─────────── Отдых (Этап 15) ───────────
+
+    /**
+     * Короткий отдых: восстановить **только** ячейки пакт-магии Колдуна.
+     * Ячейки заклинаний других классов не трогаем — это правило PHB.
+     * (Warlock получает pact slots обратно на коротком отдыхе.)
+     */
+    fun shortRest() {
+        if (_usedPactSlots.value > 0) {
+            prefs.edit().putInt("used_pact_slots", 0).apply()
+            _usedPactSlots.value = 0
+        }
+    }
+
+    /**
+     * Длинный отдых: восстановить **все** ячейки заклинаний и пакт-магии.
+     * Уровни классов, подготовленные/известные заклинания — сохраняются.
+     *
+     * Важно: в отличие от [resetAllUsed], этот метод НЕ вызывает
+     * `prefs.edit().clear()` и не обнуляет class levels.
+     */
+    fun longRest() {
+        val newUsed = (1..9).associateWith { 0 }
+        newUsed.forEach { (lvl, _) ->
+            prefs.edit().putInt("used_slot_$lvl", 0).apply()
+        }
+        _usedSlots.value = newUsed
+        if (_usedPactSlots.value > 0) {
+            prefs.edit().putInt("used_pact_slots", 0).apply()
+            _usedPactSlots.value = 0
+        }
+    }
+
     // ─────────── «Подготовлено» / «известно» ───────────
 
     private val _prepared = MutableStateFlow(loadPrepared())

@@ -34,6 +34,10 @@ object AppColors {
     val Error         = Color(0xFFE05A7A)
     val Outline       = Color(0xFF5A3E80)
 
+    // Ячейки заклинаний: потраченные блоки (Этап 15)
+    val SlotUsed      = Color(0xFF4A3868)   // фон серого блока (тёмно-фиолетовый)
+    val SlotUsedEdge  = Color(0xFF3A2858)   // рамка серого блока
+
     /**
      * Радиальный градиент для фона экрана HomeScreen.
      * Тёмный центр → более светлый край с уклоном в фиолетовый.

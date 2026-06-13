@@ -1,4 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Spell Tracker</string>
+
+    <!-- Этап 15. Кнопки отдыха (Spell Slots UI) -->
+    <string name="rest_short_title">Короткий отдых</string>
+    <string name="rest_long_title">Длинный отдых</string>
+    <string name="rest_short_confirm_title">Короткий отдых?</string>
+    <string name="rest_long_confirm_title">Длинный отдых?</string>
+    <string name="rest_short_confirm_body">Восстановить ячейки пакт-магии Колдуна. Ячейки других классов останутся потраченными.</string>
+    <string name="rest_long_confirm_body">Восстановить все ячейки заклинаний и пакт-магии. Классы сохранятся.</string>
+    <string name="rest_short_done">Ячейки Колдуна восстановлены</string>
+    <string name="rest_long_done">Все ячейки восстановлены</string>
+    <string name="cancel">Отмена</string>
+    <string name="fab_open_spells">Открыть список заклинаний</string>
 </resources>

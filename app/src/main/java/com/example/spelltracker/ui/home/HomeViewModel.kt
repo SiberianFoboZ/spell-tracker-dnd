@@ -5,12 +5,16 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.spelltracker.data.Classes
 import com.example.spelltracker.data.SpellStorage
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.launch
 
 /**
  * Снимок состояния для [HomeScreen].
@@ -36,6 +40,18 @@ data class SlotInfo(
 )
 
 /**
+ * Одноразовое событие из ViewModel в UI (Этап 15).
+ *
+ * Используется для показа Snackbar после короткого/длинного отдыха.
+ * SharedFlow с `replay=0` — событие получат только те, кто подписан
+ * в момент emit (а не подписавшиеся позже).
+ */
+sealed interface HomeEvent {
+    object ShortRest : HomeEvent
+    object LongRest  : HomeEvent
+}
+
+/**
  * ViewModel для главного экрана. Хранит [SpellStorage] в Application-скоупе
  * и пересчитывает [HomeState] при любом изменении class levels / used slots.
  */
@@ -45,6 +61,13 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
 
     private val _state = MutableStateFlow(snapshot())
     val state: StateFlow<HomeState> = _state.asStateFlow()
+
+    private val _events = MutableSharedFlow<HomeEvent>(
+        replay = 0,
+        extraBufferCapacity = 4,
+    )
+    /** Поток одноразовых событий (показать Snackbar, диалог и т.п.). */
+    val events: SharedFlow<HomeEvent> = _events.asSharedFlow()
 
     init {
         // Любое изменение уровней классов ИЛИ использованных ячеек
@@ -82,6 +105,27 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
     fun usePactSlot()    = storage.usePactSlot()
     fun restorePactSlot() = storage.restorePactSlot()
 
+    // ─────────── Отдых (Этап 15) ───────────
+
+    /**
+     * Короткий отдых: восстановить ячейки пакт-магии Колдуна и
+     * отправить событие [HomeEvent.ShortRest] для показа Snackbar.
+     */
+    fun shortRest() {
+        storage.shortRest()
+        viewModelScope.launch { _events.emit(HomeEvent.ShortRest) }
+    }
+
+    /**
+     * Длинный отдых: восстановить все ячейки заклинаний и пакт-магии
+     * и отправить событие [HomeEvent.LongRest] для показа Snackbar.
+     */
+    fun longRest() {
+        storage.longRest()
+        viewModelScope.launch { _events.emit(HomeEvent.LongRest) }
+    }
+
+    /** Полный сброс всего (включая class levels) — для отладки / на крайний случай. */
     fun resetAllUsed() = storage.resetAllUsed()
 
     /** Доступ к списку классов — для рендера 3×3 сетки. */
