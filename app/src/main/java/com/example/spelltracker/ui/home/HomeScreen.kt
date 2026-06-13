@@ -746,6 +746,7 @@ private fun SpellSlotBlock(used: Boolean) {
 
 @Composable
 private fun ArcanumsSection(state: HomeState, viewModel: HomeViewModel) {
+    if (state.warlockLevel == 0) return
     Column {
         SectionTitle("Арканумы")
         Spacer(Modifier.height(10.dp))
