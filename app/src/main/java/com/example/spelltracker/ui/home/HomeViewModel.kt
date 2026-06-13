@@ -24,6 +24,9 @@ import kotlinx.coroutines.launch
  *
  * Этап 16: ячейки заклинаний и пакт-магия Колдуна объединены в
  * единый список [allSlots] для унифицированной отрисовки.
+ *
+ * Этап 17: добавлены [arcanums] — арканумы Колдуна (VI..IX), по одному
+ * на каждый уровень. Доступ завит от [warlockLevel].
  */
 data class HomeState(
     val classLevels: Map<String, Int> = emptyMap(),
@@ -33,6 +36,12 @@ data class HomeState(
     val warlockSlot: SlotInfo? = null,
     val warlockLevel: Int = 0,
     val pactSlotLevel: Int = 0,
+    /**
+     * Список арканумов Колдуна. Содержит только уровни, доступные
+     * на текущем [warlockLevel] (или пуст, если warlockLevel < 11).
+     * Каждый арканум — ровно один блок, который можно «потратить».
+     */
+    val arcanums: List<ArcanumInfo> = emptyList(),
 ) {
     /**
      * Все ячейки в порядке отрисовки: обычные уровни 1..9, затем
@@ -40,6 +49,16 @@ data class HomeState(
      */
     val allSlots: List<SlotInfo>
         get() = regularSlots + listOfNotNull(warlockSlot)
+
+    /**
+     * Максимальное число арканумов для текущего warlock level
+     * (0 при warlockLevel < 11).
+     */
+    val arcanumsCapacity: Int get() = arcanums.size
+
+    /** Есть ли хоть один потраченный арканум. */
+    val hasAnyArcanumUsed: Boolean
+        get() = arcanums.any { it.used }
 }
 
 /**
@@ -58,7 +77,19 @@ data class SlotInfo(
 )
 
 /**
- * Одноразовое событие из ViewModel в UI (Этап 15).
+ * Арканум Колдуна (Этап 17).
+ *
+ * У Колдуна ровно по одному аркануму каждого уровня из доступных
+ * (6, 7, 8, 9). [used] = true означает «потрачен». Восстановление —
+ * только длинный отдых, клик по строке может только **потратить**.
+ */
+data class ArcanumInfo(
+    val level: Int,        // 6..9
+    val used: Boolean,
+)
+
+/**
+ * Одноразовое событие из ViewModel в UI (Этап 15, Этап 17).
  *
  * Используется для показа Snackbar после короткого/длинного отдыха.
  * SharedFlow с `replay=0` — событие получат только те, кто подписан
@@ -67,6 +98,11 @@ data class SlotInfo(
 sealed interface HomeEvent {
     object ShortRest : HomeEvent
     object LongRest  : HomeEvent
+    /**
+     * Короткий отдых не восстановил арканумы, потому что они
+     * восстанавливаются только на длинном. Показываем Snackbar-предупреждение.
+     */
+    object ArcanumShortRestBlocked : HomeEvent
 }
 
 /**
@@ -89,12 +125,13 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
 
     init {
         // Любое изменение уровней классов ИЛИ использованных ячеек
-        // (обычных и пакт) вызывает пересборку снимка.
+        // (обычных, пакт и арканумов) вызывает пересборку снимка.
         combine(
             storage.classLevels,
             storage.usedSlots,
             storage.usedPactSlots,
-        ) { _, _, _ -> snapshot() }
+            storage.usedArcanums,
+        ) { _, _, _, _ -> snapshot() }
             .onEach { _state.value = it }
             .launchIn(viewModelScope)
     }
@@ -121,6 +158,26 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
                 isWarlock = true,
             )
         } else null
+        // Этап 17: арканумы. Доступ завит от warlockLevel.
+        //   < 11         → 0
+        //   11..12       → 1 (VI)
+        //   13..14       → 2 (VI, VII)
+        //   15..16       → 3 (VI, VII, VIII)
+        //   17+          → 4 (VI, VII, VIII, IX)
+        val arcanumCount = when {
+            wl < 11 -> 0
+            wl < 13 -> 1
+            wl < 15 -> 2
+            wl < 17 -> 3
+            else    -> 4
+        }
+        val arcanums = (0 until arcanumCount).map { idx ->
+            val lvl = SpellStorage.ARCANUM_LEVELS[idx]
+            ArcanumInfo(
+                level = lvl,
+                used = storage.getArcanumUsed(lvl),
+            )
+        }
         return HomeState(
             classLevels = storage.classLevels.value,
             casterLevel = casterLevel,
@@ -128,6 +185,7 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
             warlockSlot = warlockSlot,
             warlockLevel = wl,
             pactSlotLevel = storage.getPactSlotLevel(),
+            arcanums = arcanums,
         )
     }
 
@@ -137,7 +195,7 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
         storage.applyWarlockSlots()
     }
 
-    // ─────────── Тап по строке уровня (Этап 16) ───────────
+    // ─────────── Тап по строке уровня (Этап 16, Этап 17) ───────────
 
     /**
      * Обработка тапа по строке уровня ячеек.
@@ -150,15 +208,38 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
         if (slot.isWarlock) storage.usePactSlot() else storage.useSlot(slot.level)
     }
 
-    // ─────────── Кнопки отдыха (Этап 15) ───────────
+    /**
+     * Обработка тапа по строке арканума (Этап 17).
+     * Арканум можно **только потратить** кликом. Восстановление —
+     * исключительно длинный отдых. Если арканум уже потрачен —
+     * no-op (UI блокирует клик).
+     */
+    fun onArcanumClick(arcanum: ArcanumInfo) {
+        if (arcanum.used) return
+        storage.setArcanumUsed(arcanum.level, true)
+    }
 
-    /** Короткий отдых: восстановить ячейки пакт-магии Колдуна + Snackbar. */
+    // ─────────── Кнопки отдыха (Этап 15, Этап 17) ───────────
+
+    /**
+     * Короткий отдых: восстановить ячейки пакт-магии Колдуна.
+     * Арканумы **не трогаем** — это правило PHB.
+     *
+     * Перед сбросом pact slots проверяем, есть ли потраченные арканумы.
+     * Если да — UI покажет Snackbar «Арканумы восстанавливаются только
+     * после длинного отдыха» (через [HomeEvent.ArcanumShortRestBlocked]).
+     */
     fun shortRest() {
         storage.shortRest()
         viewModelScope.launch { _events.emit(HomeEvent.ShortRest) }
+        // Если при коротком отдыхе есть потраченные арканумы —
+        // дополнительно уведомляем UI, чтобы он показал поясняющий Snackbar.
+        if (state.value.hasAnyArcanumUsed) {
+            viewModelScope.launch { _events.emit(HomeEvent.ArcanumShortRestBlocked) }
+        }
     }
 
-    /** Длинный отдых: восстановить все ячейки + Snackbar. */
+    /** Длинный отдых: восстановить все ячейки, пакт-магию и все арканумы + Snackbar. */
     fun longRest() {
         storage.longRest()
         viewModelScope.launch { _events.emit(HomeEvent.LongRest) }

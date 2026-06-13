@@ -114,8 +114,10 @@ fun HomeScreen(
     LaunchedEffect(Unit) {
         viewModel.events.collectLatest { event ->
             val msg = when (event) {
-                HomeEvent.ShortRest -> "Ячейки Колдуна восстановлены"
-                HomeEvent.LongRest  -> "Все ячейки восстановлены"
+                HomeEvent.ShortRest               -> "Ячейки Колдуна восстановлены"
+                HomeEvent.LongRest                -> "Все ячейки восстановлены"
+                HomeEvent.ArcanumShortRestBlocked ->
+                    "Арканумы восстанавливаются только после длинного отдыха"
             }
             snackbarHostState.showSnackbar(msg)
         }
@@ -181,6 +183,11 @@ fun HomeScreen(
                     // Этап 16: пакт-магия Колдуна встроена в общий список
                     // ниже — отдельной секции «Пакт-магия» больше нет.
                     item { SpellSlotsSection(state, viewModel) }
+                    // Этап 17: арканумы Колдуна (VI..IX) — сразу после ячеек.
+                    // Секция условно рендерит строки по warlockLevel:
+                    //   < 11         → «Доступно с 11 уровня»
+                    //   11+          → 1..4 строки (по уровню)
+                    item { ArcanumsSection(state, viewModel) }
                 }
             }
         }
@@ -195,9 +202,9 @@ fun HomeScreen(
             text = {
                 Text(
                     if (isShort)
-                        "Восстановить ячейки пакт-магии Колдуна. Ячейки других классов останутся потраченными."
+                        "Восстановить ячейки пакт-магии Колдуна. Ячейки других классов и арканумы останутся потраченными."
                     else
-                        "Восстановить все ячейки заклинаний и пакт-магии. Классы сохранятся."
+                        "Восстановить все ячейки заклинаний, пакт-магии и арканумы. Классы сохранятся."
                 )
             },
             confirmButton = {
@@ -613,6 +620,109 @@ private fun SpellSlotBlock(used: Boolean) {
             .background(bg)
             .border(1.dp, edge, RoundedCornerShape(8.dp)),
     )
+}
+
+// =============================================================
+// Арканумы Колдуна (Этап 17)
+// =============================================================
+//
+// Каждый арканум — это **ровно один** золотой блок (как в обычных
+// ячейках, но без счётчика «X / Y», потому что X всегда 0..1).
+// По правилам PHB у Колдуна по одному аркануму уровней VI, VII, VIII,
+// IX; доступ к ним открывается с 11 уровня.
+//
+// Секция видна всегда, но если warlockLevel < 11 — показываем
+// поясняющий текст «Доступно с 11 уровня» вместо строк.
+// Если warlockLevel >= 11 — рисуем 1..4 строки в зависимости от
+// уровня (11..12 → VI; 13..14 → VI, VII; 15..16 → VI, VII, VIII;
+// 17+ → все четыре).
+//
+// Восстановление — ТОЛЬКО длинный отдых. Клик по строке только
+// «гасит» доступный арканум, восстановить кликом нельзя.
+
+@Composable
+private fun ArcanumsSection(state: HomeState, viewModel: HomeViewModel) {
+    Column {
+        SectionTitle("Арканумы")
+        Spacer(Modifier.height(10.dp))
+        when {
+            state.warlockLevel < 11 -> {
+                Text(
+                    "Доступно с 11 уровня Колдуна",
+                    color = AppColors.TextGrey,
+                    fontSize = 12.sp,
+                )
+            }
+            state.arcanums.isEmpty() -> {
+                Text(
+                    "Нет доступных арканумов",
+                    color = AppColors.TextGrey,
+                    fontSize = 12.sp,
+                )
+            }
+            else -> {
+                Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
+                    state.arcanums.forEach { arcanum ->
+                        ArcanumRow(
+                            arcanum = arcanum,
+                            onRowClick = { viewModel.onArcanumClick(arcanum) },
+                        )
+                    }
+                }
+            }
+        }
+    }
+}
+
+/**
+ * Строка одного арканума (Этап 17). По стилю повторяет [SpellSlotRow],
+ * но упрощена: всегда один блок, без счётчика «X / Y» (он избыточен
+ * при total=1). Кликабельна только пока арканум не потрачен.
+ */
+@Composable
+private fun ArcanumRow(
+    arcanum: ArcanumInfo,
+    onRowClick: () -> Unit,
+) {
+    val isSpent = arcanum.used
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(12.dp))
+            .background(AppColors.CardBg)
+            .border(
+                width = 1.dp,
+                color = if (isSpent) AppColors.TextGreyDark else AppColors.Outline,
+                shape = RoundedCornerShape(12.dp),
+            )
+            .clickable(enabled = !isSpent) { onRowClick() }
+            .padding(horizontal = 12.dp, vertical = 12.dp),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        // Бейдж уровня арканума (тот же стиль, что у обычных ячеек).
+        Column(
+            modifier = Modifier.width(56.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+        ) {
+            Box(
+                modifier = Modifier
+                    .size(40.dp)
+                    .clip(RoundedCornerShape(8.dp))
+                    .background(AppColors.PurpleDeep),
+                contentAlignment = Alignment.Center,
+            ) {
+                Text(
+                    text = romanLevel(arcanum.level),
+                    color = AppColors.Gold,
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Bold,
+                )
+            }
+        }
+        Spacer(Modifier.width(12.dp))
+        // Один визуальный блок.
+        SpellSlotBlock(used = isSpent)
+    }
 }
 
 // =============================================================

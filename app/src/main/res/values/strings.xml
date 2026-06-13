@@ -13,4 +13,10 @@
     <string name="rest_long_done">Все ячейки восстановлены</string>
     <string name="cancel">Отмена</string>
     <string name="fab_open_spells">Открыть список заклинаний</string>
+
+    <!-- Этап 17. Арканумы Колдуна -->
+    <string name="section_arcanums">Арканумы</string>
+    <string name="arcanum_locked_message">Доступно с 11 уровня Колдуна</string>
+    <string name="arcanum_blocked_short_rest">Арканумы восстанавливаются только после длинного отдыха</string>
+    <string name="rest_long_confirm_body_with_arcanums">Восстановить все ячейки заклинаний, пакт-магии и арканумы. Классы сохранятся.</string>
 </resources>

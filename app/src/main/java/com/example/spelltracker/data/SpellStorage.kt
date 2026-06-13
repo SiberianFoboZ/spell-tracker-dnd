@@ -110,6 +110,8 @@ class SpellStorage(context: Context) {
         prefs.edit().clear().apply()  // безопасно, т.к. других ключей нет
         _usedSlots.value = (1..9).associateWith { 0 }
         _usedPactSlots.value = 0
+        // Арканумы (Этап 17) — сбросить кэш тоже
+        _usedArcanums.value = ARCANUM_LEVELS.associateWith { false }
         // class levels и prepared/known перечитываем
         _classLevels.value = loadClassLevels()
     }
@@ -154,12 +156,43 @@ class SpellStorage(context: Context) {
         }
     }
 
-    // ─────────── Отдых (Этап 15) ───────────
+    // ─────────── Арканумы Колдуна (Этап 17) ───────────
+
+    /**
+     * Арканумы — особые ячейки Колдуна (по одной на уровень VI, VII, VIII, IX).
+     * Доступны только с 11 уровня Колдуна. Восстанавливаются **только**
+     * после длинного отдыха — короткий отдых их НЕ трогает.
+     *
+     * Хранится как 4 булевых флага в SharedPreferences:
+     *   `arcanum_6`, `arcanum_7`, `arcanum_8`, `arcanum_9`
+     * Семантика: `true` = арканум **использован** (потрачен).
+     */
+    private val _usedArcanums = MutableStateFlow(loadUsedArcanums())
+    val usedArcanums: StateFlow<Map<Int, Boolean>> = _usedArcanums.asStateFlow()
+
+    private fun loadUsedArcanums(): Map<Int, Boolean> =
+        ARCANUM_LEVELS.associateWith { lvl ->
+            prefs.getBoolean("arcanum_$lvl", false)
+        }
+
+    /** Прочитан флаг «использован» для арканума указанного уровня (6..9). */
+    fun getArcanumUsed(level: Int): Boolean =
+        _usedArcanums.value[level] ?: false
+
+    /** Пометить арканум как использованный (true) или восстановленный (false). */
+    fun setArcanumUsed(level: Int, used: Boolean) {
+        if (level !in ARCANUM_LEVELS) return
+        prefs.edit().putBoolean("arcanum_$level", used).apply()
+        _usedArcanums.update { it + (level to used) }
+    }
+
+    // ─────────── Отдых (Этап 15, обновлено в Этапе 17) ───────────
 
     /**
      * Короткий отдых: восстановить **только** ячейки пакт-магии Колдуна.
-     * Ячейки заклинаний других классов не трогаем — это правило PHB.
-     * (Warlock получает pact slots обратно на коротком отдыхе.)
+     * Ячейки заклинаний других классов и **арканумы** не трогаем — это правило PHB.
+     * (Warlock получает pact slots обратно на коротком отдыхе,
+     *  а арканумы — только на длинном.)
      */
     fun shortRest() {
         if (_usedPactSlots.value > 0) {
@@ -169,8 +202,9 @@ class SpellStorage(context: Context) {
     }
 
     /**
-     * Длинный отдых: восстановить **все** ячейки заклинаний и пакт-магии.
-     * Уровни классов, подготовленные/известные заклинания — сохраняются.
+     * Длинный отдых: восстановить **все** ячейки заклинаний, пакт-магии
+     * **и все 4 арканума**. Уровни классов, подготовленные/известные
+     * заклинания — сохраняются.
      *
      * Важно: в отличие от [resetAllUsed], этот метод НЕ вызывает
      * `prefs.edit().clear()` и не обнуляет class levels.
@@ -184,6 +218,14 @@ class SpellStorage(context: Context) {
         if (_usedPactSlots.value > 0) {
             prefs.edit().putInt("used_pact_slots", 0).apply()
             _usedPactSlots.value = 0
+        }
+        // Арканумы — сбросить, если какие-то были потрачены.
+        val current = _usedArcanums.value
+        if (current.values.any { it }) {
+            ARCANUM_LEVELS.forEach { lvl ->
+                prefs.edit().putBoolean("arcanum_$lvl", false).apply()
+            }
+            _usedArcanums.value = ARCANUM_LEVELS.associateWith { false }
         }
     }
 
@@ -265,5 +307,12 @@ class SpellStorage(context: Context) {
             19 to intArrayOf(4, 5),
             20 to intArrayOf(4, 5),
         )
+
+        /**
+         * Уровни арканумов Колдуна (Этап 17).
+         * По одному аркануму на каждый из уровней VI, VII, VIII, IX.
+         * Доступ открывается на 11 уровне Колдуна.
+         */
+        val ARCANUM_LEVELS: IntArray = intArrayOf(6, 7, 8, 9)
     }
 }
