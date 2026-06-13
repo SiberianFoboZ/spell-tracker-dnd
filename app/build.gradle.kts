@@ -20,8 +20,8 @@ android {
         applicationId = "com.example.spelltracker"
         minSdk = 24
         targetSdk = 36
-        versionCode = 4
-        versionName = "2.1"
+        versionCode = 5
+        versionName = "2.1.1"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
