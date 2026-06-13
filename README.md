@@ -1,140 +1,261 @@
-# 🎲 Spell Tracker
+<div align="center">
 
-[![GitHub release](https://img.shields.io/github/v/release/SiberianFoboZ/spell-tracker-dnd)](https://github.com/SiberianFofoZ/spell-tracker-dnd/releases)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
-[![Android](https://img.shields.io/badge/Android-7.0%2B-3DDC84)](https://developer.android.com)
-[![CI: Release](https://img.shields.io/badge/CI-GitHub_Actions-2088FF)](.github/workflows/)
+# 🪄 Spell Tracker
 
-Android-приложение для отслеживания ячеек заклинаний (spell slots) персонажа
-**Dungeons & Dragons 5e** с поддержкой мультикласса по правилам **Player's Handbook**.
+**Android-приложение для отслеживания ячеек заклинаний D&D 5e по правилам PHB**
 
-> Считает слоты по PHB-формуле, считает Pact Magic отдельно для Warlock,
-> ничего не теряет при перезапуске.
+[![Release](https://img.shields.io/badge/release-v2.4.2-7c3aed?style=flat-square&logo=github)](https://github.com/SiberianFoboZ/spell-tracker-dnd/releases/tag/v2.4.2)
+[![License](https://img.shields.io/badge/license-MIT-22c55e?style=flat-square)](LICENSE)
+[![Android](https://img.shields.io/badge/Android-7.0--16-3DDC84?style=flat-square&logo=android&logoColor=white)](https://developer.android.com)
+[![Kotlin](https://img.shields.io/badge/Kotlin-2.0.21-7F52FF?style=flat-square&logo=kotlin&logoColor=white)](https://kotlinlang.org)
+[![Compose](https://img.shields.io/badge/Jetpack%20Compose-2024.10-4285F4?style=flat-square&logo=jetpackcompose&logoColor=white)](https://developer.android.com/jetpack/compose)
 
-## 📸 Скриншоты
+</div>
 
-| Главный экран | Список заклинаний | Меню фильтров |
-|:-:|:-:|:-:|
-| ![Главный экран](docs/screenshots/main.png) | ![Список](docs/screenshots/spells.png) | ![Drawer](docs/screenshots/drawer.png) |
+---
 
-> Скриншоты-имитации сгенерированы Python'ом для превью. Реальные снимки
-> эмулятора можно получить вручную через `.github/workflows/screenshots.yml`
-> (см. раздел «Сборка»).
+## Что это
+
+**Spell Tracker** — минималистичный помощник для магов D&D 5e: показывает текущее
+состояние ячеек заклинаний, пакт-магии и арканумов в одном экране. Никаких аккаунтов,
+аналитики и интернета — только локальные данные, которые переживают рестарт приложения.
+
+Текущая версия: **v2.4.2** — блок «АРКАНУМЫ» полностью скрывается, если Колдун не
+выбран (раньше показывался серый текст-предупреждение).
+
+---
 
 ## ✨ Возможности
 
-- **9 классов** с поддержкой multiclass: Bard, Wizard, Druid, Cleric,
-  Warlock, Paladin, **Ranger**, Sorcerer, **Artificer**
-- **PHB-формула** эффективного уровня заклинателя:
-  - *Full caster* (Bard, Cleric, Druid, Sorcerer, Wizard): `lvl`
-  - *Half caster, round down* (Paladin, Ranger): `lvl / 2`
-  - *Half caster, round up* (Artificer): `(lvl + 1) / 2`
-  - *Warlock (Pact Magic)*: отдельный счётчик, не суммируется
-- **Каталог заклинаний** импортируется из `assets/*.json` / `*.csv` для
-  каждого класса
-- **Фильтры** в боковом меню: школа, уровень, концентрация, ритуал,
-  только подготовленные
-- **Сброс ячеек** — отметка «длинного отдыха» (long rest) одним тапом
-- **Edge-to-edge UI** на Material 3, поддержка Android 7.0+ (API 24+)
-- **Локализация** интерфейса на русском
+### 📚 Классы
+- **9 классов D&D 5e** (PHB + XGE): Бард, Жрец, Друид, Паладин, Следопыт, Чародей, Колдун, Волшебник, Изобретатель
+- **Мультикласс**: можно добавить любое количество классов со своими уровнями
+- Количество ячеек считается **автоматически** по классу и уровню (без ручного ввода «у меня 3 первого уровня»)
 
-## 📥 Установка
+### 🔮 Ячейки заклинаний
+- **9 уровней заклинаний** для каждого кастера
+- Тап по ячейке → пометить как использованную
+- Восстановление по кнопкам **«Длинный отдых»** / **«Короткий отдых»** внизу экрана
 
-1. Откройте раздел [Releases](https://github.com/SiberianFoboZ/spell-tracker-dnd/releases)
-2. Скачайте последний `spell-tracker-vX.Y.apk`
-3. Установите APK на устройство (Android 7.0+)
+### 🟣 Магия договора (отдельный блок)
+- Для **Колдуна** пакт-магия вынесена в отдельный блок
+- Восстанавливается **на коротком отдыхе** (по PHB)
+- Цветовая пометка отличается от обычных ячеек
 
-> APK подписан **debug-ключом** (для личного использования). Для публикации
-> в Google Play замените signing config в `app/build.gradle.kts` на release-keystore.
+### 🟡 Арканумы (отдельный блок)
+- Заклинания **VI–IX уровня** для Колдуна
+- Открываются **с 11 уровня** Колдуна: 11/13/15/17 → 1/2/3/4 арканума
+- Восстанавливаются **только на длинном отдыхе** (по PHB)
+- Весь блок скрыт, если Колдун не выбран
 
-## 🔧 Сборка из исходников
+### 📖 Каталог заклинаний
+- Встроенная **база заклинаний** на Room (локально, без интернета)
+- Экран **Spells** с фильтрацией по уровню, школе, классу
+- Экран **SpellDetail** с полным описанием, компонентами, длительностью
+
+### 💾 Сохранение
+- Классы, уровни и потраченные ячейки **сохраняются** между сессиями
+- Данные — только локально (SharedPreferences для состояния, Room для базы заклинаний)
+- Без трекинга, без аналитики, без рекламы
+
+---
+
+## 📸 Скриншоты
+
+<div align="center">
+
+| Главный экран | Список заклинаний | Боковое меню |
+|:---:|:---:|:---:|
+| ![Main](docs/screenshots/main.png) | ![Spells](docs/screenshots/spells.png) | ![Drawer](docs/screenshots/drawer.png) |
+| Ячейки, пакт-магия, арканумы | Каталог с фильтрами | Выбор классов |
+
+</div>
+
+ASCII-схема главного экрана для мультикласса Wizard 9 + Warlock 5:
+
+```
+┌─────────────────────────────────────────┐
+│ Spell Tracker                           │
+├─────────────────────────────────────────┤
+│ Классы:  Bard 1  Cleric 3  Wiz 9  ...  │
+├─────────────────────────────────────────┤
+│ МАГИЯ ДОГОВОРА                  Колдун   │  ← (если warlockLevel > 0)
+│   V  ▮▮▮▮▮  (2/2)                       │
+├─────────────────────────────────────────┤
+│ ЯЧЕЙКИ ЗАКЛИНАНИЙ                       │
+│   I    ▮▮▮▮ (4/4)   IV  ▮▮▮  (3/3)      │
+│   II   ▮▮▮  (3/3)   V   ▮▮   (2/2)      │
+│   III  ▮▮   (2/2)                      │
+├─────────────────────────────────────────┤
+│ АРКАНУМЫ                                │  ← (если warlockLevel ≥ 11)
+│   VI  ▮ (1/1)    VII ▮ (1/1)            │
+│   VIII▮ (1/1)    IX  ▮ (1/1)            │
+├─────────────────────────────────────────┤
+│ [ Длинный отдых ]  [ Короткий отдых ]   │
+└─────────────────────────────────────────┘
+```
+
+---
+
+## 🏗 Стек
+
+| Слой | Технология |
+|------|-----------|
+| Язык | **Kotlin 2.0.21** |
+| UI | **Jetpack Compose** (BOM 2024.10.01) + **Material 3** |
+| Состояние | **Lifecycle 2.8.7** + `StateFlow` / `SharedFlow` |
+| Навигация | **Navigation Compose 2.8.4** |
+| Локальная БД | **Room 2.6.1** (каталог заклинаний) + **SharedPreferences** (стейт) |
+| Сборка | **AGP 9.1.1** + Gradle + KSP |
+| Min SDK | **24** (Android 7.0) |
+| Target SDK | **36** (Android 16) |
+| Java | **17** |
+
+**Никаких сторонних зависимостей сверх AndroidX / Compose / Room.** Архитектура — single-Activity + Compose Navigation + MVVM.
+
+---
+
+## 🏛 Структура проекта
+
+```
+app/src/main/java/com/example/spelltracker/
+├── MainActivity.kt              # Single-Activity host (Compose)
+├── data/
+│   ├── Classes.kt               # Определения 9 классов
+│   ├── ClassFilter.kt           # Логика фильтрации классов
+│   ├── Spell.kt                 # Модель заклинания
+│   ├── SpellDao.kt              # Room DAO
+│   ├── SpellDatabase.kt         # Room @Database
+│   ├── SpellParser.kt           # Парсинг сырых данных
+│   ├── SpellRepository.kt       # Репозиторий заклинаний
+│   └── SpellStorage.kt          # SharedPreferences + StateFlow
+├── ui/
+│   ├── detail/                  # Экран деталей заклинания
+│   ├── home/                    # Главный экран (ячейки, пакт, арканумы)
+│   │   ├── HomeScreen.kt        # 3 секции: Пакт → Ячейки → Арканумы
+│   │   └── HomeViewModel.kt     # HomeState + HomeEvent (Flow + Combine)
+│   ├── nav/AppNavigation.kt     # Compose Navigation graph
+│   ├── spells/                  # Экран списка заклинаний
+│   └── theme/                   # Color, Theme, Type (Material 3)
+└── res/values/strings.xml       # Все строки UI (i18n-ready)
+```
+
+**Ключевые паттерны:**
+
+- **MVVM** — `HomeViewModel` собирает `StateFlow` через `combine(...)` → `HomeState` → `HomeScreen`
+- **Conditional rendering** — `if (warlockLevel == 0) return` секции рендерятся только при наличии данных
+- **Single source of truth** — `SpellStorage` хранит state в SharedPreferences, реплицирует в `StateFlow` для реактивного UI
+- **Reactive UX** — `animateColorAsState`, `animateDpAsState`, haptic feedback на тапах
+
+---
+
+## 🔨 Сборка
+
+### Требования
+- **JDK 17**
+- **Android SDK** с platform `android-36` и build-tools для AGP 9.1.1
+- Интернет для первой загрузки зависимостей (Gradle)
+
+### Команды
 
 ```bash
+# Клонировать
 git clone https://github.com/SiberianFoboZ/spell-tracker-dnd.git
 cd spell-tracker-dnd
+
+# Сборка release APK
 ./gradlew assembleRelease
-# APK: app/build/outputs/apk/release/spell-tracker-v1.0.apk
+# → app/build/outputs/apk/release/spell-tracker-v2.4.2.apk
 ```
 
-**Требования к окружению:**
-- JDK 21 (Gradle 9.3.1 + AGP 9.1.1 требуют именно 21)
-- Android SDK с `compileSdk = 36` (build-tools 36.0.0)
+Windows:
 
-На Windows JDK 21 указывается в `C:\Users\<user>\.gradle\gradle.properties`
-(вне репозитория), потому что `foojay.io` не справляется со скачиванием
-для этой версии. На Linux/macOS — поставьте JDK 21 любым удобным способом
-(`brew install openjdk@21`, `sdkman`, системный пакет) — проектный
-`gradle.properties` портативный.
+```powershell
+.\gradlew.bat assembleRelease
+```
 
-## 🧪 Использование
+### Установка на устройство
 
-1. Запустите приложение
-2. Введите уровни ваших классов в поля (например, Bard 5, Warlock 3)
-3. Эффективный уровень заклинателя и ячейки пересчитаются автоматически
-4. Тапните ячейку, чтобы отметить её использованной
-5. Кнопка **«Сбросить ячейки»** — это long rest: восстанавливает всё
-6. Боковое меню → **«К заклинаниям»** — полный список с фильтрами
-
-### Пример multiclass-расчёта
-
-| Класс | Уровень | Вклад в caster level |
-|-------|---------|---------------------|
-| Bard | 5 | +5 (full) |
-| Paladin | 6 | +3 (half, round down) |
-| Artificer | 1 | +1 (half, round up) |
-| Warlock | 3 | +0 (pact magic — отдельно) |
-| **Эфф. ур-нь** |   | **9** |
-
-При 9 уровне ячейки по таблице PHB: 4 / 3 / 3 / 3 / 1 / 0 / 0 / 0 / 0
-плюс 2 слота 2-го уровня от Warlock (Pact Magic).
-
-## 🏗️ Архитектура
-
-- **Язык**: Java 11 (compileSdk), Java 21 (среда сборки)
-- **Build**: Gradle 9.3.1 + Android Gradle Plugin 9.1.1
-- **БД**: Room 2.6.1 (заклинания, состояние ячеек)
-- **UI**: Material 3, RecyclerView, ViewPager2, Fragment
-- **Паттерн**: Multi-Activity + Repository
-- **Импорт данных**: CSV/JSON в `app/src/main/assets/`
-
-## 🚀 CI/CD
-
-`.github/workflows/release.yml` — на каждый push тега `v*` (например,
-`v1.0.0`):
-
-1. Поднимает JDK 21 (Temurin) + Android SDK 36
-2. Собирает release APK
-3. Переименовывает в `spell-tracker-v{versionName}.apk`
-4. Создаёт GitHub Release с прикреплённым APK
-
-`.github/workflows/screenshots.yml` — ручной запуск (`workflow_dispatch`):
-
-1. Запускает эмулятор API 30
-2. Устанавливает debug APK
-3. Снимает 3 скриншота через `adb shell screencap`
-4. Загружает как Actions-артефакт `screenshots/`
-
-Запуск:
 ```bash
-gh workflow run screenshots.yml
-# или: GitHub UI → Actions → Screenshots → Run workflow
+adb install -r app/build/outputs/apk/release/spell-tracker-v2.4.2.apk
 ```
+
+> **Примечание**: release-APK подписан **debug-ключом** (только для тестирования).
+> Для публикации в Google Play нужно настроить собственный `signingConfig` в
+> `app/build.gradle.kts`.
+
+---
+
+## 📜 История релизов
+
+| Версия | Что нового | Дата |
+|--------|-----------|------|
+| **v2.4.2** | Скрытие блока «АРКАНУМЫ» при `warlockLevel == 0` | 2026-06-13 |
+| v2.4.1 | Блок «Магия договора» вынесен отдельно (откат объединения) | 2026-06-13 |
+| v2.4.0 | Арканумы Колдуна (VI–IX), отдельный блок | 2026-06-13 |
+| v2.3.0 | UX-редизайн: крупные ячейки, haptic feedback, анимации | 2026-06 |
+| v2.2.0 | Полный мультикласс, 9 классов | 2026-05 |
+| v2.1.1 | Исправления в подсчёте ячеек | 2026-05 |
+| v2.1.0 | Пакт-магия Колдуна, 8 классов | 2026-05 |
+| v2.0.0 | Полная переработка: Kotlin + Jetpack Compose | 2026-04 |
+| v1.1.0 | Поддержка 5 классов | 2026-03 |
+| v1.0.0 | Первый релиз (Java + XML) | 2026-02 |
+
+Все релизы: [github.com/SiberianFoboZ/spell-tracker-dnd/releases](https://github.com/SiberianFoboZ/spell-tracker-dnd/releases).
+
+---
 
 ## 🤝 Contributing
 
-PR'ы приветствуются. Для добавления нового класса:
+PR и баг-репорты приветствуются — откройте issue перед крупными изменениями.
 
-1. Положите `assets/класс.json` (формат как у `bard.json`)
-2. Добавьте запись в `Classes.java`:
-   ```java
-   new Info("id", "Отображение", "класс.json", 1.0, false)
-   ```
-   - `1.0` = full caster
-   - `0.5` + `false` = half caster, round down (Paladin, Ranger)
-   - `0.5` + `true` = half caster, round up (Artificer)
-3. Добавьте строку в `activity_main.xml` и строку в `strings.xml`
-4. Соберите и проверьте, что ячейки считаются
+### Добавить новый класс
 
-## 📄 Лицензия
+1. Откройте `data/Classes.kt` и добавьте новый `ClassDef` со всеми полями
+2. Добавьте PHB/XGE-таблицу прогрессии в слот-калькулятор
+3. Добавьте отображение класса в `HomeScreen` (если нужна особая логика отдыха)
+4. Запустите `./gradlew test` — тесты на PHB-таблицы должны пройти
 
-[MIT](LICENSE)
+### Архитектурные правила
+
+- **Состояние** — только в `SpellStorage` (Single source of truth)
+- **Composable** — без побочных эффектов; побочки — в `LaunchedEffect` / `ViewModel`
+- **Строки** — все в `res/values/strings.xml`, никаких хардкодов в UI
+
+---
+
+## 📋 Планы
+
+- [ ] Снапшот сессии (экспорт / импорт)
+- [ ] Dynamic Color (Material You) на Android 12+
+- [ ] Локализация: английский, украинский
+- [ ] Публикация в Google Play (с собственным keystore)
+
+---
+
+## ⚖️ Юридическое
+
+**Spell Tracker** — неофициальный фанатский проект. **Dungeons & Dragons** и связанные
+термины (PHB, XGE, арканумы, пакт-магия и т.д.) — товарные знаки **Wizards of the Coast LLC**.
+Этот проект использует материалы **System Reference Document 5.1** по лицензии
+**Creative Commons Attribution 4.0 International License (CC BY 4.0)**.
+
+Исходный код приложения распространяется по лицензии [MIT](LICENSE).
+
+---
+
+## 🙏 Благодарности
+
+- **Wizards of the Coast** — за D&D 5e SRD, без которого этот проект не существовал бы
+- **Google / JetBrains** — за Kotlin, Jetpack Compose и Android-экосистему
+- Всем, кто играл тестовые сессии и давал обратную связь
+
+---
+
+<div align="center">
+
+🪄 **Магия — это просто расписание ячеек. Следите за ними, а герои — за вами.**
+
+*Сделано с ☕ и 20-гранником.*
+
+</div>
