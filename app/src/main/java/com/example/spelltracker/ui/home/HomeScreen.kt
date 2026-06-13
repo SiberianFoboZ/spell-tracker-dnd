@@ -182,6 +182,12 @@ fun HomeScreen(
                     item { ClassesGrid(viewModel) }
                     // Этап 16: пакт-магия Колдуна встроена в общий список
                     // ниже — отдельной секции «Пакт-магия» больше нет.
+                    // Этап 18: пакт-магия Колдуна вынесена в отдельную
+                    // секцию «МАГИЯ ДОГОВОРА» (идёт первой, если
+                    // Колдун выбран). Ячейки других классов — ниже.
+                    if (state.pactSlot != null) {
+                        item { PactMagicSection(state, viewModel) }
+                    }
                     item { SpellSlotsSection(state, viewModel) }
                     // Этап 17: арканумы Колдуна (VI..IX) — сразу после ячеек.
                     // Секция условно рендерит строки по warlockLevel:
@@ -433,12 +439,119 @@ private fun SectionTitle(text: String) {
 // (включая унифицированную пакт-магию Колдуна)
 // =============================================================
 
+// =============================================================
+// Пакт-магия Колдуна (Этап 18)
+// =============================================================
+//
+// «МАГИЯ ДОГОВОРА» — отдельная секция в HomeScreen, идёт **перед**
+// «Ячейки заклинаний». Видна только если [HomeState.pactSlot] != null,
+// т.е. warlockLevel > 0 и cap ячеек на этом уровне > 0.
+//
+// Визуально идентична обычной строке ячеек (бейдж + блоки), но:
+//   - бейдж чуть светлее (BgMid) — маркер «это пакт»
+//   - под бейджем подпись «Колдун»
+//   - тап по строке → onPactRowClick() → storage.usePactSlot()
+//   - восстанавливается на **коротком** отдыхе
+//
+// Намеренно НЕ используем SpellSlotRow: у пакт-ряда своя подпись и
+// своё событие клика. Геометрия/анимация скопированы.
+
+@Composable
+private fun PactMagicSection(state: HomeState, viewModel: HomeViewModel) {
+    val pact = state.pactSlot ?: return
+    Column {
+        SectionTitle("Магия договора")
+        Spacer(Modifier.height(10.dp))
+        PactMagicRow(
+            slot = pact,
+            onRowClick = { viewModel.onPactRowClick(pact) },
+        )
+    }
+}
+
+@OptIn(ExperimentalLayoutApi::class)
+@Composable
+private fun PactMagicRow(
+    slot: SlotInfo,
+    onRowClick: () -> Unit,
+) {
+    val isAllSpent = slot.used >= slot.total
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(12.dp))
+            .background(AppColors.CardBg)
+            .border(
+                width = 1.dp,
+                color = if (isAllSpent) AppColors.TextGreyDark else AppColors.Outline,
+                shape = RoundedCornerShape(12.dp),
+            )
+            .clickable(enabled = !isAllSpent) { onRowClick() }
+            .padding(horizontal = 12.dp, vertical = 12.dp),
+    ) {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            // Бейдж уровня + подпись «Колдун»
+            Column(
+                modifier = Modifier.width(56.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+            ) {
+                Box(
+                    modifier = Modifier
+                        .size(40.dp)
+                        .clip(RoundedCornerShape(8.dp))
+                        .background(AppColors.BgMid),
+                    contentAlignment = Alignment.Center,
+                ) {
+                    Text(
+                        text = romanLevel(slot.level),
+                        color = AppColors.Gold,
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.Bold,
+                    )
+                }
+                Spacer(Modifier.height(2.dp))
+                Text(
+                    text = "Колдун",
+                    color = AppColors.TextGrey,
+                    fontSize = 9.sp,
+                    maxLines = 1,
+                )
+            }
+            Spacer(Modifier.width(12.dp))
+            FlowRow(
+                modifier = Modifier.weight(1f),
+                horizontalArrangement = Arrangement.spacedBy(6.dp),
+                verticalArrangement = Arrangement.spacedBy(6.dp),
+            ) {
+                repeat(slot.total) { i ->
+                    val isUsedSlot = i >= (slot.total - slot.used)
+                    SpellSlotBlock(used = isUsedSlot)
+                }
+            }
+        }
+        Spacer(Modifier.height(6.dp))
+        Text(
+            text = "${slot.used} / ${slot.total}",
+            color = if (isAllSpent) AppColors.TextGreyDark else AppColors.TextGrey,
+            fontSize = 12.sp,
+            fontWeight = FontWeight.Medium,
+            modifier = Modifier
+                .fillMaxWidth()
+                .align(Alignment.End),
+            textAlign = TextAlign.End,
+        )
+    }
+}
+
 @Composable
 private fun SpellSlotsSection(state: HomeState, viewModel: HomeViewModel) {
     Column {
         SectionTitle("Ячейки заклинаний")
         Spacer(Modifier.height(10.dp))
-        if (state.allSlots.isEmpty()) {
+        if (state.regularSlots.isEmpty()) {
             Text(
                 "Нет доступных ячеек — укажите уровень хотя бы одного заклинателя.",
                 color = AppColors.TextGrey,
@@ -446,10 +559,10 @@ private fun SpellSlotsSection(state: HomeState, viewModel: HomeViewModel) {
             )
         } else {
             Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
-                state.allSlots.forEach { slot ->
+                state.regularSlots.forEach { slot ->
                     SpellSlotRow(
                         slot = slot,
-                        onRowClick = { viewModel.onRowClick(slot) },
+                        onRowClick = { viewModel.onRegularRowClick(slot) },
                     )
                 }
             }
@@ -511,7 +624,7 @@ private fun SpellSlotRow(
                         .clip(RoundedCornerShape(8.dp))
                         .background(
                             // Пакт-магия чуть светлее — отличаем от обычных
-                            if (slot.isWarlock) AppColors.BgMid else AppColors.PurpleDeep
+                            AppColors.PurpleDeep
                         ),
                     contentAlignment = Alignment.Center,
                 ) {
@@ -520,15 +633,6 @@ private fun SpellSlotRow(
                         color = AppColors.Gold,
                         fontSize = 16.sp,
                         fontWeight = FontWeight.Bold,
-                    )
-                }
-                if (slot.isWarlock) {
-                    Spacer(Modifier.height(2.dp))
-                    Text(
-                        text = "Колдун",
-                        color = AppColors.TextGrey,
-                        fontSize = 9.sp,
-                        maxLines = 1,
                     )
                 }
             }

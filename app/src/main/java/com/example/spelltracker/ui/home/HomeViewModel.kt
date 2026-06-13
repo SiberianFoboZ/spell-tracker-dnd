@@ -22,18 +22,26 @@ import kotlinx.coroutines.launch
  * Compose не должен напрямую читать [SpellStorage] — он работает
  * с этим иммутабельным снимком, который обновляется реактивно.
  *
- * Этап 16: ячейки заклинаний и пакт-магия Колдуна объединены в
- * единый список [allSlots] для унифицированной отрисовки.
+ * Этап 18: пакт-магия Колдуна **отделена** от обычных ячеек и
+ * живёт в собственной секции «МАГИЯ ДОГОВОРА». Ячейки других классов
+ * (включая Колдуна как «обычного» полно-кастера в мультиклассе) — в
+ * [regularSlots], пакт-слоты — в [pactSlot] (или null, если Warlock
+ * не выбран / нет ячеек на его уровне).
  *
- * Этап 17: добавлены [arcanums] — арканумы Колдуна (VI..IX), по одному
+ * Этап 17: [arcanums] — арканумы Колдуна (VI..IX), по одному
  * на каждый уровень. Доступ завит от [warlockLevel].
  */
 data class HomeState(
     val classLevels: Map<String, Int> = emptyMap(),
     val casterLevel: Int = 0,
+    /** Ячейки заклинаний всех классов, кроме пакт-магии Колдуна. */
     val regularSlots: List<SlotInfo> = emptyList(),
-    /** null, если warlockLevel == 0 (или у Колдуна нет ячеек на его уровне). */
-    val warlockSlot: SlotInfo? = null,
+    /**
+     * Пакт-магия Колдуна: `null`, если warlockLevel == 0 (Колдун не выбран)
+     * или cap == 0 на текущем уровне. В обоих случаях секция «МАГИЯ
+     * ДОГОВОРА» просто не рисуется.
+     */
+    val pactSlot: SlotInfo? = null,
     val warlockLevel: Int = 0,
     val pactSlotLevel: Int = 0,
     /**
@@ -43,13 +51,6 @@ data class HomeState(
      */
     val arcanums: List<ArcanumInfo> = emptyList(),
 ) {
-    /**
-     * Все ячейки в порядке отрисовки: обычные уровни 1..9, затем
-     * (если есть) — пакт-магия Колдуна. Используется в `SpellSlotsSection`.
-     */
-    val allSlots: List<SlotInfo>
-        get() = regularSlots + listOfNotNull(warlockSlot)
-
     /**
      * Максимальное число арканумов для текущего warlock level
      * (0 при warlockLevel < 11).
@@ -64,15 +65,18 @@ data class HomeState(
 /**
  * Описание одной строки «ячейки заклинания N-го уровня».
  *
- * [isWarlock] = true для пакт-магии Колдуна — в UI она отрисовывается
- * идентично обычным ячейкам (те же блоки), но помечается подписью
- * «Колдун» под бейджем уровня и восстанавливается отдельно
- * на коротком отдыхе.
+ * Этап 18: пакт-магия Колдуна отрисовывается отдельной строкой
+ * через собственный [HomeState.pactSlot], поэтому `isWarlock`
+ * больше **не нужен** — оставлен устаревшим полем по умолчанию
+ * `false` для бинарной совместимости со старыми вызывающими
+ * (на случай, если что-то в UI ещё на него опирается; безопасно
+ * удалить в одном из следующих релизов).
  */
 data class SlotInfo(
     val level: Int,        // 1..9 для обычных; spell level Колдуна для пакт-магии
     val total: Int,
     val used: Int,
+    @Deprecated("Пакт-магия теперь в отдельном HomeState.pactSlot")
     val isWarlock: Boolean = false,
 )
 
@@ -144,18 +148,18 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
                     level = it,
                     total = storage.getSlotTotal(it),
                     used = storage.getSlotUsed(it),
-                    isWarlock = false,
                 )
             }
             .filter { it.total > 0 }
+        // Этап 18: пакт-слот Колдуна — отдельная запись, не часть regularSlots.
         val wl = storage.getWarlockLevel()
         val pactTotal = storage.getPactSlotTotal()
-        val warlockSlot = if (wl > 0 && pactTotal > 0) {
+        val pactLevel = storage.getPactSlotLevel()
+        val pact = if (wl > 0 && pactTotal > 0) {
             SlotInfo(
-                level = storage.getPactSlotLevel(),
+                level = pactLevel,
                 total = pactTotal,
                 used = storage.usedPactSlots.value,
-                isWarlock = true,
             )
         } else null
         // Этап 17: арканумы. Доступ завит от warlockLevel.
@@ -182,9 +186,9 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
             classLevels = storage.classLevels.value,
             casterLevel = casterLevel,
             regularSlots = regular,
-            warlockSlot = warlockSlot,
+            pactSlot = pact,
             warlockLevel = wl,
-            pactSlotLevel = storage.getPactSlotLevel(),
+            pactSlotLevel = pactLevel,
             arcanums = arcanums,
         )
     }
@@ -195,17 +199,28 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
         storage.applyWarlockSlots()
     }
 
-    // ─────────── Тап по строке уровня (Этап 16, Этап 17) ───────────
+    // ─────────── Тап по строке уровня (Этап 18) ───────────
 
     /**
-     * Обработка тапа по строке уровня ячеек.
+     * Тап по строке обычной ячейки (любой класс, кроме пакт-магии Колдуна).
      * «Гасит» первую доступную ячейку слева направо.
      * Если все ячейки уровня потрачены — no-op (UI блокирует клик
      * через `clickable(enabled = ...)`).
      */
-    fun onRowClick(slot: SlotInfo) {
+    fun onRegularRowClick(slot: SlotInfo) {
         if (slot.used >= slot.total) return
-        if (slot.isWarlock) storage.usePactSlot() else storage.useSlot(slot.level)
+        storage.useSlot(slot.level)
+    }
+
+    /**
+     * Тап по строке пакт-магии Колдуна (секция «МАГИЯ ДОГОВОРА»).
+     * По правилам PHB у Колдуна все ячейки одного уровня, и
+     * восстанавливаются они на **коротком** отдыхе. Семантика та же —
+     * «гасим» первую доступную ячейку слева.
+     */
+    fun onPactRowClick(slot: SlotInfo) {
+        if (slot.used >= slot.total) return
+        storage.usePactSlot()
     }
 
     /**
