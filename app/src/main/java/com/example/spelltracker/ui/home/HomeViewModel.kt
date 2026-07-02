@@ -4,6 +4,7 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.spelltracker.data.Classes
+import com.example.spelltracker.data.CustomSlot
 import com.example.spelltracker.data.SpellStorage
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -50,6 +51,13 @@ data class HomeState(
      * Каждый арканум — ровно один блок, который можно «потратить».
      */
     val arcanums: List<ArcanumInfo> = emptyList(),
+    /**
+     * Этап 20: пользовательские ячейки (универсальный конструктор).
+     * Сортируются в порядке добавления (id ASC) — пользователь видит
+     * ячейки в том порядке, в котором их создал, и легко находит
+     * «верхние» / «нижние» без перетасовки при изменении любого поля.
+     */
+    val customSlots: List<CustomSlot> = emptyList(),
 ) {
     /**
      * Максимальное число арканумов для текущего warlock level
@@ -115,7 +123,7 @@ sealed interface HomeEvent {
  */
 class HomeViewModel(application: Application) : AndroidViewModel(application) {
 
-    private val storage = SpellStorage(application)
+    private val storage = SpellStorage.get(application)
 
     private val _state = MutableStateFlow(snapshot())
     val state: StateFlow<HomeState> = _state.asStateFlow()
@@ -129,13 +137,15 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
 
     init {
         // Любое изменение уровней классов ИЛИ использованных ячеек
-        // (обычных, пакт и арканумов) вызывает пересборку снимка.
+        // (обычных, пакт, арканумов, **пользовательских** — Этап 20)
+        // вызывает пересборку снимка.
         combine(
             storage.classLevels,
             storage.usedSlots,
             storage.usedPactSlots,
             storage.usedArcanums,
-        ) { _, _, _, _ -> snapshot() }
+            storage.customSlots,
+        ) { _, _, _, _, _ -> snapshot() }
             .onEach { _state.value = it }
             .launchIn(viewModelScope)
     }
@@ -190,6 +200,10 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
             warlockLevel = wl,
             pactSlotLevel = pactLevel,
             arcanums = arcanums,
+            // Этап 20: пользовательские ячейки в порядке создания.
+            // `id` монотонно растёт (System.currentTimeMillis при создании),
+            // так что простая сортировка по id даёт стабильный порядок.
+            customSlots = storage.customSlots.value.sortedBy { it.id },
         )
     }
 
@@ -232,6 +246,44 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
     fun onArcanumClick(arcanum: ArcanumInfo) {
         if (arcanum.used) return
         storage.setArcanumUsed(arcanum.level, true)
+    }
+
+    // ─────────── Пользовательские ячейки (Этап 20) ───────────
+
+    /**
+     * Тап по строке пользовательской ячейки — «гасит» одну ячейку
+     * (по аналогии с [onRegularRowClick] и [onPactRowClick]).
+     * Если все ячейки потрачены — no-op (UI блокирует клик).
+     */
+    fun onCustomRowClick(slot: CustomSlot) {
+        if (slot.isAllSpent) return
+        storage.useCustomSlot(slot.id)
+    }
+
+    /**
+     * Добавить новую пользовательскую ячейку. Вызывается из
+     * `AddCustomSlotSheet` (bottom sheet) после заполнения формы.
+     * id генерируется во внешнем коде, чтобы не зависеть от системного
+     * времени внутри VM (тестируемость + предсказуемость).
+     */
+    fun addCustomSlot(slot: CustomSlot) {
+        storage.addCustomSlot(slot)
+    }
+
+    /**
+     * Обновить пользовательскую ячейку. Вызывается из
+     * `EditCustomSlotScreen` при сохранении формы.
+     */
+    fun updateCustomSlot(slot: CustomSlot) {
+        storage.updateCustomSlot(slot)
+    }
+
+    /**
+     * Удалить пользовательскую ячейку. Вызывается из
+     * `EditCustomSlotScreen` при нажатии «Удалить» (после подтверждения).
+     */
+    fun deleteCustomSlot(id: Long) {
+        storage.deleteCustomSlot(id)
     }
 
     // ─────────── Кнопки отдыха (Этап 15, Этап 17) ───────────

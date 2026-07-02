@@ -47,7 +47,7 @@ data class SpellsState(
 class SpellsViewModel(application: Application) : AndroidViewModel(application) {
 
     private val repo = SpellRepository(application)
-    private val storage = SpellStorage(application)
+    private val storage = SpellStorage.get(application)
 
     private val _state = MutableStateFlow(SpellsState())
     val state: StateFlow<SpellsState> = _state.asStateFlow()

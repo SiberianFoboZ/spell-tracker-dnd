@@ -35,7 +35,7 @@ class SpellDetailViewModel(
 ) : ViewModel() {
 
     private val repo = SpellRepository(application)
-    private val storage = SpellStorage(application)
+    private val storage = SpellStorage.get(application)
 
     private val _state = MutableStateFlow(SpellDetailState())
     val state: StateFlow<SpellDetailState> = _state.asStateFlow()
