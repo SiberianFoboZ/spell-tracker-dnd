@@ -207,18 +207,47 @@ class SpellStorage private constructor(context: Context) {
 
     fun getArcanumUsed(level: Int): Boolean = _usedArcanums.value[level] ?: false
 
-    // ─────────── Отдых (Этап 15, Этап 17) ───────────
+    // ─────────── Отдых (Этап 15, Этап 17, Этап 24) ───────────
 
+    /**
+     * Короткий отдых:
+     *   - восстановить ячейки пакт-магии Колдуна
+     *   - восстановить кастомные ячейки с [RestType.SHORT]
+     *
+     * Арканумы и кастомные ячейки с [RestType.LONG] **не трогаем** —
+     * правило PHB и явный выбор пользователя (тип восстановления
+     * задаётся в форме кастомной ячейки, см. [CustomSlotForm]).
+     */
     fun shortRest() {
         _usedPactSlots.value = 0
-        // арканумы восстанавливаются только на длинном отдыхе (PHB)
+        _customSlots.update { list ->
+            list.map { slot ->
+                if (slot.restType == RestType.SHORT) slot.copy(used = 0) else slot
+            }
+        }
         persistCurrentCharacter()
     }
 
+    /**
+     * Длинный отдых:
+     *   - восстановить обычные ячейки 1..9
+     *   - восстановить пакт-магию
+     *   - восстановить арканумы Колдуна
+     *   - восстановить кастомные ячейки с [RestType.LONG]
+     *
+     * Кастомные ячейки с [RestType.SHORT] **не трогаем** — они
+     * восстанавливаются только на коротком отдыхе (явный выбор
+     * пользователя).
+     */
     fun longRest() {
         _usedSlots.value = (1..9).associateWith { 0 }
         _usedPactSlots.value = 0
         _usedArcanums.value = ARCANUM_LEVELS.associateWith { false }
+        _customSlots.update { list ->
+            list.map { slot ->
+                if (slot.restType == RestType.LONG) slot.copy(used = 0) else slot
+            }
+        }
         persistCurrentCharacter()
     }
 

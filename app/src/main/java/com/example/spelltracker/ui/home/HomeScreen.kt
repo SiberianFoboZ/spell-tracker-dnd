@@ -7,9 +7,11 @@ import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.animateIntAsState
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.gestures.detectHorizontalDragGestures
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsPressedAsState
@@ -1166,28 +1168,13 @@ private fun CustomSlotsSection(
  * взаимодействие (например, длинный press + закрытие экрана
  * редактирования), следующее короткое нажатие снова тратит ячейку.
  */
-@OptIn(ExperimentalLayoutApi::class)
+@OptIn(ExperimentalFoundationApi::class, ExperimentalLayoutApi::class)
 @Composable
 private fun CustomSlotRow(
     slot: com.example.spelltracker.data.CustomSlot,
     onRowClick: () -> Unit,
     onLongPress: () -> Unit,
 ) {
-    val interactionSource = remember { MutableInteractionSource() }
-    val isPressed by interactionSource.collectIsPressedAsState()
-    // Флаг «long press уже отработал в текущем цикле нажатия».
-    // Сбрасывается в начале каждого нажатия (LaunchedEffect) и после
-    // каждого релиза (clickable.onClick) — см. KDoc выше.
-    var longPressHandled by remember { mutableStateOf(false) }
-    LaunchedEffect(isPressed) {
-        if (isPressed) {
-            // Начало нового нажатия — гарантируем, что флаг чист.
-            longPressHandled = false
-            delay(LONG_PRESS_TIMEOUT_MS)
-            longPressHandled = true
-            onLongPress()
-        }
-    }
     val isAllSpent = slot.isAllSpent
     Column(
         modifier = Modifier
@@ -1199,17 +1186,18 @@ private fun CustomSlotRow(
                 color = if (isAllSpent) AppColors.TextGreyDark else AppColors.Outline,
                 shape = RoundedCornerShape(12.dp),
             )
-            .clickable(
-                interactionSource = interactionSource,
-                indication = androidx.compose.foundation.LocalIndication.current,
-                enabled = !isAllSpent,
-                onClick = {
-                    // Захватываем флаг, потом сбрасываем — чтобы следующее
-                    // нажатие стартовало с чистого листа.
-                    val wasLongPress = longPressHandled
-                    longPressHandled = false
-                    if (!wasLongPress) onRowClick()
-                },
+            // Этап 24: combinedClickable — тап и long-press работают
+            // НЕЗАВИСИМО. Раньше стоял `clickable(enabled = !isAllSpent)`,
+            // и когда все ячейки потрачены — клик по строке был
+            // заблокирован → нельзя было даже открыть модалку
+            // редактирования (Этап 22). Сейчас:
+            //   - тап → тратим ячейку (если есть что тратить)
+            //   - long-press → всегда открывает модалку
+            // Compose сама разруливает, что onClick после onLongClick
+            // не сработает — костыль с longPressHandled больше не нужен.
+            .combinedClickable(
+                onClick = { if (!isAllSpent) onRowClick() },
+                onLongClick = onLongPress,
             )
             .padding(horizontal = 12.dp, vertical = 12.dp),
     ) {
