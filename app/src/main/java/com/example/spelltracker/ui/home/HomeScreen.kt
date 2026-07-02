@@ -1186,48 +1186,62 @@ private fun CustomSlotRow(
                 color = if (isAllSpent) AppColors.TextGreyDark else AppColors.Outline,
                 shape = RoundedCornerShape(12.dp),
             )
-            // Этап 24: combinedClickable — тап и long-press работают
-            // НЕЗАВИСИМО. Раньше стоял `clickable(enabled = !isAllSpent)`,
-            // и когда все ячейки потрачены — клик по строке был
-            // заблокирован → нельзя было даже открыть модалку
-            // редактирования (Этап 22). Сейчас:
-            //   - тап → тратим ячейку (если есть что тратить)
-            //   - long-press → всегда открывает модалку
-            // Compose сама разруливает, что onClick после onLongClick
-            // не сработает — костыль с longPressHandled больше не нужен.
+            // Этап 24 v2: combinedClickable — тап и long-press работают
+            // НЕЗАВИСИМО. Тап → тратим ячейку (если есть что), long-press
+            // → ВСЕГДА открывает модалку (даже когда всё потрачено).
             .combinedClickable(
                 onClick = { if (!isAllSpent) onRowClick() },
                 onLongClick = onLongPress,
             )
-            .padding(horizontal = 12.dp, vertical = 12.dp),
+            .padding(horizontal = 12.dp, vertical = 10.dp),
     ) {
-        // Заголовок (название ячейки)
+        // Заголовок — крупно (16sp), как у остальных рядов ячеек.
+        // Раньше был 14sp — слишком мелкий по сравнению с бейджем.
         Text(
             text = slot.title.ifBlank { "Без названия" },
             color = AppColors.TextWhite,
-            fontSize = 14.sp,
+            fontSize = 16.sp,
             fontWeight = FontWeight.SemiBold,
             maxLines = 1,
             overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis,
+            modifier = Modifier.fillMaxWidth(),
         )
-        Spacer(Modifier.height(6.dp))
-        // Ряд: бейдж с кубиком + блоки ячеек
+        Spacer(Modifier.height(8.dp))
+        // Ряд: бейдж (56dp) + ячейки — структура 1-в-1 как у PactMagicRow,
+        // чтобы все ряды выглядели единообразно.
         Row(
             modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            Box(
-                modifier = Modifier
-                    .size(40.dp)
-                    .clip(RoundedCornerShape(8.dp))
-                    .background(AppColors.PurpleDeep),
-                contentAlignment = Alignment.Center,
+            Column(
+                modifier = Modifier.width(56.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
             ) {
+                Box(
+                    modifier = Modifier
+                        .size(40.dp)
+                        .clip(RoundedCornerShape(8.dp))
+                        .background(AppColors.BgMid),
+                    contentAlignment = Alignment.Center,
+                ) {
+                    Text(
+                        text = slot.die.label,
+                        color = AppColors.Gold,
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.Bold,
+                    )
+                }
+                Spacer(Modifier.height(2.dp))
+                // Тип восстановления: К (короткий) / Д (длинный) —
+                // маленькая подпись под бейджем, как «Колдун» у PactMagicRow.
                 Text(
-                    text = slot.die.label,
-                    color = AppColors.Gold,
-                    fontSize = 14.sp,
-                    fontWeight = FontWeight.Bold,
+                    text = when (slot.restType) {
+                        com.example.spelltracker.data.RestType.SHORT -> "Кор."
+                        com.example.spelltracker.data.RestType.LONG  -> "Длин."
+                    },
+                    color = AppColors.TextGrey,
+                    fontSize = 9.sp,
+                    maxLines = 1,
                 )
             }
             Spacer(Modifier.width(12.dp))
@@ -1238,8 +1252,7 @@ private fun CustomSlotRow(
             )
         }
         // Счётчик X / Y (правый край) — только при total ≤ 10.
-        // Для 11..20 числовой диапазон уже показан в SlotCells,
-        // дублировать его снизу нет смысла.
+        // Для 11..20 числовой диапазон уже показан в SlotCells.
         if (slot.total <= 10) {
             Spacer(Modifier.height(6.dp))
             Text(

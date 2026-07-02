@@ -233,20 +233,22 @@ class SpellStorage private constructor(context: Context) {
      *   - восстановить обычные ячейки 1..9
      *   - восстановить пакт-магию
      *   - восстановить арканумы Колдуна
-     *   - восстановить кастомные ячейки с [RestType.LONG]
+     *   - восстановить ВСЕ кастомные ячейки (RestType.SHORT и LONG).
      *
-     * Кастомные ячейки с [RestType.SHORT] **не трогаем** — они
-     * восстанавливаются только на коротком отдыхе (явный выбор
-     * пользователя).
+     * Этап 24 v2: long rest теперь восстанавливает и short-rest слоты
+     * тоже — иначе пользователь не понимал, почему «после длинного
+     * отдыха способность всё равно недоступна». Long rest логически
+     * является надмножеством short rest, поэтому сбрасывает всё.
+     * Если нужен более редкий ресурс — пользователь использует
+     * RestType.LONG и не отдыхает часто.
      */
     fun longRest() {
         _usedSlots.value = (1..9).associateWith { 0 }
         _usedPactSlots.value = 0
         _usedArcanums.value = ARCANUM_LEVELS.associateWith { false }
         _customSlots.update { list ->
-            list.map { slot ->
-                if (slot.restType == RestType.LONG) slot.copy(used = 0) else slot
-            }
+            // Long rest — восстанавливаем ВСЕ кастомные ячейки.
+            list.map { it.copy(used = 0) }
         }
         persistCurrentCharacter()
     }
