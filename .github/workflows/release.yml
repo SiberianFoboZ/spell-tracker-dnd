@@ -103,9 +103,15 @@ jobs:
             echo "::warning::apksigner не найден в ANDROID_HOME/build-tools — пропускаю верификацию"
             exit 0
           fi
-          "$APKSIGNER" verify --verbose "$APK"
+          # Один вызов с обоими флагами: --verbose печатает строки
+          # "Verified using v1/v2 scheme", --print-certs — DN сертификата.
+          # Разделяем grep'ом по строкам, и для grep-ветки ставим || true —
+          # даже если формат apksigner'а вдруг изменится и grep не найдёт
+          # ни одной строки, step не упадёт (главное — apksigner verify выше
+          # уже напечатал "Verifies" со всеми деталями).
+          "$APKSIGNER" verify --verbose --print-certs "$APK"
           echo "---"
-          "$APKSIGNER" verify --print-certs "$APK" | grep -E "(Signer #1 certificate DN|Verified using v[12] scheme)"
+          "$APKSIGNER" verify --print-certs "$APK" | grep -E "(Signer #1 certificate DN|Verified using v[12] scheme)" || true
 
       # Имя релиза берётся из тега (например, v1.0.0 → "Spell Tracker v1.0.0").
       # generate_release_notes: true — GitHub сам соберёт список изменений
