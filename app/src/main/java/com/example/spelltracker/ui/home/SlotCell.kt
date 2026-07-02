@@ -7,7 +7,6 @@ import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -18,19 +17,21 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.example.spelltracker.ui.theme.AppColors
 
 /**
- * Один визуальный блок ячейки (Этап 21 — новый дизайн ячеек).
+ * Один визуальный блок ячейки (Этап 21 — дизайн ячеек).
  *
- * Вынесен из [HomeScreen], где раньше жил приватный `SpellSlotBlock`,
- * и параметризован по размеру: один и тот же блок используется
- *   - в обычном ряду (`sizeDp = 48.dp`) — для `total in 1..5`
- *   - в уменьшенном ряду (`sizeDp = 38.dp`, ≈80% от 48.dp) — для
- *     `total in 6..10`
- *   - как одиночный блок арканума (`sizeDp = 48.dp`, всегда `total = 1`)
+ * Вынесен из [HomeScreen], где раньше жил приватный `SpellSlotBlock`.
+ *
+ * Размер определяется **modifier'ом снаружи**, а не параметром:
+ *   - фиксированный: `Modifier.size(48.dp)` — одиночные блоки (арканум)
+ *   - flex по ширине: `Modifier.weight(1f).aspectRatio(1f).sizeIn(max = 80.dp)`
+ *     — обычные ячейки в [SlotCells] (1..5 в ряд, 6..10 в 2 ряда).
+ *     Так ячейки заполняют доступную ширину равномерно с одинаковым
+ *     aspectRatio (квадрат) и cap'ом по максимуму (для случая 1 ячейки
+ *     в широком контейнере — не дать ей расползтись на всю ширину).
  *
  * Анимации (сохранены из старого `SpellSlotBlock`):
  *   - `animateColorAsState` — плавная смена цвета фона/рамки (300 мс)
@@ -40,14 +41,13 @@ import com.example.spelltracker.ui.theme.AppColors
  *     При обратном переходе (long rest) — без scale-анимации, только
  *     плавная смена цвета/тени («затухание»).
  *
- * @param used   true, если ячейка потрачена (серый блок)
- * @param sizeDp сторона квадрата. По умолчанию 48.dp.
- * @param modifier опциональный модификатор снаружи
+ * @param used true, если ячейка потрачена (серый блок)
+ * @param modifier обязательно содержит размер — `Modifier.size(...)` или
+ *              `Modifier.weight(1f).aspectRatio(1f).sizeIn(max = ...)`
  */
 @Composable
 fun SlotCell(
     used: Boolean,
-    sizeDp: Dp = 48.dp,
     modifier: Modifier = Modifier,
 ) {
     val scale = remember { Animatable(1f) }
@@ -78,7 +78,6 @@ fun SlotCell(
 
     Box(
         modifier = modifier
-            .size(sizeDp)
             .scale(scale.value)
             .shadow(
                 elevation = elevation,

@@ -442,6 +442,70 @@ private fun ClassesGrid(
     }
 }
 
+/**
+ * Этап 24 v3: общий конструктор карточки сетки классов.
+ *
+ * Единая геометрия для [ClassCard] и [AddClassButton]:
+ *   - `Box` 92.dp мин. высота, скруглённые углы 14.dp, фон CardBg
+ *   - внутри `Column`: заголовок (13.sp SemiBold) + подзаголовок (10.sp)
+ *     + `middleContent` (произвольный — LevelInput для классов, иконка
+ *     для кнопки добавления)
+ *   - опциональный `onClick` делает карточку кликабельной
+ *   - `borderColor`/`borderWidth` позволяют подсветить активные
+ *     мультиклассы (PurpleLight + 1.5.dp)
+ *
+ * Так [AddClassButton] визуально встаёт в один ритм с [ClassCard] —
+ * одинаковая высота, одинаковое расположение заголовка/подзаголовка,
+ * одинаковый внутренний отступ. Раньше AddClassButton был Box с
+ * Column(horizontalAlignment = CenterHorizontally), и иконка с
+ * текстом «custom» сидели в центре — теперь текст «Custom» это
+ * полноценный заголовок сверху, как у остальных.
+ */
+@Composable
+private fun GridCard(
+    title: String,
+    subtitle: String,
+    titleColor: androidx.compose.ui.graphics.Color,
+    subtitleColor: androidx.compose.ui.graphics.Color,
+    onClick: (() -> Unit)?,
+    borderColor: androidx.compose.ui.graphics.Color,
+    borderWidth: androidx.compose.ui.unit.Dp,
+    modifier: Modifier = Modifier,
+    middleContent: @Composable () -> Unit = {},
+) {
+    Box(
+        modifier = modifier
+            .heightIn(min = 92.dp)
+            .clip(RoundedCornerShape(14.dp))
+            .background(AppColors.CardBg)
+            .border(
+                width = borderWidth,
+                color = borderColor,
+                shape = RoundedCornerShape(14.dp),
+            )
+            .let { if (onClick != null) it.clickable { onClick() } else it }
+            .padding(horizontal = 8.dp, vertical = 10.dp),
+    ) {
+        Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
+            Text(
+                text = title,
+                color = titleColor,
+                fontSize = 13.sp,
+                fontWeight = FontWeight.SemiBold,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+            )
+            Text(
+                text = subtitle,
+                color = subtitleColor,
+                fontSize = 10.sp,
+                maxLines = 1,
+            )
+            middleContent()
+        }
+    }
+}
+
 @Composable
 private fun ClassCard(
     info: Classes.Info,
@@ -451,39 +515,19 @@ private fun ClassCard(
 ) {
     val hasCasting = info.factor > 0.0
     val isMulticlass = level > 0 && hasCasting
-    val bg = if (isMulticlass) AppColors.CardBgLighter else AppColors.CardBg
-    Box(
-        modifier = modifier
-            .heightIn(min = 92.dp)
-            .clip(RoundedCornerShape(14.dp))
-            .background(bg)
-            .border(
-                width = if (isMulticlass) 1.5.dp else 1.dp,
-                color = if (isMulticlass) AppColors.PurpleLight else AppColors.Outline,
-                shape = RoundedCornerShape(14.dp),
-            )
-            .padding(horizontal = 8.dp, vertical = 10.dp),
-    ) {
-        Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
-            Text(
-                text = info.name,
-                color = AppColors.TextWhite,
-                fontSize = 13.sp,
-                fontWeight = FontWeight.SemiBold,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis,
-            )
-            Text(
-                text = if (hasCasting) "×${formatFactor(info)}" else "пзак",
-                color = if (hasCasting) AppColors.Gold else AppColors.TextGreyDark,
-                fontSize = 10.sp,
-            )
-            LevelInput(
-                level = level,
-                onLevelChange = onLevelChange,
-            )
-        }
-    }
+    GridCard(
+        title = info.name,
+        subtitle = if (hasCasting) "×${formatFactor(info)}" else "пзак",
+        titleColor = AppColors.TextWhite,
+        subtitleColor = if (hasCasting) AppColors.Gold else AppColors.TextGreyDark,
+        onClick = null,
+        borderColor = if (isMulticlass) AppColors.PurpleLight else AppColors.Outline,
+        borderWidth = if (isMulticlass) 1.5.dp else 1.dp,
+        // Этап 24 v3: фон CardBgLighter для мультиклассов применяем
+        // ПОВЕРХ GridCard'овского CardBg, чтобы подсветить активные классы.
+        modifier = if (isMulticlass) modifier.background(AppColors.CardBgLighter) else modifier,
+        middleContent = { LevelInput(level, onLevelChange) },
+    )
 }
 
 @Composable
@@ -548,44 +592,51 @@ private fun LevelInput(
  * скруглённые углы 14.dp, фон CardBg, рамка Outline), чтобы не ломать
  * общий ритм сетки.
  */
+/**
+ * Кнопка «Добавить пользовательскую ячейку» (Этап 20 v2 → Этап 24 v3).
+ *
+ * Занимает последнюю ячейку сетки [ClassesGrid] (3×3 → 10 ячеек: 9
+ * классов + 1 кнопка). Визуально повторяет [ClassCard] 1-в-1 благодаря
+ * общему конструктору [GridCard]:
+ *   - Заголовок «Custom» (13.sp, gold) — как у других классов
+ *   - Подзаголовок «+ ячейка» (10.sp, grey) — объясняет действие
+ *   - В middleContent — крупная золотая иконка «+» (36.dp)
+ *   - Кликабельна — открывает [AddCustomSlotSheet] (Этап 20 v2).
+ *
+ * Раньше текст «custom» был мелкой подписью 10.sp ПОД иконкой +
+ * иконка была 28.dp — из-за этого кнопка визуально казалась меньше
+ * других карточек в сетке. Теперь с единым конструктором и
+ * полноценным заголовком кнопка выглядит как «ещё одна карточка
+ * класса», а не как «отдельная маленькая кнопочка».
+ */
 @Composable
 private fun AddClassButton(
     modifier: Modifier = Modifier,
     onClick: () -> Unit = {},
 ) {
-    Box(
-        modifier = modifier
-            .heightIn(min = 92.dp)
-            .clip(RoundedCornerShape(14.dp))
-            .background(AppColors.CardBg)
-            .border(
-                width = 1.dp,
-                color = AppColors.Outline,
-                shape = RoundedCornerShape(14.dp),
-            )
-            .clickable(onClick = onClick)
-            .padding(horizontal = 8.dp, vertical = 10.dp),
-        contentAlignment = Alignment.Center,
-    ) {
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center,
-        ) {
-            Icon(
-                imageVector = Icons.Filled.Add,
-                contentDescription = "Добавить пользовательскую ячейку",
-                tint = AppColors.Gold,
-                modifier = Modifier.size(28.dp),
-            )
-            Spacer(Modifier.height(2.dp))
-            Text(
-                text = "custom",
-                color = AppColors.TextGrey,
-                fontSize = 10.sp,
-                fontWeight = FontWeight.Medium,
-            )
-        }
-    }
+    GridCard(
+        title = "Custom",
+        subtitle = "+ ячейка",
+        titleColor = AppColors.Gold,
+        subtitleColor = AppColors.TextGrey,
+        onClick = onClick,
+        borderColor = AppColors.Outline,
+        borderWidth = 1.dp,
+        modifier = modifier,
+        middleContent = {
+            Box(
+                modifier = Modifier.fillMaxWidth(),
+                contentAlignment = Alignment.Center,
+            ) {
+                Icon(
+                    imageVector = Icons.Filled.Add,
+                    contentDescription = "Добавить пользовательскую ячейку",
+                    tint = AppColors.Gold,
+                    modifier = Modifier.size(36.dp),
+                )
+            }
+        },
+    )
 }
 
 private fun formatFactor(info: Classes.Info): String = when {
@@ -939,7 +990,7 @@ private fun ArcanumRow(
         }
         Spacer(Modifier.width(12.dp))
         // Один визуальный блок (арканум — всегда ровно 1 ячейка).
-        SlotCell(used = isSpent, sizeDp = 48.dp)
+        SlotCell(used = isSpent, modifier = Modifier.size(48.dp))
     }
 }
 

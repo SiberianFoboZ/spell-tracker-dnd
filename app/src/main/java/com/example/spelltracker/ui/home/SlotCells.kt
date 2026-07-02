@@ -6,7 +6,10 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
@@ -20,16 +23,20 @@ import androidx.compose.ui.unit.sp
 import com.example.spelltracker.ui.theme.AppColors
 
 /**
- * Динамический рендер ячеек слота (Этап 21 — новый дизайн ячеек).
+ * Динамический рендер ячеек слота (Этап 21 — новый дизайн ячеек,
+ * Этап 24 v3 — равномерное распределение по ширине).
  *
  * Правила (по спецификации пользователя):
- *   - `total in 1..5`   → **1 ряд** обычных ячеек (`sizeDp = 48.dp`)
- *   - `total in 6..10`  → **2 ряда** уменьшенных ячеек (`sizeDp = 38.dp`,
- *                         ≈80% от 48.dp). 1-й ряд всегда полный (5 шт.),
- *                         2-й ряд — остаток (1..5 шт.).
- *   - `total in 11..20` → **числовой диапазон** «used / total», ячейки
- *                         не рисуются. Вместо них — заметная плашка,
- *                         чтобы ряд не «схлопывался» в пустоту.
+ *   - `total in 1..5`   → **1 ряд** ячеек, распределённых равномерно по
+ *                         доступной ширине (каждая ячейка занимает
+ *                         равную долю через `weight(1f)` + `aspectRatio(1f)`,
+ *                         с cap'ом 80.dp чтобы 1 ячейка не расползлась).
+ *   - `total in 6..10`  → **2 ряда** ячеек, тот же формат: каждый ряд
+ *                         распределён по ширине, 5 ячеек в ряду.
+ *   - `total in 11..20` → **числовой диапазон** `remaining / total`,
+ *                         ячейки не рисуются. Инвертированный счётчик
+ *                         (remaining, а не used) — пользователю
+ *                         привычнее видеть остаток, а не потраченное.
  *
  * Цвет ячеек (логика «доступна / потрачена»):
  *   - `i <  total - used` → gold (доступна)
@@ -40,7 +47,8 @@ import com.example.spelltracker.ui.theme.AppColors
  *   - пакт-магия Колдуна   ([PactMagicRow])
  *   - пользовательские ячейки ([CustomSlotRow])
  *
- * Арканумы (всегда 1 ячейка) идут напрямую через [SlotCell].
+ * Арканумы (всегда 1 ячейка) идут напрямую через [SlotCell] с
+ * `Modifier.size(48.dp)`.
  *
  * @param used     сколько ячеек потрачено (0..total)
  * @param total    сколько ячеек всего (1..20)
@@ -54,12 +62,17 @@ fun SlotCells(
     modifier: Modifier = Modifier,
 ) {
     val spacing = 6.dp
-    val largeSize = 48.dp
-    val smallSize = 38.dp  // ≈80% от largeSize (новый дизайн)
+    // Этап 24 v3: убрали фиксированные 48.dp / 38.dp — теперь ячейки
+    // сами занимают равную долю ширины (weight + aspectRatio),
+    // с cap'ом 80.dp на размер, чтобы 1 ячейка не растягивалась
+    // на всю ширину родителя.
+    //
+    // NB: Modifier.weight() — член RowScope/ColumnScope, поэтому
+    // сам модификатор нельзя вынести в val снаружи when'а —
+    // приходится инлайнить в каждой Row/Column-ветке.
 
     when {
-        total <= 0 -> Unit  // защита: storage clamp даёт ≥1, но если что —
-                            // ничего не рисуем, а не валимся
+        total <= 0 -> Unit
         total <= 5 -> {
             Row(
                 modifier = modifier,
@@ -67,12 +80,17 @@ fun SlotCells(
             ) {
                 repeat(total) { i ->
                     val isUsed = i >= (total - used)
-                    SlotCell(used = isUsed, sizeDp = largeSize)
+                    SlotCell(
+                        used = isUsed,
+                        modifier = Modifier
+                            .weight(1f)
+                            .aspectRatio(1f)
+                            .sizeIn(maxWidth = 80.dp, maxHeight = 80.dp),
+                    )
                 }
             }
         }
         total <= 10 -> {
-            // 2 ряда: первый всегда полный (5 шт.), второй — остаток
             Column(
                 modifier = modifier,
                 verticalArrangement = Arrangement.spacedBy(spacing),
@@ -80,10 +98,19 @@ fun SlotCells(
                 for (rowIdx in 0 until 2) {
                     val start = rowIdx * 5
                     val end = (start + 5).coerceAtMost(total)
-                    Row(horizontalArrangement = Arrangement.spacedBy(spacing)) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(spacing),
+                    ) {
                         for (i in start until end) {
                             val isUsed = i >= (total - used)
-                            SlotCell(used = isUsed, sizeDp = smallSize)
+                            SlotCell(
+                                used = isUsed,
+                                modifier = Modifier
+                                    .weight(1f)
+                                    .aspectRatio(1f)
+                                    .sizeIn(maxWidth = 80.dp, maxHeight = 80.dp),
+                            )
                         }
                     }
                 }
@@ -91,20 +118,31 @@ fun SlotCells(
         }
         else -> {
             // 11..20: числовой диапазон. Инвертированный счётчик
-            // (remaining / total, а не used / total) — пользователю
-            // привычнее видеть остаток, а не потраченное (отнимается,
-            // а не прибавляется: «12 / 15» → «11 / 15» по клику).
-            //
-            // Без рамки/фона/паддинга — поле не должно быть больше
-            // соседних рядов с ячейками, простой inline-текст.
+            // (remaining / total) — пользователю привычнее видеть
+            // остаток, а не потраченное.
             val remaining = (total - used).coerceAtLeast(0)
-            Text(
-                text = "$remaining / $total",
-                color = AppColors.Gold,
-                fontSize = 16.sp,
-                fontWeight = FontWeight.Bold,
-                modifier = modifier,
-            )
+            Row(
+                modifier = modifier
+                    .clip(RoundedCornerShape(10.dp))
+                    .background(AppColors.CardBg)
+                    .border(1.dp, AppColors.Outline, RoundedCornerShape(10.dp))
+                    .padding(horizontal = 14.dp, vertical = 10.dp),
+                horizontalArrangement = Arrangement.spacedBy(spacing),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Text(
+                    text = "$remaining / $total",
+                    color = AppColors.Gold,
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Bold,
+                )
+                Spacer(Modifier.width(6.dp))
+                Text(
+                    text = "осталось $remaining",
+                    color = AppColors.TextGrey,
+                    fontSize = 12.sp,
+                )
+            }
         }
     }
 }
