@@ -6,8 +6,8 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.foundation.layout.width
@@ -28,12 +28,17 @@ import com.example.spelltracker.ui.theme.AppColors
  *
  * Правила (по спецификации пользователя):
  *   - `total in 1..5`   → **1 ряд** ячеек, распределённых равномерно по
- *                         доступной ширине (каждая ячейка занимает
- *                         равную долю через `weight(1f)` + `aspectRatio(1f)`,
- *                         с cap'ом 80.dp чтобы 1 ячейка не расползлась).
+ *                         доступной ширине. Каждая ячейка растягивается
+ *                         ТОЛЬКО по ширине (через `weight(1f)` +
+ *                         `sizeIn(maxWidth = 80.dp)`), высота фиксирована
+ *                         на 48.dp. Этап 24 v4: убрали `aspectRatio(1f)`,
+ *                         который растягивал ячейку в огромный квадрат
+ *                         при малом числе ячеек в широком контейнере.
  *   - `total in 6..10`  → **2 ряда** ячеек, тот же формат: каждый ряд
- *                         распределён по ширине, 5 ячеек в ряду.
- *   - `total in 11..20` → **числовой диапазон** `remaining / total`,
+ *                         распределён по ширине, высота ячеек 38.dp
+ *                         (немного меньше, чтобы 2 ряда не были
+ *                         слишком громоздкими).
+ *   - `total in 11..20` → **числовой диапазон** `remaining / total`.
  *                         ячейки не рисуются. Инвертированный счётчик
  *                         (remaining, а не used) — пользователю
  *                         привычнее видеть остаток, а не потраченное.
@@ -62,10 +67,10 @@ fun SlotCells(
     modifier: Modifier = Modifier,
 ) {
     val spacing = 6.dp
-    // Этап 24 v3: убрали фиксированные 48.dp / 38.dp — теперь ячейки
-    // сами занимают равную долю ширины (weight + aspectRatio),
-    // с cap'ом 80.dp на размер, чтобы 1 ячейка не растягивалась
-    // на всю ширину родителя.
+    // Этап 24 v4: фиксированная высота ячеек (48/38.dp), растяжение
+    // только по ширине. Убрали aspectRatio(1f), который делал из
+    // ячейки квадрат, растягивающийся в обе стороны (при 1 ячейке в
+    // широком контейнере получался огромный квадрат 200×200dp).
     //
     // NB: Modifier.weight() — член RowScope/ColumnScope, поэтому
     // сам модификатор нельзя вынести в val снаружи when'а —
@@ -84,8 +89,8 @@ fun SlotCells(
                         used = isUsed,
                         modifier = Modifier
                             .weight(1f)
-                            .aspectRatio(1f)
-                            .sizeIn(maxWidth = 80.dp, maxHeight = 80.dp),
+                            .height(48.dp)
+                            .sizeIn(maxWidth = 80.dp),
                     )
                 }
             }
@@ -108,8 +113,8 @@ fun SlotCells(
                                 used = isUsed,
                                 modifier = Modifier
                                     .weight(1f)
-                                    .aspectRatio(1f)
-                                    .sizeIn(maxWidth = 80.dp, maxHeight = 80.dp),
+                                    .height(38.dp)
+                                    .sizeIn(maxWidth = 80.dp),
                             )
                         }
                     }
