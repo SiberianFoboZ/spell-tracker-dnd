@@ -3,8 +3,12 @@
 # Что делает:
 #   1. Поднимает JDK 21 (Gradle 9.3.1 + AGP 9.1.1 требуют именно 21)
 #   2. Ставит Android SDK 36 (compileSdk = 36)
-#   3. Собирает release APK
-#   4. Создаёт GitHub Release и прикрепляет APK
+#   3. Этап 23: декодирует keystore + keystore.properties из Secrets
+#      (если заданы — APK подписывается релизным ключом;
+#       если нет — fallback на debug-keystore, как раньше)
+#   4. Собирает release APK
+#   5. Верифицирует подпись (apksigner verify)
+#   6. Создаёт GitHub Release и прикрепляет APK
 name: Build and Release APK
 
 on:
@@ -46,6 +50,32 @@ jobs:
       - name: Make gradlew executable
         run: chmod +x ./gradlew
 
+      # Этап 23: декодируем keystore + keystore.properties из Secrets.
+      # Secrets, которые нужно задать в репозитории (Settings → Secrets
+      # and variables → Actions → New repository secret):
+      #   KEYSTORE_BASE64              — base64 от keystore/spell-tracker-release.jks
+      #   KEYSTORE_PROPERTIES_BASE64   — base64 от keystore.properties
+      # Если Secrets не заданы — fallback на debug-keystore (старое поведение).
+      # Команды для кодирования в PowerShell:
+      #   [Convert]::ToBase64String([IO.File]::ReadAllBytes("keystore\spell-tracker-release.jks"))
+      #   [Convert]::ToBase64String([IO.File]::ReadAllBytes("keystore.properties"))
+      # ⚠️  Secrets видны админам репозитория — для максимальной безопасности
+      # подписывайте локально и заливайте APK вручную.
+      - name: Decode keystore
+        env:
+          KEYSTORE_B64: ${{ secrets.KEYSTORE_BASE64 }}
+          KEYSTORE_PROPS_B64: ${{ secrets.KEYSTORE_PROPERTIES_BASE64 }}
+        run: |
+          if [ -n "$KEYSTORE_B64" ] && [ -n "$KEYSTORE_PROPS_B64" ]; then
+            mkdir -p keystore
+            echo "$KEYSTORE_B64" | base64 -d > keystore/spell-tracker-release.jks
+            echo "$KEYSTORE_PROPS_B64" | base64 -d > keystore.properties
+            echo "✅ Keystore decoded — APK будет подписан релизным ключом"
+          else
+            echo "⚠️  KEYSTORE_BASE64 / KEYSTORE_PROPERTIES_BASE64 не заданы —"
+            echo "   APK будет подписан debug-keystore (старое поведение)."
+          fi
+
       # ВАЖНО: -Dorg.gradle.java.home=$JAVA_HOME перебивает локальный
       # Windows-путь из gradle.properties (его нет на Linux-раннере,
       # Gradle бы упал при старте демона).
@@ -60,6 +90,23 @@ jobs:
             exit 1
           fi
 
+      # Этап 23: верифицируем подпись (apksigner из Android SDK).
+      # Если keystore был декодирован выше — DN должен совпадать с
+      # "CN=Spell Tracker, OU=Personal, O=vk241, C=RU".
+      - name: Verify APK signature
+        run: |
+          APK=$(ls app/build/outputs/apk/release/spell-tracker-v*.apk | head -1)
+          echo "Проверяю: $APK"
+          # build-tools/36.0.0 доступен благодаря android-actions/setup-android@v3
+          APKSIGNER=$(ls -d $ANDROID_HOME/build-tools/*/apksigner 2>/dev/null | tail -1)
+          if [ -z "$APKSIGNER" ] || [ ! -x "$APKSIGNER" ]; then
+            echo "::warning::apksigner не найден в ANDROID_HOME/build-tools — пропускаю верификацию"
+            exit 0
+          fi
+          "$APKSIGNER" verify --verbose "$APK"
+          echo "---"
+          "$APKSIGNER" verify --print-certs "$APK" | grep -E "(Signer #1 certificate DN|Verified using v[12] scheme)"
+
       # Имя релиза берётся из тега (например, v1.0.0 → "Spell Tracker v1.0.0").
       # generate_release_notes: true — GitHub сам соберёт список изменений
       # из PR/коммитов между тегами.
@@ -71,3 +118,7 @@ jobs:
           generate_release_notes: true
           files: app/build/outputs/apk/release/spell-tracker-v*.apk
           fail_on_unmatched_files: true
+          # Этап 23: помечаем релиз как "latest" если в Secrets есть
+          # keystore — иначе APK будет подписан debug-ключом и не
+          # подходит для обычных пользователей.
+          prerelease: ${{ secrets.KEYSTORE_BASE64 == '' }}

@@ -1,3 +1,6 @@
+import java.io.FileInputStream
+import java.util.Properties
+
 plugins {
     id("com.android.application")
     // org.jetbrains.kotlin.android не указываем явно: AGP 9.x авто-применяет
@@ -6,6 +9,17 @@ plugins {
     // KSP: обрабатывает Kotlin-аннотации (Room @Database/@Dao/@Entity и т.п.)
     // и генерирует SpellDatabase_Impl во время компиляции.
     id("com.google.devtools.ksp")
+}
+
+// Этап 23: чтение release-keystore из keystore.properties (файл в
+// .gitignore, лежит в корне). Если файла нет — release падает на
+// debug-keystore (старое поведение до Этапа 23), чтобы ничего не
+// сломать у тех, кто не генерировал keystore.
+val keystorePropertiesFile = rootProject.file("keystore.properties")
+val keystoreProperties = Properties().apply {
+    if (keystorePropertiesFile.exists()) {
+        load(FileInputStream(keystorePropertiesFile))
+    }
 }
 
 android {
@@ -28,11 +42,36 @@ android {
         vectorDrawables { useSupportLibrary = true }
     }
 
+    // Этап 23: конфиг подписи release. Объявлен ДО buildTypes,
+    // чтобы buildTypes.release мог на него сослаться. Создаётся
+    // только если задан keystore.properties.
+    signingConfigs {
+        if (keystorePropertiesFile.exists()) {
+            create("release") {
+                keyAlias = keystoreProperties.getProperty("keyAlias")
+                keyPassword = keystoreProperties.getProperty("keyPassword")
+                // storeFile в keystore.properties указан относительно
+                // КОРНЯ проекта (там же лежит keystore.properties) —
+                // rootProject.file(...) резолвит путь от корня, а не от
+                // app/, как сделал бы голый file(...).
+                storeFile = rootProject.file(keystoreProperties.getProperty("storeFile"))
+                storePassword = keystoreProperties.getProperty("storePassword")
+            }
+        }
+    }
+
     buildTypes {
         release {
-            // Тестовая подпись отладочным ключом, чтобы APK можно было
-            // ставить на реальное устройство без своего keystore.
-            signingConfig = signingConfigs.getByName("debug")
+            // Этап 23: подписываем release APK личным keystore вместо
+            // debug, чтобы при установке на устройство не было
+            // предупреждения «не из безопасных источников» и
+            // «подписано отладочным ключом». Если keystore.properties
+            // не найден — fallback на debug-keystore для совместимости.
+            signingConfig = if (keystorePropertiesFile.exists()) {
+                signingConfigs.getByName("release")
+            } else {
+                signingConfigs.getByName("debug")
+            }
             isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),

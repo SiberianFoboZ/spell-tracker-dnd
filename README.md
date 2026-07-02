@@ -180,9 +180,46 @@ Windows:
 adb install -r app/build/outputs/apk/release/spell-tracker-v2.4.2.apk
 ```
 
-> **Примечание**: release-APK подписан **debug-ключом** (только для тестирования).
-> Для публикации в Google Play нужно настроить собственный `signingConfig` в
-> `app/build.gradle.kts`.
+### Подпись release APK (Этап 23)
+
+Release-APK подписывается **личным keystore** (`keystore/spell-tracker-release.jks`),
+а не дебажным ключом — так при установке на устройство нет предупреждения
+«подписано отладочным ключом» / «не из безопасных источников».
+
+Если файла `keystore.properties` нет, build падает обратно на debug-keystore
+(для обратной совместимости).
+
+**Сгенерировать keystore + keystore.properties впервые** (Windows, PowerShell):
+
+```powershell
+.\tools\generate_keystore.ps1
+```
+
+Это создаст:
+- `keystore/spell-tracker-release.jks` (RSA 2048, срок 10000 дней)
+- `keystore.properties` (alias + пароли)
+
+Оба файла добавлены в `.gitignore` — реальные пароли **не должны** попадать в репозиторий.
+Для совместной разработки передавайте `keystore.properties` (и при необходимости сам
+keystore) **отдельно** от кода (по защищённому каналу), либо используйте
+`keystore.properties.example` как шаблон для своей генерации.
+
+**Ручная генерация** (если нужен свой alias/пароль/DN):
+
+```powershell
+keytool -genkeypair -v `
+    -keystore keystore\spell-tracker-release.jks `
+    -alias spell-tracker `
+    -keyalg RSA -keysize 2048 -validity 10000 `
+    -storepass ВАШ_ПАРОЛЬ_ХРАНИЛИЩА `
+    -keypass ВАШ_ПАРОЛЬ_КЛЮЧА `
+    -dname "CN=Spell Tracker, OU=Personal, O=vk241, C=RU"
+```
+
+> ⚠️  Если на устройстве уже стоит APK, подписанный другим ключом (например,
+> старый debug-APK), обновление поверх **не получится** из-за разных подписей.
+> Перед установкой нового APK нужно удалить старую версию (`adb uninstall`
+> com.example.spelltracker или вручную).
 
 ---
 

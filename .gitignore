@@ -18,6 +18,10 @@ release/
 # === Локальная конфигурация ===
 local.properties
 
+# === Локальные данные Qwen Code (скиллы, memory, settings) ===
+# Не относятся к проекту — генерируются локально.
+.qwen/
+
 # === Логи ===
 *.log
 
@@ -34,8 +38,14 @@ captures/
 proguard/
 
 # === Ключи и секреты ===
+# Этап 23: релизный keystore + файл с паролями. НЕ коммитим.
 *.jks
 *.keystore
+keystore/
+keystore.properties
+# Этап 23: base64-строки для GitHub Secrets (для CI подписи).
+# Не должны попасть в репозиторий — регенерируются из keystore/.
+secrets/
 google-services.json
 
 # === Нативная сборка ===
