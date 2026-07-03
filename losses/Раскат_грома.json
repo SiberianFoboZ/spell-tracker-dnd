@@ -1,0 +1,63 @@
+{
+    "name": {
+        "rus": "Раскат грома",
+        "eng": "Thunderclap"
+    },
+    "level": 0,
+    "school": "воплощение",
+    "additionalType": "Рунная магия",
+    "components": {
+        "s": true
+    },
+    "url": "/spells/thunderclap",
+    "source": {
+        "shortName": "XGE",
+        "name": "Руководство Занатара обо всем",
+        "group": {
+            "name": "Официальные источники",
+            "shortName": "Basic"
+        }
+    },
+    "id": 443,
+    "range": "5 футов",
+    "duration": "Мгновенная",
+    "time": "1 действие",
+    "classes": [
+        {
+            "name": "Бард",
+            "url": "/classes/bard",
+            "icon": "class/bard"
+        },
+        {
+            "name": "Волшебник",
+            "url": "/classes/wizard",
+            "icon": "class/wizard"
+        },
+        {
+            "name": "Друид",
+            "url": "/classes/druid",
+            "icon": "class/druid"
+        },
+        {
+            "name": "Колдун",
+            "url": "/classes/warlock",
+            "icon": "class/warlock"
+        },
+        {
+            "name": "Чародей",
+            "url": "/classes/sorcerer",
+            "icon": "class/sorcerer"
+        },
+        {
+            "name": "Изобретатель",
+            "url": "/classes/artificer",
+            "icon": "class/artificer"
+        },
+        {
+            "name": "Шаман",
+            "url": "/classes/shaman",
+            "icon": "class/shaman"
+        }
+    ],
+    "description": "<p>Вы вызываете оглушительный раскат грома, который слышен на расстоянии до 100 футов. Все существа кроме вас в пределах 5 футов должны совершить спасбросок <span class=\"saving_throw\">Телосложения</span>. При провале существо получает&nbsp;<dice-roller formula=\"1к6\">1к6</dice-roller> урона звуком.</p><p>Урон заклинания увеличивается на <dice-roller formula=\"1к6\">1к6</dice-roller>, когда вы достигаете 5 уровня (<dice-roller formula=\"2к6\">2к6</dice-roller>), 11 уровня (<dice-roller formula=\"3к6\">3к6</dice-roller>) и 17 уровня (<dice-roller formula=\"4к6\">4к6</dice-roller>).</p>"
+}

@@ -1,0 +1,40 @@
+{
+    "name": {
+        "rus": "Чувство охотника",
+        "eng": "Hunter Sense"
+    },
+    "level": 0,
+    "school": "прорицание",
+    "components": {
+        "v": true,
+        "s": true
+    },
+    "concentration": true,
+    "url": "/spells/hunter_sense",
+    "source": {
+        "shortName": "GHtPG",
+        "name": "Руководство игрока в Мрачной лощине",
+        "group": {
+            "name": "Контент от третьих лиц",
+            "shortName": "3rd"
+        },
+        "page": 2
+    },
+    "id": 867,
+    "range": "Касание",
+    "duration": "Концентрация, вплоть до 1 минуты",
+    "time": "1 действие",
+    "classes": [
+        {
+            "name": "Друид",
+            "url": "/classes/druid",
+            "icon": "class/druid"
+        },
+        {
+            "name": "Следопыт",
+            "url": "/classes/ranger",
+            "icon": "class/ranger"
+        }
+    ],
+    "description": "<p>Вы касаетесь одного согласного существа. Пока заклинание активно, каждый раз, когда существо совершает проверку <detail-tooltip type=\"screen\"><a href=\"/screens/perception\"><em>Мудрости (Внимательность)</em></a></detail-tooltip> оно может при выпадении на <dice-roller formula=\"d20\">к20</dice-roller> результата &laquo;1&ndash;9&raquo; считать, что выпало &laquo;10&raquo;.</p>"
+}

@@ -1,0 +1,51 @@
+{
+    "name": {
+        "rus": "Иней",
+        "eng": "Hoarfrost"
+    },
+    "level": 0,
+    "school": "воплощение",
+    "additionalType": "Магия Колец",
+    "components": {
+        "v": true,
+        "s": true
+    },
+    "url": "/spells/hoarfrost",
+    "source": {
+        "shortName": "MHH",
+        "name": "Мидгард Справочник героя",
+        "group": {
+            "name": "Контент от третьих лиц",
+            "shortName": "3rd"
+        }
+    },
+    "id": 567,
+    "range": "Касание",
+    "duration": "1 минута",
+    "time": "1 бонусное действие",
+    "classes": [
+        {
+            "name": "Волшебник",
+            "url": "/classes/wizard",
+            "icon": "class/wizard"
+        },
+        {
+            "name": "Колдун",
+            "url": "/classes/warlock",
+            "icon": "class/warlock"
+        },
+        {
+            "name": "Чародей",
+            "url": "/classes/sorcerer",
+            "icon": "class/sorcerer"
+        }
+    ],
+    "subclasses": [
+        {
+            "name": "Хранитель Кольца",
+            "url": "/classes/wizard/ring_warden",
+            "class": "Волшебник"
+        }
+    ],
+    "description": "<p>Оружие ближнего боя, которое вы держите, пронизывается глубоким холодом. В течение всей длительности заклинания иней покрывает оружие, и из него поднимается легкий пар, если температура окрестностей выше нуля. Оружие наносит дополнительных <dice-roller formula=\"1к4\">1к4</dice-roller> урона холодом при попадании. Заклинание оканчивается, если вы накладываете его снова или отпускаете оружие.</p><p>Урон заговора растет на 1к4, когда вы получаете 5 уровень (<dice-roller formula=\"2к4\">2к4</dice-roller>), 11 уровень (<dice-roller formula=\"3к4\">3к4</dice-roller>) и 17 уровень (<dice-roller formula=\"4к4\">4к4</dice-roller>).</p>"
+}

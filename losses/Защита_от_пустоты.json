@@ -1,0 +1,36 @@
+{
+    "name": {
+        "rus": "Защита от пустоты",
+        "eng": "Protection from the Void"
+    },
+    "level": 1,
+    "school": "ограждение",
+    "components": {
+        "v": true,
+        "s": true,
+        "m": "небольшой слиток серебра стоимостью 15 см, который расходуется на заклинание"
+    },
+    "concentration": true,
+    "url": "/spells/protection_from_the_void",
+    "source": {
+        "shortName": "DMf5E",
+        "name": "Углубленная Магия для 5 редакции",
+        "group": {
+            "name": "Контент от третьих лиц",
+            "shortName": "3rd"
+        }
+    },
+    "id": 860,
+    "range": "Касание",
+    "duration": "Концентрация, до 10 минут",
+    "time": "1 действие",
+    "classes": [],
+    "subclasses": [
+        {
+            "name": "Домен Пустоты",
+            "url": "/classes/cleric/void",
+            "class": "Жрец"
+        }
+    ],
+    "description": "<p>Пока заклинание не закончится, одно существо, которого вы коснетесь, имеет <strong>сопротивление</strong> некротическому и психическому урону и совершает с <span class=\"advantage\">преимуществом</span> спасброски против заклинаний Бездны.</p>"
+}

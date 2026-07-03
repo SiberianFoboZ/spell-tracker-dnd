@@ -1,0 +1,56 @@
+{
+    "name": {
+        "rus": "Леденящее прикосновение",
+        "eng": "Chill Touch"
+    },
+    "level": 0,
+    "school": "некромантия",
+    "components": {
+        "v": true,
+        "s": true
+    },
+    "url": "/spells/chill_touch",
+    "source": {
+        "shortName": "PHB",
+        "name": "Книга игрока",
+        "group": {
+            "name": "Официальные источники",
+            "shortName": "Basic"
+        },
+        "page": 235
+    },
+    "id": 125,
+    "range": "120 футов",
+    "duration": "1 раунд",
+    "time": "1 действие",
+    "classes": [
+        {
+            "name": "Волшебник",
+            "url": "/classes/wizard",
+            "icon": "class/wizard"
+        },
+        {
+            "name": "Колдун",
+            "url": "/classes/warlock",
+            "icon": "class/warlock"
+        },
+        {
+            "name": "Чародей",
+            "url": "/classes/sorcerer",
+            "icon": "class/sorcerer"
+        },
+        {
+            "name": "Шаман",
+            "url": "/classes/shaman",
+            "icon": "class/shaman"
+        }
+    ],
+    "subclasses": [
+        {
+            "name": "Круг Спор",
+            "url": "/classes/druid/spores",
+            "class": "Друид"
+        }
+    ],
+    "description": "<p>Вы создаёте призрачную руку скелета в пространстве существа, находящегося в пределах дистанции.</p><p>Совершите <em>дальнобойную атаку заклинанием</em> по существу, чтобы окутать его могильным холодом. При попадании цель получает <dice-roller formula=\"1к8\">1к8</dice-roller> урона некротической энергией, и не может восстанавливать хиты до начала вашего следующего хода. Всё это время рука держится за цель.</p><p>Если вы попадаете по нежити, то она также до конца вашего следующего хода совершает по вам броски атаки с <span class=\"disadvantage\">помехой</span>.</p><p>Урон этого заклинания увеличивается на <dice-roller formula=\"1к8\">1к8</dice-roller>, когда вы достигаете 5 уровня (<dice-roller formula=\"2к8\">2к8</dice-roller>), 11 уровня (<dice-roller formula=\"3к8\">3к8</dice-roller>), 17 уровня (<dice-roller formula=\"4к8\">4к8</dice-roller>).</p>"
+}

@@ -1,0 +1,33 @@
+{
+    "name": {
+        "rus": "Добродетель ",
+        "eng": "Virtue"
+    },
+    "level": 0,
+    "school": "ограждение",
+    "components": {
+        "v": true,
+        "s": true
+    },
+    "url": "/spells/virtue",
+    "source": {
+        "shortName": "UASS",
+        "name": "Unearthed Arcana: Стартовые заклинания",
+        "group": {
+            "name": "Тестовый материал",
+            "shortName": "UA"
+        }
+    },
+    "id": 920,
+    "range": "Касание",
+    "duration": "1 раунд",
+    "time": "1 действие",
+    "classes": [
+        {
+            "name": "Жрец",
+            "url": "/classes/cleric",
+            "icon": "class/cleric"
+        }
+    ],
+    "description": "<p>Вы касаетесь одного существа, наполняя его жизненной силой.</p><p>Если у цели есть хотя бы 1 хит, она получает количество временных хитов, равное <dice-roller formula=\"1к4\">1к4</dice-roller> + ваш модификатор характеристики заклинания. Временные хиты теряются, когда заклинание заканчивается.</p>"
+}

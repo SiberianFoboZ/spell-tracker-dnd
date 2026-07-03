@@ -1,0 +1,43 @@
+{
+    "name": {
+        "rus": "Погасить свет",
+        "eng": "Douse Light"
+    },
+    "level": 0,
+    "school": "преобразование",
+    "components": {
+        "v": true,
+        "s": true
+    },
+    "url": "/spells/douse_light",
+    "source": {
+        "shortName": "MHH",
+        "name": "Мидгард Справочник героя",
+        "group": {
+            "name": "Контент от третьих лиц",
+            "shortName": "3rd"
+        }
+    },
+    "id": 660,
+    "range": "30 футов",
+    "duration": "Мгновенная",
+    "time": "1 действие",
+    "classes": [
+        {
+            "name": "Волшебник",
+            "url": "/classes/wizard",
+            "icon": "class/wizard"
+        },
+        {
+            "name": "Колдун",
+            "url": "/classes/warlock",
+            "icon": "class/warlock"
+        },
+        {
+            "name": "Чародей",
+            "url": "/classes/sorcerer",
+            "icon": "class/sorcerer"
+        }
+    ],
+    "description": "<p>С помощью жеста руки и заклинания, вы можете погасить один небольшой источник света в пределах диапазона. Это заклинание гасит факел, свечу, фонарь или источники света, созданные такими заговорами как <detail-tooltip type=\"spell\"><a href=\"/spells/Light\">свет [light]</a></detail-tooltip> или <detail-tooltip type=\"spell\"><a href=\"/spells/Dancing_lights\">пляшущие огоньки [dancing lights]</a></detail-tooltip>.</p>"
+}

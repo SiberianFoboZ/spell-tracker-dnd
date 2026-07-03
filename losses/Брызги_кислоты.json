@@ -1,0 +1,44 @@
+{
+    "name": {
+        "rus": "Брызги кислоты",
+        "eng": "Acid Splash"
+    },
+    "level": 0,
+    "school": "воплощение",
+    "components": {
+        "v": true,
+        "s": true
+    },
+    "url": "/spells/acid_splash",
+    "source": {
+        "shortName": "PHB",
+        "name": "Книга игрока",
+        "group": {
+            "name": "Официальные источники",
+            "shortName": "Basic"
+        },
+        "page": 214
+    },
+    "id": 24,
+    "range": "60 футов",
+    "duration": "Мгновенная",
+    "time": "1 действие",
+    "classes": [
+        {
+            "name": "Волшебник",
+            "url": "/classes/wizard",
+            "icon": "class/wizard"
+        },
+        {
+            "name": "Чародей",
+            "url": "/classes/sorcerer",
+            "icon": "class/sorcerer"
+        },
+        {
+            "name": "Изобретатель",
+            "url": "/classes/artificer",
+            "icon": "class/artificer"
+        }
+    ],
+    "description": "<p>Вы кидаете кислотный шарик.</p><p>Выберите одно видимое<sup><a href=\"/rules/Errata_(PHB)\" title=\"добавлено в Эррате\">1</a></sup> вами существо в пределах дистанции или два видимых<sup><a href=\"/rules/Errata_(PHB)\" title=\"добавлено в Эррате\">2</a></sup> вами существа в пределах дистанции, находящихся в пределах 5 футов друг от друга. Цель должна преуспеть в спасброске <span class=\"saving_throw\">Ловкости</span>, иначе она получает&nbsp;<dice-roller formula=\"1к6\">1к6</dice-roller> урона кислотой.</p><p>Урон этого заклинания увеличивается на <dice-roller formula=\"1к6\">1к6</dice-roller>, когда вы достигаете 5 уровня (<dice-roller formula=\"2к6\">2к6</dice-roller>), 11 уровня (<dice-roller formula=\"3к6\">3к6</dice-roller>) и 17 уровня (<dice-roller formula=\"4к6\">4к6</dice-roller>).</p>"
+}

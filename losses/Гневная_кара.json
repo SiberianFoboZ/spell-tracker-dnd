@@ -1,0 +1,46 @@
+{
+    "name": {
+        "rus": "Гневная кара",
+        "eng": "Wrathful Smite"
+    },
+    "level": 1,
+    "school": "воплощение",
+    "components": {
+        "v": true
+    },
+    "concentration": true,
+    "url": "/spells/wrathful_smite",
+    "source": {
+        "shortName": "PHB",
+        "name": "Книга игрока",
+        "group": {
+            "name": "Официальные источники",
+            "shortName": "Basic"
+        },
+        "page": 221
+    },
+    "id": 58,
+    "range": "На себя",
+    "duration": "Концентрация, вплоть до 1 минуты",
+    "time": "1 бонусное действие",
+    "classes": [
+        {
+            "name": "Паладин",
+            "url": "/classes/paladin",
+            "icon": "class/paladin"
+        }
+    ],
+    "subclasses": [
+        {
+            "name": "Ведьмовской Клинок",
+            "url": "/classes/warlock/hexblade",
+            "class": "Колдун"
+        },
+        {
+            "name": "Колдовской Клинок",
+            "url": "/classes/warlock/hexblade_ua",
+            "class": "Колдун"
+        }
+    ],
+    "description": "<p>В следующий раз, когда вы попадёте <em>рукопашной атакой оружием</em>, пока активно это заклинание, ваша атака причиняет дополнительно&nbsp;<dice-roller formula=\"1d6\">1к6</dice-roller> урона психической энергией.</p><p>Кроме того, если цель &mdash; существо, оно должно совершить спасбросок <span class=\"saving_throw\">Мудрости</span>, иначе оно станет <detail-tooltip type=\"screen\"><a href=\"/screens/frightened\">испуганным</a></detail-tooltip> до окончания действия заклинания. Существо может <em>Действием</em> совершить проверку <strong>Мудрости</strong> против Сл ваших заклинаний, чтобы успокоиться и окончить это заклинание.</p>"
+}

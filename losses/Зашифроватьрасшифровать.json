@@ -1,0 +1,44 @@
+{
+    "name": {
+        "rus": "Зашифровать/расшифровать",
+        "eng": "Encrypt or Decrypt"
+    },
+    "level": 0,
+    "school": "преобразование",
+    "additionalType": "Магия иероглифов",
+    "components": {
+        "v": true,
+        "s": true
+    },
+    "url": "/spells/encrypt_or_decrypt",
+    "source": {
+        "shortName": "MHH",
+        "name": "Мидгард Справочник героя",
+        "group": {
+            "name": "Контент от третьих лиц",
+            "shortName": "3rd"
+        }
+    },
+    "id": 559,
+    "range": "Касание",
+    "duration": "Мгновенная",
+    "time": "1 действие",
+    "classes": [
+        {
+            "name": "Бард",
+            "url": "/classes/bard",
+            "icon": "class/bard"
+        },
+        {
+            "name": "Волшебник",
+            "url": "/classes/wizard",
+            "icon": "class/wizard"
+        },
+        {
+            "name": "Жрец",
+            "url": "/classes/cleric",
+            "icon": "class/cleric"
+        }
+    ],
+    "description": "<p>Прикоснувшись к сообщению в письменной форме или книге, вы скрываете её содержимое. Все существа, пытающиеся прочесть содержимое, видят лишь одну тарабарщину.</p><p>Этот эффект заканчивается, либо, когда вы повторно накладываете заклинание на предмет, либо вы накладываете на него <detail-tooltip type=\"spell\"><a href=\"/spells/Dispel_magic\">рассеивание магии [dispel magic]</a></detail-tooltip>.</p>"
+}

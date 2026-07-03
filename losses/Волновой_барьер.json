@@ -1,0 +1,53 @@
+{
+    "name": {
+        "rus": "Волновой барьер",
+        "eng": "Tidal Barrier"
+    },
+    "level": 1,
+    "school": "ограждение",
+    "additionalType": "Стихийная магия",
+    "components": {
+        "v": true,
+        "s": true,
+        "m": "кусочек коряги"
+    },
+    "concentration": true,
+    "url": "/spells/tidal_barrier",
+    "source": {
+        "shortName": "MHH",
+        "name": "Мидгард Справочник героя",
+        "group": {
+            "name": "Контент от третьих лиц",
+            "shortName": "3rd"
+        }
+    },
+    "id": 517,
+    "range": "На себя (10-футовый радиус)",
+    "duration": "Концентрация, вплоть до 1 минуты",
+    "time": "1 действие",
+    "classes": [
+        {
+            "name": "Волшебник",
+            "url": "/classes/wizard",
+            "icon": "class/wizard"
+        },
+        {
+            "name": "Колдун",
+            "url": "/classes/warlock",
+            "icon": "class/warlock"
+        },
+        {
+            "name": "Чародей",
+            "url": "/classes/sorcerer",
+            "icon": "class/sorcerer"
+        }
+    ],
+    "subclasses": [
+        {
+            "name": "Элементалист",
+            "url": "/classes/wizard/elementalist",
+            "class": "Волшебник"
+        }
+    ],
+    "description": "<p>Вихри морской воды окружают вас, сталкиваясь и перекатываясь в 10-футовом радиусе вокруг вас. Область действия становится <detail-tooltip type=\"screen\"><a href=\"/screens/difficult_terrain_move\">труднопроходимой местностью</a></detail-tooltip>, и существа, начинающие в ней свой ход или входящие в неё должны совершить спасбросок <span class=\"saving_throw\">Силы</span>. При провале существо отталкивается от вас на 10 футов и его скорость падает до 0 до начала его следующего хода.</p>"
+}

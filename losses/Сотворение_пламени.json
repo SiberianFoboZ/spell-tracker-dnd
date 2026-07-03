@@ -1,0 +1,44 @@
+{
+    "name": {
+        "rus": "Сотворение пламени",
+        "eng": "Produce Flame"
+    },
+    "level": 0,
+    "school": "вызов",
+    "components": {
+        "v": true,
+        "s": true
+    },
+    "url": "/spells/produce_flame",
+    "source": {
+        "shortName": "PHB",
+        "name": "Книга игрока",
+        "group": {
+            "name": "Официальные источники",
+            "shortName": "Basic"
+        }
+    },
+    "id": 324,
+    "range": "На себя",
+    "duration": "10 минут",
+    "time": "1 действие",
+    "classes": [
+        {
+            "name": "Друид",
+            "url": "/classes/druid",
+            "icon": "class/druid"
+        },
+        {
+            "name": "Шаман",
+            "url": "/classes/shaman",
+            "icon": "class/shaman"
+        }
+    ],
+    "races": [
+        {
+            "name": "Дженази (огненный)",
+            "url": "/races/fire"
+        }
+    ],
+    "description": "<p>В вашей ладони появляется мерцающее пламя. Оно остаётся там, пока заклинание активно, и не вредит ни вам, ни вашему снаряжению. Огонь испускает <detail-tooltip type=\"screen\"><a href=\"/screens/bright_light\">яркий свет</a></detail-tooltip> в радиусе 10 футов и <detail-tooltip type=\"screen\"><a href=\"/screens/dim_light\">тусклый свет</a></detail-tooltip> в пределах ещё 10 футов.</p><p>Заклинание оканчивается, если вы оканчиваете его <em>Действием</em> или накладываете ещё раз.</p><p>Вы можете атаковать этим пламенем, но это тоже оканчивает заклинание. Когда вы накладываете это заклинание, или другим действием в одном из последующих ходов вы можете метнуть пламя в существо, находящееся в пределах 30 футов от вас.</p><p>Совершите <em>дальнобойную атаку заклинанием</em>. При попадании цель получает&nbsp;<dice-roller formula=\"1к8\">1к8</dice-roller> урона огнём.</p><p>Урон этого заклинания увеличивается на <dice-roller formula=\"1к8\">1к8</dice-roller>, когда вы достигаете 5 уровня (<dice-roller formula=\"2к8\">2к8</dice-roller>), 11 уровня (<dice-roller formula=\"3к8\">3к8</dice-roller>) и 17 уровня (<dice-roller formula=\"4к8\">4к8</dice-roller>).</p>"
+}

@@ -1,0 +1,47 @@
+{
+    "name": {
+        "rus": "Град шипов",
+        "eng": "Hail of Thorns"
+    },
+    "level": 1,
+    "school": "вызов",
+    "components": {
+        "v": true
+    },
+    "concentration": true,
+    "url": "/spells/hail_of_thorns",
+    "source": {
+        "shortName": "PHB",
+        "name": "Книга игрока",
+        "group": {
+            "name": "Официальные источники",
+            "shortName": "Basic"
+        },
+        "page": 221
+    },
+    "id": 62,
+    "range": "На себя",
+    "duration": "Концентрация, вплоть до 1 минуты",
+    "time": "1 бонусное действие",
+    "classes": [
+        {
+            "name": "Следопыт",
+            "url": "/classes/ranger",
+            "icon": "class/ranger"
+        },
+        {
+            "name": "Альтернативный следопыт",
+            "url": "/classes/alternate_ranger",
+            "icon": "class/alternate-ranger"
+        }
+    ],
+    "subclasses": [
+        {
+            "name": "Орден Мистических Лучников",
+            "url": "/classes/magus/arcane_archers",
+            "class": "Магус"
+        }
+    ],
+    "description": "<p>В следующий раз, когда вы попадёте по существу <em>дальнобойной атакой оружием</em>, пока активно это заклинание, из дальнобойного оружия или боеприпаса вылетит град шипов.</p><p>В дополнение к обычному эффекту атаки, цель и все существа в пределах 5 футов от неё, должны совершить спасбросок <span class=\"saving_throw\">Ловкости</span>. При провале существо получает&nbsp;<dice-roller formula=\"1к10\">1к10</dice-roller> колющего урона, или половину этого урона при успехе.</p>",
+    "upper": "Если вы накладываете это заклинание, используя ячейку 2 уровня или выше, урон увеличивается на <dice-roller formula=\"1к10\">1к10</dice-roller> за каждый уровень ячейки выше первого (до максимума <dice-roller formula=\"6к10\">6к10</dice-roller>)."
+}

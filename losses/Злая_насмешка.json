@@ -1,0 +1,39 @@
+{
+    "name": {
+        "rus": "Злая насмешка",
+        "eng": "Vicious Mockery"
+    },
+    "level": 0,
+    "school": "очарование",
+    "components": {
+        "v": true
+    },
+    "url": "/spells/vicious_mockery",
+    "source": {
+        "shortName": "PHB",
+        "name": "Книга игрока",
+        "group": {
+            "name": "Официальные источники",
+            "shortName": "Basic"
+        },
+        "page": 229
+    },
+    "id": 97,
+    "range": "60 футов",
+    "duration": "Мгновенная",
+    "time": "1 действие",
+    "classes": [
+        {
+            "name": "Бард",
+            "url": "/classes/bard",
+            "icon": "class/bard"
+        }
+    ],
+    "races": [
+        {
+            "name": "Тифлинг (язык дьявола)",
+            "url": "/races/variant_devils_tongue"
+        }
+    ],
+    "description": "<p>Вы испускаете на существо, видимое в пределах дистанции, поток оскорблений вперемешку с тонкой магией.</p><p>Если цель слышит вас (при этом она не обязана вас понимать), она должна преуспеть в спасброске <span class=\"saving_throw\">Мудрости</span>, иначе получит&nbsp;<dice-roller formula=\"1к4\">1к4</dice-roller> урона психической энергией, и следующий бросок атаки до конца своего следующего хода совершит с <span class=\"disadvantage\">помехой</span>.</p><p>Урон этого заклинания увеличивается на <dice-roller formula=\"1к4\">1к4</dice-roller>, когда вы достигаете 5 уровня (<dice-roller formula=\"2к4\">2к4</dice-roller>), 11 уровня (<dice-roller formula=\"3к4\">3к4</dice-roller>) и 17 уровня (<dice-roller formula=\"4к4\">4к4</dice-roller>).</p>"
+}

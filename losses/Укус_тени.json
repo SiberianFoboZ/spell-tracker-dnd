@@ -1,0 +1,41 @@
+{
+    "name": {
+        "rus": "Укус тени",
+        "eng": "Shadow Bite"
+    },
+    "level": 0,
+    "school": "иллюзия",
+    "additionalType": "Иллюминация",
+    "components": {
+        "v": true,
+        "s": true
+    },
+    "url": "/spells/shadow_bite",
+    "source": {
+        "shortName": "MHH",
+        "name": "Мидгард Справочник героя",
+        "group": {
+            "name": "Контент от третьих лиц",
+            "shortName": "3rd"
+        }
+    },
+    "id": 746,
+    "range": "60 футов",
+    "duration": "Мгновенная",
+    "time": "1 действие",
+    "classes": [
+        {
+            "name": "Волшебник",
+            "url": "/classes/wizard",
+            "icon": "class/wizard"
+        }
+    ],
+    "subclasses": [
+        {
+            "name": "Иллюминация",
+            "url": "/classes/wizard/illumination",
+            "class": "Волшебник"
+        }
+    ],
+    "description": "<p>Цель этого заклинания чувствует, как в него вгоняется острая ледяная игла. Существо должно совершить успешный спасбросок <span class=\"saving_throw\">Телосложения</span>. В случае провала оно получает <dice-roller formula=\"1к6\">1к6</dice-roller> некротического урона, и до начала его следующего хода его скорость падает вдвое.</p><p>Урон заговором увеличивает на <dice-roller formula=\"1к6\">1к6</dice-roller> при достижении вами 5 уровня (<dice-roller formula=\"2к6\">2к6</dice-roller>), 11 уровня (<dice-roller formula=\"3к6\">3к6</dice-roller>) и 17 уровня (<dice-roller formula=\"4к6\">4к6</dice-roller>).</p>"
+}

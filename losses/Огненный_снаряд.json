@@ -1,0 +1,44 @@
+{
+    "name": {
+        "rus": "Огненный снаряд",
+        "eng": "Fire Bolt"
+    },
+    "level": 0,
+    "school": "воплощение",
+    "components": {
+        "v": true,
+        "s": true
+    },
+    "url": "/spells/fire_bolt",
+    "source": {
+        "shortName": "PHB",
+        "name": "Книга игрока",
+        "group": {
+            "name": "Официальные источники",
+            "shortName": "Basic"
+        },
+        "page": 249
+    },
+    "id": 189,
+    "range": "120 футов",
+    "duration": "Мгновенная",
+    "time": "1 действие",
+    "classes": [
+        {
+            "name": "Волшебник",
+            "url": "/classes/wizard",
+            "icon": "class/wizard"
+        },
+        {
+            "name": "Чародей",
+            "url": "/classes/sorcerer",
+            "icon": "class/sorcerer"
+        },
+        {
+            "name": "Изобретатель",
+            "url": "/classes/artificer",
+            "icon": "class/artificer"
+        }
+    ],
+    "description": "<p>Вы кидаете сгусток огня в существо или предмет в пределах дистанции.</p><p>Совершите по цели <em>дальнобойную атаку заклинанием</em>. При попадании цель получает&nbsp;<dice-roller formula=\"1к10\">1к10</dice-roller> урона огнём. Горючие предметы, по которым попало это заклинание, воспламеняются, если их никто не несёт и не носит.</p><p>Урон этого заклинания увеличивается на <dice-roller formula=\"1к10\">1к10</dice-roller>, когда вы достигаете 5 уровня (<dice-roller formula=\"2к10\">2к10</dice-roller>), 11 уровня (<dice-roller formula=\"3к10\">3к10</dice-roller>) и 17 уровня (<dice-roller formula=\"4к10\">4к10</dice-roller>).</p>"
+}

@@ -1,0 +1,39 @@
+{
+    "name": {
+        "rus": "Священное пламя",
+        "eng": "Sacred Flame"
+    },
+    "level": 0,
+    "school": "воплощение",
+    "components": {
+        "v": true,
+        "s": true
+    },
+    "url": "/spells/sacred_flame",
+    "source": {
+        "shortName": "PHB",
+        "name": "Книга игрока",
+        "group": {
+            "name": "Официальные источники",
+            "shortName": "Basic"
+        }
+    },
+    "id": 298,
+    "range": "60 футов",
+    "duration": "Мгновенная",
+    "time": "1 действие",
+    "classes": [
+        {
+            "name": "Жрец",
+            "url": "/classes/cleric",
+            "icon": "class/cleric"
+        }
+    ],
+    "races": [
+        {
+            "name": "Эльф (астральный)",
+            "url": "/races/astral_elf"
+        }
+    ],
+    "description": "<p>Похожее на огонь сияние нисходит на существо, которое вы видите в пределах дистанции. Цель должна преуспеть в спасброске <span class=\"saving_throw\">Ловкости</span>, иначе она получает&nbsp;<dice-roller formula=\"1к8\">1к8</dice-roller> урона излучением. Для этого спасброска цель не получает преимуществ от укрытия.</p><p>Урон этого заклинания увеличивается на <dice-roller formula=\"1к8\">1к8</dice-roller>, когда вы достигаете 5 уровня (<dice-roller formula=\"2к8\">2к8</dice-roller>), 11 уровня (<dice-roller formula=\"3к8\">3к8</dice-roller>) и 17 уровня (<dice-roller formula=\"4к8\">4к8</dice-roller>).</p>"
+}

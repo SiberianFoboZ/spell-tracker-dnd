@@ -1,0 +1,34 @@
+{
+    "name": {
+        "rus": "Слово Сияния",
+        "eng": "Word of Radiance"
+    },
+    "level": 0,
+    "school": "воплощение",
+    "components": {
+        "v": true,
+        "s": true,
+        "m": "священный символ"
+    },
+    "url": "/spells/word_of_radiance",
+    "source": {
+        "shortName": "XGE",
+        "name": "Руководство Занатара обо всем",
+        "group": {
+            "name": "Официальные источники",
+            "shortName": "Basic"
+        }
+    },
+    "id": 451,
+    "range": "5 футов",
+    "duration": "Мгновенная",
+    "time": "1 действие",
+    "classes": [
+        {
+            "name": "Жрец",
+            "url": "/classes/cleric",
+            "icon": "class/cleric"
+        }
+    ],
+    "description": "<p>Вы произносите божественное слово и извергаете из себя обжигающее сияние. Каждое существо по вашему выбору, которое вы можете видеть в пределах дистанции, должно преуспеть в спасброске <span class=\"saving_throw\">Телосложения</span> или получит&nbsp;<dice-roller formula=\"1к6\">1к6</dice-roller> урона излучением.</p><p>Урон заклинания увеличивается на <dice-roller formula=\"1к6\">1к6</dice-roller>, когда вы достигаете 5 уровня (<dice-roller formula=\"2к6\">2к6</dice-roller>), 11 уровня (<dice-roller formula=\"3к6\">3к6</dice-roller>) и 17 уровня (<dice-roller formula=\"4к6\">4к6</dice-roller>).</p>"
+}

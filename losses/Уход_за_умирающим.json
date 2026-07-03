@@ -1,0 +1,43 @@
+{
+    "name": {
+        "rus": "Уход за умирающим",
+        "eng": "Spare the Dying"
+    },
+    "level": 0,
+    "school": "некромантия",
+    "components": {
+        "v": true,
+        "s": true
+    },
+    "url": "/spells/spare_the_dying",
+    "source": {
+        "shortName": "PHB",
+        "name": "Книга игрока",
+        "group": {
+            "name": "Официальные источники",
+            "shortName": "Basic"
+        }
+    },
+    "id": 357,
+    "range": "Касание",
+    "duration": "Мгновенная",
+    "time": "1 действие",
+    "classes": [
+        {
+            "name": "Жрец",
+            "url": "/classes/cleric",
+            "icon": "class/cleric"
+        },
+        {
+            "name": "Изобретатель",
+            "url": "/classes/artificer",
+            "icon": "class/artificer"
+        },
+        {
+            "name": "Шаман",
+            "url": "/classes/shaman",
+            "icon": "class/shaman"
+        }
+    ],
+    "description": "<p>Вы касаетесь живого существа, у которого 0 хитов. Оно становится <detail-tooltip type=\"screen\"><a href=\"/screens/Stabilized\">стабилизированным</a></detail-tooltip>.</p><p>Это заклинание не оказывает никакого эффекта на нежить и конструктов.</p>"
+}

@@ -1,0 +1,44 @@
+{
+    "name": {
+        "rus": "Вопрос с подвохом",
+        "eng": "Trick Question"
+    },
+    "level": 1,
+    "school": "очарование",
+    "additionalType": "Магия иероглифов",
+    "components": {
+        "v": true,
+        "s": true
+    },
+    "url": "/spells/trick_question",
+    "source": {
+        "shortName": "MHH",
+        "name": "Мидгард Справочник героя",
+        "group": {
+            "name": "Контент от третьих лиц",
+            "shortName": "3rd"
+        }
+    },
+    "id": 519,
+    "range": "30 футов",
+    "duration": "Мгновенная",
+    "time": "1 действие",
+    "classes": [
+        {
+            "name": "Бард",
+            "url": "/classes/bard",
+            "icon": "class/bard"
+        },
+        {
+            "name": "Волшебник",
+            "url": "/classes/wizard",
+            "icon": "class/wizard"
+        },
+        {
+            "name": "Друид",
+            "url": "/classes/druid",
+            "icon": "class/druid"
+        }
+    ],
+    "description": "<p>Вы формулируете вопрос таким образом, что на него можно ответить одним словом и задаёте его цели. Она должна совершить успешный спасбросок <span class=\"saving_throw\">Мудрости</span>, или вынуждена ответить на ваш вопрос. После того, как заклинание закончится, цель осознаёт, что для ответа вы использовали на ней магию.</p>"
+}

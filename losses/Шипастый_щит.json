@@ -1,0 +1,39 @@
+{
+    "name": {
+        "rus": "Шипастый щит",
+        "eng": "Thorn Shield"
+    },
+    "level": 0,
+    "school": "вызов",
+    "components": {
+        "v": true,
+        "s": true
+    },
+    "url": "/spells/thorn_shield",
+    "source": {
+        "shortName": "PG",
+        "name": "Путеводитель игрока: Прорастающий хаос",
+        "group": {
+            "name": "Хомбрю ",
+            "shortName": "HB"
+        },
+        "homebrew": true
+    },
+    "id": 493,
+    "range": "На себя",
+    "duration": "1 минута",
+    "time": "1 бонусное действие",
+    "classes": [
+        {
+            "name": "Друид",
+            "url": "/classes/druid",
+            "icon": "class/druid"
+        },
+        {
+            "name": "Жрец",
+            "url": "/classes/cleric",
+            "icon": "class/cleric"
+        }
+    ],
+    "description": "<p>Вы призываете деревянный щит, усеянный шипами, в свою свободную руку по вашему выбору.</p><p>Этот щит обеспечивает ту же защиту, что и обычный щит. Всякий раз, когда вы успешно атакуете существо с помощью вашего шипастого щита, то оно получает <dice-roller formula=\"1к8\">1к8</dice-roller> колющего урона. Если вы выпускаете щит из рук, то он исчезает.</p>"
+}

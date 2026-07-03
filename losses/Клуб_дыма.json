@@ -1,0 +1,34 @@
+{
+    "name": {
+        "rus": "Клуб дыма",
+        "eng": "Puff of Smoke"
+    },
+    "level": 0,
+    "school": "вызов",
+    "additionalType": "Магия драконов",
+    "components": {
+        "v": true,
+        "s": true
+    },
+    "url": "/spells/puff_of_smoke",
+    "source": {
+        "shortName": "MHH",
+        "name": "Мидгард Справочник героя",
+        "group": {
+            "name": "Контент от третьих лиц",
+            "shortName": "3rd"
+        }
+    },
+    "id": 578,
+    "range": "30 футов",
+    "duration": "Мгновенная",
+    "time": "1 бонусное действие",
+    "classes": [
+        {
+            "name": "Чародей",
+            "url": "/classes/sorcerer",
+            "icon": "class/sorcerer"
+        }
+    ],
+    "description": "<p>Используя первородную силу огня, вы преобразуете близлежащий воздух в клубы дыма.</p><p>Одно существо, которое вы можете видеть, должно совершить спасбросок <span class=\"saving_throw\">Ловкости</span> в случае провала она становится <detail-tooltip type=\"screen\"><a href=\"/screens/blinded\">ослеплённым</a></detail-tooltip> до начала вашего следующего хода. Клуб дыма не оказывает воздействия на существ с чувством вибрации или <detail-tooltip type=\"screen\"><a href=\"/screens/blindsight\">слепым зрением</a></detail-tooltip>.</p>"
+}

@@ -1,0 +1,51 @@
+{
+    "name": {
+        "rus": "Кольцо ветра",
+        "eng": "Circle of Wind"
+    },
+    "level": 1,
+    "school": "ограждение",
+    "additionalType": "Магия колец",
+    "components": {
+        "v": true,
+        "s": true
+    },
+    "url": "/spells/circle_of_wind",
+    "source": {
+        "shortName": "MHH",
+        "name": "Мидгард Справочник героя",
+        "group": {
+            "name": "Контент от третьих лиц",
+            "shortName": "3rd"
+        }
+    },
+    "id": 583,
+    "range": "На себя",
+    "duration": "8 часов",
+    "time": "1 действие",
+    "classes": [
+        {
+            "name": "Волшебник",
+            "url": "/classes/wizard",
+            "icon": "class/wizard"
+        },
+        {
+            "name": "Колдун",
+            "url": "/classes/warlock",
+            "icon": "class/warlock"
+        },
+        {
+            "name": "Чародей",
+            "url": "/classes/sorcerer",
+            "icon": "class/sorcerer"
+        }
+    ],
+    "subclasses": [
+        {
+            "name": "Хранитель Кольца",
+            "url": "/classes/wizard/ring_warden",
+            "class": "Волшебник"
+        }
+    ],
+    "description": "<p>Лёгкий ветер окружает вас, оставляя в центре мягкого вихря. Вы получаете <strong>бонус +2</strong> к КД против дальнобойных атак оружием. Вы также совершаете с <span class=\"advantage\">преимуществом</span> спасброски от экстремального нагревания окружающей среды и от вредных газов, паров и вдыхаемых ядов.</p>"
+}

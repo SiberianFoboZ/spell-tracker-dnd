@@ -1,0 +1,57 @@
+{
+    "name": {
+        "rus": "Нанесение ран",
+        "eng": "Inflict Wounds"
+    },
+    "level": 1,
+    "school": "некромантия",
+    "components": {
+        "v": true,
+        "s": true
+    },
+    "url": "/spells/inflict_wounds",
+    "source": {
+        "shortName": "PHB",
+        "name": "Книга игрока",
+        "group": {
+            "name": "Официальные источники",
+            "shortName": "Basic"
+        },
+        "page": 243
+    },
+    "id": 162,
+    "range": "Касание",
+    "duration": "Мгновенная",
+    "time": "1 действие",
+    "classes": [
+        {
+            "name": "Жрец",
+            "url": "/classes/cleric",
+            "icon": "class/cleric"
+        },
+        {
+            "name": "Шаман",
+            "url": "/classes/shaman",
+            "icon": "class/shaman"
+        }
+    ],
+    "subclasses": [
+        {
+            "name": "Домен Энтропии",
+            "url": "/classes/cleric/entropy",
+            "class": "Жрец"
+        },
+        {
+            "name": "Клятвопреступник",
+            "url": "/classes/paladin/oathbreaker",
+            "class": "Паладин"
+        },
+        {
+            "name": "Клятва Мора",
+            "url": "/classes/paladin/pestilence",
+            "class": "Паладин"
+        }
+    ],
+    "description": "<p>Совершите <em>рукопашную атаку заклинанием</em> по существу в пределах досягаемости. При попадании цель получает&nbsp;<dice-roller formula=\"3к10\">3к10</dice-roller> урона некротической энергией.</p>",
+    "upper": "Если вы накладываете это заклинание, используя ячейку 2 уровня или выше, урон увеличивается на <dice-roller formula=\"1к10\">1к10</dice-roller> за каждый уровень ячейки выше первого."
+}

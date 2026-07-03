@@ -1,0 +1,43 @@
+{
+    "name": {
+        "rus": "Электрошок",
+        "eng": "Shocking Grasp"
+    },
+    "level": 0,
+    "school": "воплощение",
+    "components": {
+        "v": true,
+        "s": true
+    },
+    "url": "/spells/shocking_grasp",
+    "source": {
+        "shortName": "PHB",
+        "name": "Книга игрока",
+        "group": {
+            "name": "Официальные источники",
+            "shortName": "Basic"
+        }
+    },
+    "id": 371,
+    "range": "Касание",
+    "duration": "Мгновенная",
+    "time": "1 действие",
+    "classes": [
+        {
+            "name": "Волшебник",
+            "url": "/classes/wizard",
+            "icon": "class/wizard"
+        },
+        {
+            "name": "Чародей",
+            "url": "/classes/sorcerer",
+            "icon": "class/sorcerer"
+        },
+        {
+            "name": "Изобретатель",
+            "url": "/classes/artificer",
+            "icon": "class/artificer"
+        }
+    ],
+    "description": "<p>Молния спрыгивает с вашей руки и ударяет существо, которого вы пытались коснуться.</p><p>Совершите по цели <em>рукопашную атаку заклинанием</em>. Вы совершаете бросок атаки с <span class=\"advantage\">преимуществом</span>, если цель носит доспех из металла. При попадании цель получает&nbsp;<dice-roller formula=\"1к8\">1к8</dice-roller> урона электричеством, и до начала своего следующего хода не может совершать <em>реакции</em>.</p><p>Урон заклинания увеличивается на <dice-roller formula=\"1к8\">1к8</dice-roller>, когда вы достигаете 5 уровня (<dice-roller formula=\"2к8\">2к8</dice-roller>), 11 уровня (<dice-roller formula=\"3к8\">3к8</dice-roller>) и 17 уровня (<dice-roller formula=\"4к8\">4к8</dice-roller>).</p>"
+}

@@ -1,0 +1,64 @@
+{
+    "name": {
+        "rus": "Ведьмин снаряд",
+        "eng": "Witch Bolt"
+    },
+    "level": 1,
+    "school": "воплощение",
+    "components": {
+        "v": true,
+        "s": true,
+        "m": "веточка дерева, в которое ударила молния"
+    },
+    "concentration": true,
+    "url": "/spells/witch_bolt",
+    "source": {
+        "shortName": "PHB",
+        "name": "Книга игрока",
+        "group": {
+            "name": "Официальные источники",
+            "shortName": "Basic"
+        },
+        "page": 214
+    },
+    "id": 26,
+    "range": "30 футов",
+    "duration": "Концентрация, вплоть до 1 минуты",
+    "time": "1 действие",
+    "classes": [
+        {
+            "name": "Волшебник",
+            "url": "/classes/wizard",
+            "icon": "class/wizard"
+        },
+        {
+            "name": "Колдун",
+            "url": "/classes/warlock",
+            "icon": "class/warlock"
+        },
+        {
+            "name": "Чародей",
+            "url": "/classes/sorcerer",
+            "icon": "class/sorcerer"
+        },
+        {
+            "name": "Шаман",
+            "url": "/classes/shaman",
+            "icon": "class/shaman"
+        },
+        {
+            "name": "Магус",
+            "url": "/classes/magus",
+            "icon": "class/magus"
+        }
+    ],
+    "subclasses": [
+        {
+            "name": "Домен Луны",
+            "url": "/classes/cleric/moon_mhh",
+            "class": "Жрец"
+        }
+    ],
+    "description": "<p>Луч потрескивающей синеватой энергии устремляется к существу в пределах дистанции, формируя между вами и целью непрерывный дуговой разряд.</p><p>Совершите <em>дальнобойную атаку заклинанием</em> по этому существу. При попадании цель получает&nbsp;<dice-roller formula=\"1d12\">1к12</dice-roller> урона электричеством, и пока заклинание активно, вы можете в каждый свой ход <em>Действием</em> автоматически причинять цели <dice-roller formula=\"1d12\">1к12</dice-roller> урона электричеством. Это заклинание оканчивается, если вы <em>Действием</em> сделаете что-то иное. Заклинание также оканчивается, если цель окажется за пределами дистанции заклинания или получит от вас <detail-tooltip type=\"screen\"><a href=\"/screens/full_cover\">полное укрытие</a></detail-tooltip>.</p>",
+    "upper": "Если вы накладываете это заклинание, используя ячейку 2 уровня или выше, первичный урон увеличивается на <dice-roller formula=\"1к12\">1к12</dice-roller> за каждый уровень ячейки выше первого."
+}

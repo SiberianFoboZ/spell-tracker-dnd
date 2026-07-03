@@ -1,0 +1,54 @@
+{
+    "name": {
+        "rus": "Дрожь земли",
+        "eng": "Earth Tremor"
+    },
+    "level": 1,
+    "school": "воплощение",
+    "components": {
+        "v": true,
+        "s": true
+    },
+    "url": "/spells/earth_tremor",
+    "source": {
+        "shortName": "XGE",
+        "name": "Руководство Занатара обо всем",
+        "group": {
+            "name": "Официальные источники",
+            "shortName": "Basic"
+        }
+    },
+    "id": 388,
+    "range": "10 футов",
+    "duration": "Мгновенная",
+    "time": "1 действие",
+    "classes": [
+        {
+            "name": "Бард",
+            "url": "/classes/bard",
+            "icon": "class/bard"
+        },
+        {
+            "name": "Волшебник",
+            "url": "/classes/wizard",
+            "icon": "class/wizard"
+        },
+        {
+            "name": "Друид",
+            "url": "/classes/druid",
+            "icon": "class/druid"
+        },
+        {
+            "name": "Чародей",
+            "url": "/classes/sorcerer",
+            "icon": "class/sorcerer"
+        },
+        {
+            "name": "Магус",
+            "url": "/classes/magus",
+            "icon": "class/magus"
+        }
+    ],
+    "description": "<p>Вы сотрясаете землю в пределах дистанции заклинания. Все существа, кроме вас, в этой области должны совершить спасбросок <span class=\"saving_throw\">Ловкости</span>. При провале существо получает&nbsp;<dice-roller formula=\"1к6\">1к6</dice-roller> дробящего урона и <detail-tooltip type=\"screen\"><a href=\"/screens/Condition_prone\">сбивается с ног</a></detail-tooltip>.</p><p>Если поверхность представляет собой рыхлую землю или камень, то область воздействия становится <detail-tooltip type=\"screen\"><a href=\"/screens/difficult_terrain_move\">труднопроходимой местностью</a></detail-tooltip> до тех пор, пока её не расчистят.</p><p>Каждая область диаметром 5 футов требует как минимум 1 минуту на расчистку вручную.</p>",
+    "upper": "Если вы сотворяете это заклинание, используя ячейку 2 уровня или выше, то урон увеличивается на <dice-roller formula=\"1к6\">1к6</dice-roller> за каждый уровень ячейки выше 1. "
+}

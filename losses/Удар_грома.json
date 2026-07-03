@@ -1,0 +1,33 @@
+{
+    "name": {
+        "rus": "Удар грома",
+        "eng": "Thunder Bolt"
+    },
+    "level": 0,
+    "school": "вызов",
+    "components": {
+        "v": true,
+        "s": true
+    },
+    "url": "/spells/thunder_bolt",
+    "source": {
+        "shortName": "MHH",
+        "name": "Мидгард Справочник героя",
+        "group": {
+            "name": "Контент от третьих лиц",
+            "shortName": "3rd"
+        }
+    },
+    "id": 745,
+    "range": "30 футов",
+    "duration": "Мгновенная",
+    "time": "1 действие",
+    "classes": [
+        {
+            "name": "Чародей",
+            "url": "/classes/sorcerer",
+            "icon": "class/sorcerer"
+        }
+    ],
+    "description": "<p>Вы призываете на врага силу грома.</p><p>Совершите <em>дальнобойную атаку заклинанием</em>. При попадании цель получает <dice-roller formula=\"1к8\">1к8</dice-roller> урона звуком и <strong>не может</strong> использовать <em>реакции</em> до начала вашего следующего хода.</p>"
+}

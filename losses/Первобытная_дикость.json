@@ -1,0 +1,37 @@
+{
+    "name": {
+        "rus": "Первобытная дикость",
+        "eng": "Primal Savagery"
+    },
+    "level": 0,
+    "school": "преобразование",
+    "components": {
+        "s": true
+    },
+    "url": "/spells/primal_savagery",
+    "source": {
+        "shortName": "XGE",
+        "name": "Руководство Занатара обо всем",
+        "group": {
+            "name": "Официальные источники",
+            "shortName": "Basic"
+        }
+    },
+    "id": 424,
+    "range": "На себя",
+    "duration": "Мгновенная",
+    "time": "1 действие",
+    "classes": [
+        {
+            "name": "Друид",
+            "url": "/classes/druid",
+            "icon": "class/druid"
+        },
+        {
+            "name": "Шаман",
+            "url": "/classes/shaman",
+            "icon": "class/shaman"
+        }
+    ],
+    "description": "<p>Вы направляете первобытную магию, затачивающую ваши зубы или ногти, и готовитесь к агрессивной атаке.</p><p>Совершите <em>рукопашную атаку заклинанием</em> против одного существа в пределах 5 футов от вас. При попадании цель получает&nbsp;<dice-roller formula=\"1к10\">1к10</dice-roller> урона кислотой. После того, как вы совершите атаку, ваши зубы или ногти вернутся в нормальное состояние.</p><p>Урон заклинания увеличивается на <dice-roller formula=\"1к10\">1к10</dice-roller>, когда вы достигаете 5 уровня (<dice-roller formula=\"2к10\">2к10</dice-roller>), 11 уровня (<dice-roller formula=\"3к10\">3к10</dice-roller>) и 17 уровня (<dice-roller formula=\"4к10\">4к10</dice-roller>).</p>"
+}

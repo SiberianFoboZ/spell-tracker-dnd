@@ -1,0 +1,56 @@
+{
+    "name": {
+        "rus": "Беседа с драконом",
+        "eng": "Converse with Dragon"
+    },
+    "level": 1,
+    "school": "прорицание",
+    "additionalType": "Магия драконов",
+    "components": {
+        "v": true
+    },
+    "concentration": true,
+    "url": "/spells/converse_with_dragon",
+    "source": {
+        "shortName": "MHH",
+        "name": "Мидгард Справочник героя",
+        "group": {
+            "name": "Контент от третьих лиц",
+            "shortName": "3rd"
+        }
+    },
+    "id": 500,
+    "range": "На себя",
+    "duration": "Концентрация, вплоть до 10 минут",
+    "time": "1 действие",
+    "classes": [
+        {
+            "name": "Бард",
+            "url": "/classes/bard",
+            "icon": "class/bard"
+        },
+        {
+            "name": "Волшебник",
+            "url": "/classes/wizard",
+            "icon": "class/wizard"
+        },
+        {
+            "name": "Жрец",
+            "url": "/classes/cleric",
+            "icon": "class/cleric"
+        },
+        {
+            "name": "Следопыт",
+            "url": "/classes/ranger",
+            "icon": "class/ranger"
+        }
+    ],
+    "subclasses": [
+        {
+            "name": "Драконьи Маски",
+            "url": "/classes/wizard/dragon_masks",
+            "class": "Волшебник"
+        }
+    ],
+    "description": "<p>Вы получаете ограниченную телепатию, позволяющую вам общаться с любым существом в пределах 120 футов от вас которое имеет тип &laquo;дракон&raquo;, вне зависимости от языков существа. Дракон может совершить спасбросок <span class=\"saving_throw\">Харизмы</span> для предотвращения телепатического контакта.</p><p>Это заклинание не меняет расположение дракона к вам или вашим союзникам, оно лишь открывает канал для коммуникации. В некоторых случаях, нежелательный телепатический контакт может ухудшить отношение дракона к вам.</p>"
+}

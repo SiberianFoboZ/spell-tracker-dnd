@@ -1,0 +1,50 @@
+{
+    "name": {
+        "rus": "Расщепление разума",
+        "eng": "Mind Sliver"
+    },
+    "level": 0,
+    "school": "очарование",
+    "components": {
+        "v": true
+    },
+    "url": "/spells/mind_sliver",
+    "source": {
+        "shortName": "TCE",
+        "name": "Котел Таши со всякой всячиной",
+        "group": {
+            "name": "Официальные источники",
+            "shortName": "Basic"
+        },
+        "page": 126
+    },
+    "id": 813,
+    "range": "60 футов",
+    "duration": "1 раунд",
+    "time": "1 действие",
+    "classes": [
+        {
+            "name": "Волшебник",
+            "url": "/classes/wizard",
+            "icon": "class/wizard"
+        },
+        {
+            "name": "Колдун",
+            "url": "/classes/warlock",
+            "icon": "class/warlock"
+        },
+        {
+            "name": "Чародей",
+            "url": "/classes/sorcerer",
+            "icon": "class/sorcerer"
+        }
+    ],
+    "subclasses": [
+        {
+            "name": "Аберрантный Разум",
+            "url": "/classes/sorcerer/aberrant_mind",
+            "class": "Чародей"
+        }
+    ],
+    "description": "<p>Вы вводите дезориентирующий всплеск психической энергии в разум одного существа, которого видите в пределах досягаемости.</p><p>Цель должна преуспеть в спасброске <span class=\"saving_throw\">Интеллекта</span>, иначе получит&nbsp;<dice-roller formula=\"1к6\">1к6</dice-roller> урона психической энергией и вычтет <dice-roller formula=\"1к4\">1к4</dice-roller> из следующего спасброска, который она сделает до конца вашего следующего хода.</p><p>Урон этого заклинания увеличивается на <dice-roller formula=\"1к6\">1к6</dice-roller> при достижении определенных уровней: 5-го уровня (<dice-roller formula=\"2к6\">2к6</dice-roller>), 11-го уровня (<dice-roller formula=\"3к6\">3к6</dice-roller>) и 17-го уровня (<dice-roller formula=\"4к6\">4к6</dice-roller>).</p>"
+}
