@@ -178,15 +178,6 @@ abstract class GenerateSpellsDbTask : DefaultTask() {
     abstract val sourceDir: DirectoryProperty
 
     /**
-     * Вторая директория с «потерянными» заклинаниями — там могут быть
-     * кантипы (level 0) и другие, не попавшие в основной каталог. Объединяем
-     * с [sourceDir], конфликты по id решаются в пользу losses (идёт последним
-     * в обходе — он перезаписывает версию из основной папки).
-     */
-    @get:InputDirectory
-    abstract val lossesDir: DirectoryProperty
-
-    /**
      * Куда положить сгенерированный артефакт. Ожидаем
      * `DirectoryProperty`, потому что AGP Variant API
      * `addGeneratedSourceDirectory` ищет директорию-источник,
@@ -198,7 +189,6 @@ abstract class GenerateSpellsDbTask : DefaultTask() {
     @TaskAction
     fun execute() {
         val src = sourceDir.get().asFile
-        val losses = lossesDir.get().asFile
         val dir = outputDir.get().asFile
         dir.mkdirs()
         val out = dir.resolve("spells_normalized.json")
@@ -258,8 +248,8 @@ abstract class GenerateSpellsDbTask : DefaultTask() {
         val consumedRegex = Regex("расход", RegexOption.IGNORE_CASE)
 
         // Словарь для дедупликации: при повторе id последняя запись побеждает.
-        // Порядок: sourceDir (основной каталог) → lossesDir (потерянные).
-        // Если в losses есть улучшенная/полная версия спелла — она перезапишет.
+        // В текущем одно-папочном pipeline'е дубли быть не должны, но
+        // на случай грядущих правок держим ту же логику, что и раньше.
         val byId = LinkedHashMap<Long, Map<String, Any?>>()
 
         val slurper = JsonSlurper()
@@ -268,35 +258,29 @@ abstract class GenerateSpellsDbTask : DefaultTask() {
         var stripped = 0
         val errors = mutableListOf<String>()
 
-        // Обход двух директорий: сначала основная, потом losses (вторичная).
-        val dirs = listOf(src, losses)
-        val dirsLabel = listOf("spells_data", "losses")
-
-        for ((d, dLabel) in dirs.zip(dirsLabel)) {
-            val files = d.listFiles { f -> f.isFile && f.extension == "json" } ?: emptyArray()
-            for (file in files.sortedBy { it.name }) {
-                total++
-                try {
-                    @Suppress("UNCHECKED_CAST")
-                    val raw = slurper.parse(file) as Map<String, Any?>
-                    val result = normalize(
-                        raw, ignoredClasses, classNameToId, schoolToKey,
-                        idFromUrl, stRegex, consumedRegex,
-                    )
-                    if (result != null) {
-                        val id = (raw["id"] as? Number)?.toLong() ?: continue
-                        if (byId.containsKey(id)) {
-                            // Дубль по id — перезаписываем (losses побеждает по порядку)
-                            stripped++
-                        }
-                        byId[id] = result.first
-                        if (result.second) stripped++
-                    } else {
-                        dropped++
+        val files = src.listFiles { f -> f.isFile && f.extension == "json" } ?: emptyArray()
+        for (file in files.sortedBy { it.name }) {
+            total++
+            try {
+                @Suppress("UNCHECKED_CAST")
+                val raw = slurper.parse(file) as Map<String, Any?>
+                val result = normalize(
+                    raw, ignoredClasses, classNameToId, schoolToKey,
+                    idFromUrl, stRegex, consumedRegex,
+                )
+                if (result != null) {
+                    val id = (raw["id"] as? Number)?.toLong() ?: continue
+                    if (byId.containsKey(id)) {
+                        // Дубль по id — перезаписываем (последний побеждает)
+                        stripped++
                     }
-                } catch (e: Exception) {
-                    errors.add("$dLabel/${file.name}: ${e.message}")
+                    byId[id] = result.first
+                    if (result.second) stripped++
+                } else {
+                    dropped++
                 }
+            } catch (e: Exception) {
+                errors.add("${file.name}: ${e.message}")
             }
         }
 
@@ -435,10 +419,9 @@ abstract class GenerateSpellsDbTask : DefaultTask() {
 
 val generateSpellsDb by tasks.registering(GenerateSpellsDbTask::class) {
     group = "build"
-    description = "Препроцессит spells_data/ и losses/ в один spells_normalized.json для APK"
+    description = "Препроцессит spells_data/*.json в один spells_normalized.json для APK (около 1000 исходников → 950 спеллов)"
 
     sourceDir.set(rootProject.file("spells_data"))
-    lossesDir.set(rootProject.file("losses"))
     outputDir.set(layout.buildDirectory.dir("generated/assets"))
 }
 
