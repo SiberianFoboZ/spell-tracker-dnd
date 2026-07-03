@@ -36,8 +36,8 @@ android {
         applicationId = "com.example.spelltracker"
         minSdk = 24
         targetSdk = 36
-        versionCode = 15
-        versionName = "2.5.4"
+        versionCode = 16
+        versionName = "2.6.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
@@ -178,6 +178,20 @@ abstract class GenerateSpellsDbTask : DefaultTask() {
     abstract val sourceDir: DirectoryProperty
 
     /**
+     * Whitelist «все официальные классы и подклассы» из
+     * `class-subclass.txt` (JSON-массив, ручная правка).
+     *
+     * Заклинания, у которых в `classes[]` или `subclasses[]` указано
+     * имя, отсутствующее в этом файле, считаются «посторонними» —
+     * их классы/подклассы выкидываются на этапе build-time. Это
+     * гарантирует, что у всех спеллов в APK:
+     *   - каждый класс есть в `Classes.kt` (через classNameToId),
+     *   - каждый подкласс имеет смысл (есть в официальных sourcebooks).
+     */
+    @get:InputFile
+    abstract val classSubclassFile: RegularFileProperty
+
+    /**
      * Куда положить сгенерированный артефакт. Ожидаем
      * `DirectoryProperty`, потому что AGP Variant API
      * `addGeneratedSourceDirectory` ищет директорию-источник,
@@ -192,6 +206,27 @@ abstract class GenerateSpellsDbTask : DefaultTask() {
         val dir = outputDir.get().asFile
         dir.mkdirs()
         val out = dir.resolve("spells_normalized.json")
+
+        // ── Шаг 1: парсим whitelist классов и подклассов ──
+        // class-subclass.txt — JSON-массив с объектами:
+        //   { name: { rus, eng }, archetypes: [ { name: { rus, eng }, ... } ] }
+        val classSubclassSlurper = JsonSlurper()
+        @Suppress("UNCHECKED_CAST")
+        val classSubclassData =
+            classSubclassSlurper.parse(classSubclassFile.get().asFile) as List<Map<String, Any?>>
+        val validClassRusNames = mutableSetOf<String>()
+        val validSubclassRusNames = mutableSetOf<String>()
+        for (cls in classSubclassData) {
+            val nameRus = (cls["name"] as? Map<String, Any?>)?.get("rus") as? String
+            if (nameRus != null) validClassRusNames += nameRus
+            @Suppress("UNCHECKED_CAST")
+            val archetypes = cls["archetypes"] as? List<Map<String, Any?>> ?: emptyList()
+            for (arch in archetypes) {
+                val aname = (arch["name"] as? Map<String, Any?>)?.get("rus") as? String
+                if (aname != null) validSubclassRusNames += aname
+            }
+        }
+        logger.lifecycle("Whitelist: classes=${validClassRusNames.size}, subclasses=${validSubclassRusNames.size}")
 
         // Классы, которые вычёркиваем (homebrew/UA, не нужны для трекера).
         // Имена — как они приходят в JSON `classes[].name`. Любой спелл,
@@ -267,6 +302,7 @@ abstract class GenerateSpellsDbTask : DefaultTask() {
                 val result = normalize(
                     raw, ignoredClasses, classNameToId, schoolToKey,
                     idFromUrl, stRegex, consumedRegex,
+                    validClassRusNames, validSubclassRusNames,
                 )
                 if (result != null) {
                     val id = (raw["id"] as? Number)?.toLong() ?: continue
@@ -308,6 +344,8 @@ abstract class GenerateSpellsDbTask : DefaultTask() {
         idFromUrlRegex: Regex,
         stRegex: Regex,
         consumedRegex: Regex,
+        validClassRusNames: Set<String>,
+        validSubclassRusNames: Set<String>,
     ): Pair<Map<String, Any?>, Boolean>? {
         @Suppress("UNCHECKED_CAST")
         val nameObj = raw["name"] as? Map<String, Any?> ?: return null
@@ -330,6 +368,11 @@ abstract class GenerateSpellsDbTask : DefaultTask() {
         val rawClasses = raw["classes"] as? List<Map<String, Any?>> ?: emptyList()
         val classesEng = rawClasses.mapNotNull { cls ->
             val name = cls["name"] as? String ?: return@mapNotNull null
+            if (name !in validClassRusNames) {
+                // Whitelist class-subclass.txt: «посторонние» классы выкидываем.
+                strippedSomething = true
+                return@mapNotNull null
+            }
             if (name in ignoredClasses) {
                 strippedSomething = true
                 null
@@ -351,6 +394,11 @@ abstract class GenerateSpellsDbTask : DefaultTask() {
         val subclassParents = mutableListOf<String>()
         for (sub in rawSubclasses) {
             val name = sub["name"] as? String ?: continue
+            if (name !in validSubclassRusNames) {
+                // Whitelist class-subclass.txt: «посторонние» подклассы выкидываем.
+                strippedSomething = true
+                continue
+            }
             val parentRus = sub["class"] as? String ?: continue
             if (parentRus in ignoredClasses) {
                 strippedSomething = true
@@ -438,6 +486,7 @@ val generateSpellsDb by tasks.registering(GenerateSpellsDbTask::class) {
     description = "Препроцессит spells_data/*.json в один spells_normalized.json для APK (около 1000 исходников → 950 спеллов)"
 
     sourceDir.set(rootProject.file("spells_data"))
+    classSubclassFile.set(rootProject.file("class-subclass.txt"))
     outputDir.set(layout.buildDirectory.dir("generated/assets"))
 }
 

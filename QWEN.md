@@ -10,17 +10,30 @@
 
 **Spell Tracker** — локальное Android-приложение, которое помогает магу
 D&D 5e следить за ячейками заклинаний, пакт-магией Колдуна и арканумами
-на одном экране. Без аккаунтов, без аналитики, без интернета.
+на одном экране. Без аккаунтов, без аналитики, без интернета (после
+установки APK работает полностью офлайн).
 
 - **applicationId / namespace**: `com.example.spelltracker`
-- **Текущая версия**: v2.4.2 (`versionCode = 10`)
+- **Текущая версия**: v2.6.0 (`versionCode = 16`)
 - **Min SDK**: 24 (Android 7.0). **Target/Compile SDK**: 36 (Android 16).
 - **Язык UI**: русский. Все строки — в `app/src/main/res/values/strings.xml`,
   плюс хардкод русских строк внутри `*Screen.kt` (см. раздел Conventions).
-- **Хранилище состояния**: SharedPreferences (слоты, уровни, prepared) +
-  Room БД (только справочник заклинаний).
-- **Метод версионирования**: «Этапы» (Этап 15, 16, 17, 18) внутри
-  коммитов + SemVer-теги (`v2.4.2`).
+- **Хранилище состояния**: SharedPreferences (слоты, уровни, prepared,
+  мульти-персонажи) + Room БД `spells.db` (справочник заклинаний).
+- **Build-time pipeline**: Gradle-таска `generateSpellsDb` нормализует
+  1000 per-spell JSON из `spells_data/` в ОДИН `spells_normalized.json`,
+  который уходит в APK как asset. На устройстве JSON читается ОДИН раз
+  при первом запуске и заливается в Room.
+- **Объём справочника**: 487 заклинаний (после удаления 3rd party / homebrew
+  из `spells_data/` и whitelist-фильтра по `class-subclass.txt`).
+  Включая 44 кантипа (level 0).
+- **Игнор-лист классов** (16 классов — homebrew/UA, выкидываются при сборке):
+  Шаман, Магус, Хранитель Рун, Савант, Неупокоенная душа, Мистик,
+  Кровавый Охотник, Звездочет, Егерь, Воевода, Альтернативный плут,
+  Альтернативный монах, Альтернативный воин, Альтернативный варвар,
+  Альтернативный следопыт, Алхимик.
+- **Версионирование**: «Этап N» в коммит-сообщениях + SemVer-теги
+  (`v2.6.0`).
 
 Релиз-флоу:
 - Push тега `v*` → `release.yml` собирает APK и публикует GitHub Release.
@@ -66,45 +79,44 @@ D&D 5e следить за ячейками заклинаний, пакт-ма�
 ```
 Spelltracker/
 ├── app/
-│   ├── build.gradle.kts                    # AGP/KSP/Room/Compose
+│   ├── build.gradle.kts                    # AGP/KSP/Room/Compose + GenerateSpellsDbTask
 │   ├── proguard-rules.pro
-│   └── src/
-│       ├── main/
-│       │   ├── AndroidManifest.xml         # одна Activity
-│       │   ├── assets/
-│       │   │   ├── spells.csv              # ~500 заклинаний D&D 5e
-│       │   │   ├── class_*.json            # 9 per-class JSON-ов
-│       │   │   └── databases/populate.sql  # legacy (НЕ используется кодом)
-│       │   ├── java/com/example/spelltracker/
-│       │   │   ├── MainActivity.kt         # single-Activity host
-│       │   │   ├── data/                   # слои данных (см. §4)
-│       │   │   │   ├── Classes.kt          # метаданные 9 классов
-│       │   │   │   ├── ClassFilter.kt
-│       │   │   │   ├── Spell.kt            # @Entity
-│       │   │   │   ├── SpellDao.kt
-│       │   │   │   ├── SpellDatabase.kt    # version=3, fallbackToDestructive
-│       │   │   │   ├── SpellParser.kt      # CSV + JSON парсер
-│       │   │   │   ├── SpellRepository.kt
-│       │   │   │   └── SpellStorage.kt     # SharedPreferences + StateFlow
-│       │   │   └── ui/
-│       │   │       ├── detail/             # SpellDetailScreen + ViewModel
-│       │   │       ├── home/               # HomeScreen + HomeViewModel
-│       │   │       ├── nav/AppNavigation.kt
-│       │   │       ├── spells/             # SpellsScreen + ViewModel
-│       │   │       └── theme/              # Color, Theme, Type
-│       │   └── res/values/                 # strings.xml, themes.xml
-│       ├── test/java/.../ExampleUnitTest.kt
-│       └── androidTest/
+│   └── src/main/
+│       ├── AndroidManifest.xml
+│       ├── assets/
+│       │   ├── class_*.json                # legacy per-class файлы (НЕ читаются кодом)
+│       │   └── spells_normalized.json      # 2.7 MB, build-time артефакт (487 спеллов)
+│       ├── java/com/example/spelltracker/
+│       │   ├── MainActivity.kt
+│       │   ├── data/                       # слои данных
+│       │   │   ├── Classes.kt              # 11 классов (9 PHB + 2 mystic)
+│       │   │   ├── ClassFilter.kt          # matches(spell, SpellFilterState)
+│       │   │   ├── ComponentFlag.kt        # V / S / M / RC для multi-select
+│       │   │   ├── Spell.kt                # @Entity (24 поля)
+│       │   │   ├── SpellDao.kt
+│       │   │   ├── SpellDatabase.kt        # version=5, fallbackToDestructive
+│       │   │   ├── SpellFilterState.kt     # data class со всеми осями фильтра
+│       │   │   ├── SpellMenuConfig.kt      # 33 источника / 8 школ / ComponentFlag
+│       │   │   ├── SpellParser.kt          # читает единый normalized.json
+│       │   │   ├── SpellRepository.kt      # Room + ensureInitialized + orphan cleanup
+│       │   │   ├── SpellStorage.kt         # SharedPreferences + multi-character
+│       │   │   └── TriState.kt             # YES / NO / ANY для ritual / concentration
+│       │   └── ui/
+│       │       ├── detail/                 # SpellDetailScreen + SpellHtml (HTML→AnnotatedString)
+│       │       ├── home/                   # HomeScreen + HomeViewModel
+│       │       ├── nav/AppNavigation.kt
+│       │       ├── spells/                 # SpellsScreen + SpellsViewModel
+│       │       └── theme/                  # Color, Theme, Type
+│       └── res/values/                     # strings.xml, themes.xml
 ├── build.gradle.kts                        # пустой (только комментарий)
 ├── settings.gradle.kts                     # pluginManagement + версии
 ├── gradle.properties                       # daemon JVM args + KSP-флаг
 ├── gradle/libs.versions.toml               # все версии
 ├── gradle/wrapper/                         # gradle wrapper (9.3.1)
-├── tools/
-│   ├── generate_sql.ps1                    # legacy: CSV → populate.sql
-│   ├── gen_icons.py                        # генерация иконок
-│   └── gen_screenshots.py                  # локальная генерация скриншотов
-├── docs/screenshots/                       # main.png, spells.png, drawer.png
+├── spells_data/                            # 1000 per-spell JSON (НЕ в app/, читается таской)
+├── class-subclass.txt                       # reference маппинг подкласс→parent class
+├── menu_json.txt                            # reference конфиг фильтр-меню
+├── docs/                                   # документация
 ├── .github/workflows/
 │   ├── release.yml                         # tag v* → APK + Release
 │   └── screenshots.yml                     # ручной запуск эмулятора
@@ -113,11 +125,68 @@ Spelltracker/
 └── QWEN.md                                 # ← этот файл
 ```
 
+> **Ключевое отличие от старого pipeline**: CSV и per-class JSON больше
+> НЕ читаются кодом. Они остались в `assets/class_*.json` как legacy
+> артефакты, но фактический источник данных — `spells_normalized.json`.
+
 ---
 
 ## 4. Архитектура
 
-### MVVM + StateFlow + single source of truth
+### 4.1 Pipeline сборки данных (build-time)
+
+```
+spells_data/*.json (1000 файлов, по одному на заклинание)
+        │
+        ▼  GenerateSpellsDbTask (app/build.gradle.kts)
+        │
+   • читает каждый JSON, парсит поля
+   • денормализация:
+     - school "вызов" → enum-key "CONJURATION"
+     - classes[].url "/classes/druid" → English id "druid"
+     - subclasses[]: parallel CSV имён + CSV parent class English id
+   • regex-производные:
+     - "расход" в components.m → materialConsumed=true
+     - <span class="saving_throw">X</span> в HTML → savingThrows "X"
+   • фильтрация: 16 ignored-классов выкидываются (целиком или частично)
+   • дедуп по id через LinkedHashMap (на случай будущих пересечений)
+        │
+        ▼
+app/build/generated/assets/spells_normalized.json
+   (2.7 MB, 487 заклинания, single JSON-array)
+        │
+        ▼  AGP Variant API: addGeneratedSourceDirectory
+APK assets/spells_normalized.json
+```
+
+### 4.2 Pipeline загрузки (runtime, при первом запуске)
+
+```
+APK assets/spells_normalized.json
+        │  SpellParser.loadFromAssets() — ОДИН раз
+        ▼
+List<Spell> (487 объектов в памяти)
+        │
+        ▼  SpellRepository.ensureInitialized()
+        │   if (dao.count() == 0 || dao.count() != 487) {
+        │       dao.clearAll(); dao.insertAll(spells)
+        │   }
+        │   pruneOrphanedPrepared()  // удаляет сирот из SharedPreferences
+        ▼
+Room БД `spells.db` (487 записей)
+        │
+        ▼  SpellsViewModel получает данные через repo.getAll()
+        │  Фильтрация — в памяти через ClassFilter.matches()
+        ▼
+SpellsScreen (LazyColumn)
+```
+
+> **Важно**: данные заклинаний НЕ хранятся в памяти как постоянная
+> структура. Каждый запуск приложения читает Room. Чтение всего
+> JSON в `List<Spell>` в память как замена Room **не предлагать** —
+> проверено, приводит к memory pressure (см. memory `room-over-in-memory`).
+
+### 4.3 MVVM + StateFlow
 
 ```
 SpellStorage (SharedPreferences + StateFlow)
@@ -131,15 +200,15 @@ HomeViewModel / SpellsViewModel / SpellDetailViewModel
     ▼
 ```
 
-- **State** — только в `SpellStorage` (single source of truth). Любое
-  изменение идёт через `storage.setX(...)`, оно пишет в `prefs.edit()`
+- **State** — только в `SpellStorage` (single source of truth).
+  Любое изменение через `storage.setX(...)` пишет в `prefs.edit().apply()`
   И эмитит в `MutableStateFlow.update { ... }`.
-- **Composable** — без побочных эффектов. Побочки (Snackbar, навигация)
-  — в `LaunchedEffect` / `ViewModel` (`SharedFlow<HomeEvent>`).
-- **Navigation** — один `NavHost` (`ui/nav/AppNavigation.kt`), 3 экрана:
-  `home` → `spells` → `spell/{id}`.
+- **Composable** — без побочных эффектов. Побочки — в `LaunchedEffect` /
+  `ViewModel` (`SharedFlow<HomeEvent>`).
+- **Navigation** — один `NavHost` (`ui/nav/AppNavigation.kt`),
+  3 экрана: `home` → `spells` → `spell/{id}`.
 
-### Главный экран: 3 секции (Этап 16–18)
+### 4.4 Главный экран: 3 секции
 
 ```
 ┌─ Header + Effective Caster Level (большая золотая цифра)
@@ -156,13 +225,12 @@ HomeViewModel / SpellsViewModel / SpellDetailViewModel
   (для `roundUp = true` → `(lvl+1)/2`, это только Изобретатель)
 - `factor = 0.0` (колдун) — **исключён** из формулы caster level.
   У него собственная пакт-магия (`WARLOCK_SLOTS` в `SpellStorage`).
-- `Warlock` с `factor = 0.0` всё равно в сетке классов (нужен для
-  пакт-магии и арканумов).
+- `fighter_mystic` / `rogue_mystic` (1/3 кастер) — отдельные записи
+  в `Classes.kt`, считаются как `(lvl + 2) / 3`.
 
 **Арканумы** (Этап 17, v2.4.0): по одной ячейке VI–IX уровня.
 Открытие: warlockLevel 11/13/15/17 → 1/2/3/4 арканума. Восстановление —
-**только длинный отдых** (по PHB). Хранение: 4 булевых флага
-(`arcanum_6..arcanum_9`) в `SpellStorage._usedArcanums`.
+**только длинный отдых** (по PHB).
 
 **Пакт-магия** (Этап 18, v2.4.1): отдельная секция «МАГИЯ ДОГОВОРА»
 над обычными ячейками. Восстанавливается на **коротком** отдыхе.
@@ -177,7 +245,33 @@ HomeViewModel / SpellsViewModel / SpellDetailViewModel
   `usedArcanums[6..9]`. Class levels и prepared — **сохраняются**.
 - В `SpellStorage.resetAllUsed()` (debug-only) — `prefs.edit().clear()`.
 
-### Реактивность: как избежать «дрейфа» в compose-эффектах
+### 4.5 Фильтр подклассов (новое — Этап N+1)
+
+**Проблема**: подклассов в датасете 110+, в BottomSheet-чипах это слишком
+громоздко. Нужен parent class для группировки.
+
+**Решение:**
+1. **Build-time**: `Spell.subclassParents: String` (CSV English id,
+   параллельно `subclasses`). Например,
+   `subclasses="Домен Войны,Клятва Мести,..."`,
+   `subclassParents="cleric,paladin,..."`.
+2. **Runtime**: `SpellsViewModel.subclassToParents: Map<String, Set<String>>`
+   — ленивый, считается один раз из allSpellsSnapshot.
+3. **UI**: `displayedSubclasses` реактивный getter:
+   - `classIds.isEmpty()` → пустое множество (секция **скрыта**)
+   - иначе → только подклассы, parent которых ∈ classIds
+4. **BottomSheet**: секция «Подкласс» рендерится только когда
+   `displayedSubclasses.isNotEmpty()`.
+
+### 4.6 Multi-select компонентов (новое — Этап N+1)
+
+Заменены 4 TriState-строки на ОДИН multi-select row:
+- `ComponentFlag.{V, S, M, RC}` — кликабельные чипы
+- AND-семантика: спелл проходит, если для каждого выбранного
+  компонента спелл его имеет (PHB-нотация «В, С» = оба нужны)
+- Расовый фильтр удалён (не имел осмысленного UX)
+
+### 4.7 Реактивность: как избежать «дрейфа» в compose-эффектах
 
 - `HomeViewModel.init { combine(storage.classLevels, storage.usedSlots,
   storage.usedPactSlots, storage.usedArcanums) { ... } }` — пересобирает
@@ -192,33 +286,52 @@ HomeViewModel / SpellsViewModel / SpellDetailViewModel
 ## 5. База данных (Room)
 
 ```kotlin
-@Database(entities = [Spell::class], version = 3, exportSchema = false)
+@Database(entities = [Spell::class], version = 5, exportSchema = false)
 abstract class SpellDatabase : RoomDatabase() { ... }
 ```
 
-- `fallbackToDestructiveMigration()` — безопасно: данные приходят
-  из `assets/spells.csv` + `class_*.json`. Потеря пользовательских
-  записей невозможна (это справочник, не пользовательские данные).
-- Импорт: `SpellRepository.ensureInitialized()` → `dao.count() == 0` →
-  `SpellParser.loadFromAssets()` → `dao.insertAll()`. **Запускается
-  один раз** на новом устройстве.
-- `version = 3` форсирует реимпорт при апгрейде с v2.0.0 (там
-  `version = 2` и могли быть не залиты заклинания 6–9 уровней).
-- `Spell.id` = `name.hashCode().toLong() and 0x7FFFFFFF` — стабильный
-  между запусками, чтобы `prepared` работал между сессиями.
+- **24 поля**: `id, name, nameEng, source, sourceGroup, level, school,
+  ritual, concentration, timecast, distance, duration, componentV/S/M,
+  materialConsumed, materialDesc, descriptionHtml, upperLevel, url,
+  classes, subclasses, subclassParents, races, savingThrows`.
+- **Объём**: 487 записей (после destructive rebuild при mismatch count).
+- **Миграция**: `fallbackToDestructiveMigration()` — данные приходят
+  из assets, потеря пользовательских записей невозможна (это справочник).
+- **Авто-реконструкция**: `SpellRepository.ensureInitialized()`
+  сравнивает `dao.count()` с `loadFromAssets().size`. Если не совпало
+  (например, APK обновился с 802 на 487 спеллами), `clearAll()` + `insertAll()`
+  перезаливает таблицу.
+- **Cleanup orphan'ов**: после миграции `pruneOrphanedPrepared()`
+  удаляет из `SpellStorage.prepared` все id, которых больше нет в БД
+  (актуально после v3→v5, где id сменился с hashCode на numeric).
+
+### Источник данных
+
+```
+spells_data/*.json (1000 файлов)
+        ↓  GenerateSpellsDbTask
+spells_normalized.json (в APK как asset)
+        ↓  SpellParser.loadFromAssets()
+List<Spell>
+        ↓  dao.insertAll()
+Room БД
+```
+
+**Дополнительные reference-файлы в корне проекта:**
+- `class-subclass.txt` — JSON со списком классов и их подклассов
+  (id=1..14). Используется как reference для маппинга подкласс→parent,
+  но **сам не парсится в build-time** — маппинг строится из raw JSON
+  spell + classNameToId.
+- `menu_json.txt` — референс конфиг фильтр-меню (источники, школы и т.п.).
+  Не используется runtime напрямую; значения hardcoded в
+  `SpellMenuConfig.kt`.
 
 ### Parser (`SpellParser.kt`)
 
-- CSV: разделитель `;`, кавычки `"..."`, `""` = экранирование,
-  многострочные записи склеиваются по балансу кавычек.
-- `\f` (form feed, `'\u000C'`) внутри записи = перенос строки
-  в описании.
-- Per-class JSON-ы (`class_*.json`) — маппинг имя→классы. Если
-  заклинание **не нашлось** ни в одном JSON, ему пишется **пустая**
-  строка классов (а не «все классы»!). Иначе 258 заклинаний с
-  расхождениями в переводах «протекали» бы в любой фильтр по классу.
-  См. развёрнутый комментарий в `SpellParser.loadFromAssets` —
-  не упрощать это поле.
+- Один файл `spells_normalized.json` — JSON-массив объектов.
+- Поля 1:1 совпадают с `Spell` (см. §5).
+- Нет regex, нет per-class маппинга, нет ничего — всё уже нормализовано
+  build-time.
 
 ---
 
@@ -263,6 +376,10 @@ abstract class SpellDatabase : RoomDatabase() { ... }
 - Анимации: `animateColorAsState` / `animateDpAsState` /
   `animateIntAsState` для плавных переходов; `Animatable` + scale
   для коротких «вспышек» при тапе.
+- **Циклы в Composable**: только `for (x in collection) { ... }`.
+  `collection.forEach { ... }` лямбда **НЕ** @Composable — внутри неё
+  нельзя вызывать Composable-функции. (Все Composable-циклы в этом
+  проекте — `for`.)
 
 ### Naming
 - VM-методы — событийные: `setClassLevel(id, lvl)`, `shortRest()`,
@@ -282,17 +399,20 @@ abstract class SpellDatabase : RoomDatabase() { ... }
 ### Команды
 
 ```bash
-# Сборка debug APK
-./gradlew assembleDebug
-# → app/build/outputs/apk/debug/app-debug.apk
+# Только build-time нормализация (без полной сборки)
+./gradlew generateSpellsDb
+# → app/build/generated/assets/spells_normalized.json
 
-# Сборка release APK (подписан debug-ключом!)
+# Сборка debug APK (запустит generateSpellsDb как часть pipeline)
+./gradlew assembleDebug
+# → app/build/outputs/apk/debug/app-debug.apk (переименован в spell-tracker-v2.6.0.apk)
+
+# Сборка release APK (подписан debug-ключом, если нет keystore.properties)
 ./gradlew assembleRelease
-# → app/build/outputs/apk/release/spell-tracker-v2.4.2.apk
-# (имя переименовывается через afterEvaluate в app/build.gradle.kts)
+# → app/build/outputs/apk/release/spell-tracker-v2.6.0.apk
 
 # Установка на устройство
-adb install -r app/build/outputs/apk/release/spell-tracker-v2.4.2.apk
+adb install -r app/build/outputs/apk/release/spell-tracker-v2.6.0.apk
 
 # Тесты
 ./gradlew test                  # unit (только ExampleUnitTest на данный момент)
@@ -301,7 +421,7 @@ adb install -r app/build/outputs/apk/release/spell-tracker-v2.4.2.apk
 
 **Windows (PowerShell):**
 ```powershell
-.\gradlew.bat assembleRelease
+.\gradlew.bat assembleDebug
 ```
 
 ### CI-обходной путь
@@ -316,16 +436,15 @@ RSA 2048, срок 10000 дней). Креды — в `keystore.properties` (к�
 - если `keystore.properties` есть → `signingConfigs.release` + `signingConfig = signingConfigs.getByName("release")`;
 - если нет → fallback на debug-keystore (обратная совместимость).
 
-Генерация: `tools/generate_keystore.ps1` (Windows, PowerShell) или вручную
-`keytool -genkeypair ...`. Шаблон параметров — `keystore.properties.example`.
+Генерация: `keytool -genkeypair ...` вручную. Шаблон параметров —
+`keystore.properties.example`.
 
 **Пароли `storePassword` и `keyPassword` одинаковые** — PKCS12 (по умолчанию в
 современной JDK) не поддерживает разные пароли для store/key.
 
 **Не коммитить `keystore/`, `keystore.properties`** (в `.gitignore`). Для совместной
 разработки передавайте keystore.properties (и при необходимости сам keystore)
-**отдельно** от кода по защищённому каналу. `keystore.properties.example` —
-единственное, что коммитится, как шаблон формата.
+**отдельно** от кода по защищённому каналу.
 
 Если у пользователя стоит APK, подписанный старым (debug) ключом, обновление
 поверх не получится — нужно сначала удалить старую версию.
@@ -343,15 +462,17 @@ JDK 21. Сам проектный `gradle.properties` остаётся порт�
 2. Обновить `README.md` (история релизов + блок «Что нового»).
 3. `git add ... && git commit -m "..."` в стиле существующих коммитов
    (см. `git log --oneline`).
-4. Поставить тег: `git tag v2.4.2 && git push origin v2.4.2`.
+4. Поставить тег: `git tag v2.6.0 && git push origin v2.6.0`.
 5. CI собирает APK и публикует GitHub Release автоматически
    (`softprops/action-gh-release@v2` с `generate_release_notes: true`).
 
 Стиль существующих коммитов:
-- `docs: rewrite README for GitHub first page (v2.4.2)`
-- `Hide 'АРКАНУМЫ' block when warlockLevel == 0 (v2.4.2 patch)`
-- `Arcanums section for Warlock (Этап 17, v2.4.0)`
-- `Click-on-row slot UX + unify Warlock into main list v2.3.0`
+- `feat(subclass): parent class в normalized + скрывать секцию без выбранного класса`
+- `fix: пересобирать БД при mismatch count (802 → 487 при обновлении APK)`
+- `fix: чистить orphan id в prepared при старте (после v3→v4)`
+- `chore: удалить легаси assets/spells.csv + assets/databases/populate.sql`
+- `refactor: объединить spells_data/ + losses/ в единую папку spells_data/`
+- `feat(spellbook): schema v4 + расширенные фильтры (Этап N)`
 
 Не нумеровать этапы произвольно — «Этап N» указан в коммит-сообщениях
 как счётчик фич, не SemVer.
@@ -373,13 +494,24 @@ JDK 21. Сам проектный `gradle.properties` остаётся порт�
 
 ## 10. Типичные задачи и подводные камни
 
-### Добавить новый класс D&D 5e
-1. `data/Classes.kt` → новый `Info(...)` с `factor`, `roundUp`.
-2. Дополнить `SLOT_TABLE` (в `SpellStorage`) — там уже полная таблица
-   до 20 caster level, новых уровней не нужно.
-3. Добавить `class_<id>.json` в `app/src/main/assets/`.
-4. При особой логике отдыха — добавить ветку в `SpellStorage.shortRest()`.
-5. Запустить `assembleDebug`, пройтись по сценарию мультикласса в эмуляторе.
+### Добавить новое заклинание
+1. Создать `spells_data/<Название>.json` по образцу существующих.
+2. Убедиться что класс — не в игнор-листе, иначе спелл будет выкинут.
+3. `./gradlew generateSpellsDb` — нормализация в `spells_normalized.json`.
+4. `./gradlew assembleDebug` → тестирование.
+
+### Добавить новый класс D&D 5e (например, Монах)
+1. `data/Classes.kt` → новый `Info(...)` с `factor`, `roundUp`, `id`.
+2. Дополнить `classNameToId` map в `app/build.gradle.kts` (Rus→English).
+3. Удалить класс из `ignoredClasses` set (если он там был).
+4. Запустить `generateSpellsDb` — все спеллы класса автоматически появятся.
+5. `assembleDebug` → тест в эмуляторе.
+
+### Изменить фильтр-меню (добавить новую ось)
+1. Добавить поле в `SpellFilterState` + `setX`/`toggleX` в VM.
+2. Добавить правило в `ClassFilter.matches()`.
+3. Добавить секцию в `FiltersBottomSheet` (внутри `SpellsScreen.kt`).
+4. Увеличить `activeFilterCount` если ось считается.
 
 ### Изменить палитру
 Все цвета — в `ui/theme/Color.kt` (`AppColors`). Material 3 mapping — в
@@ -387,7 +519,6 @@ JDK 21. Сам проектный `gradle.properties` остаётся порт�
 `isSystemInDarkTheme()` игнорируется, осветлённая схема не предусмотрена.
 
 ### Поменять иконку приложения
-- `tools/gen_icons.py` — генерация иконок из исходника.
 - `app/src/main/res/mipmap-*` — пять density-папок + `mipmap-anydpi-v26`
   (адаптивная иконка).
 
@@ -409,10 +540,19 @@ JDK 21. Сам проектный `gradle.properties` остаётся порт�
 в `app/build.gradle.kts`. **Не** указывать версии в `app/build.gradle.kts`
 напрямую.
 
+### Обновить build-time данные после изменения spells_data/
+Запустить `./gradlew generateSpellsDb` вручную (приложит пересобранный
+`spells_normalized.json` в `build/generated/assets/`). Или просто
+`./gradlew assembleDebug` — таска вызывается через `mergeAssets`.
+
 ---
 
 ## 11. Чего НЕ делать
 
+- **Не** предлагать убрать Room-базу `spells.db` в пользу прямого
+  чтения `assets/spells_normalized.json` в `List<Spell>` в памяти.
+  Проверено: memory pressure, медленная работа. Архитектура
+  `assets → insertAll → Room → filter в памяти` зафиксирована.
 - **Не** удалять `usedArcanums` из `SpellStorage.combine(...)` в
   `HomeViewModel.init` — иначе снимок не пересоберётся при трате
   арканума.
@@ -428,6 +568,10 @@ JDK 21. Сам проектный `gradle.properties` остаётся порт�
   но это просто маркер «файл больше не загружается per-class»).
 - **Не** добавлять сторонние библиотеки (Dagger, Hilt, Retrofit, Coil и
   т.п.) — проект сознательно держится только на AndroidX / Compose / Room.
+- **Не** использовать `collection.forEach { ... }` для рендера
+  Composable — лямбда не @Composable. Только `for (x in collection)`.
+- **Не** удалять `assets/class_*.json` без подтверждения (хотя они не
+  читаются runtime — могут пригодиться как reference).
 
 ---
 
@@ -439,14 +583,28 @@ JDK 21. Сам проектный `gradle.properties` остаётся порт�
 | Таблица пакт-магии Колдуна | `data/SpellStorage.kt` → `WARLOCK_SLOTS` |
 | Список арканумов (VI–IX) | `data/SpellStorage.kt` → `ARCANUM_LEVELS` |
 | Логика мультикласса PHB | `data/SpellStorage.kt` → `computeCasterLevel()` |
+| Фильтр-матчер (все оси) | `data/ClassFilter.kt` → `matches()` |
+| Состояние фильтров (snapshot) | `data/ClassFilter.kt` → `SpellFilterState` |
+| Enum компонентов | `data/SpellMenuConfig.kt` → `ComponentFlag` |
+| TriState YES/NO/ANY | `data/TriState.kt` |
+| Room-entity заклинания | `data/Spell.kt` (24 поля) |
+| Room-DAO запросы | `data/SpellDao.kt` |
+| Парсер JSON → Spell | `data/SpellParser.kt` |
+| Repository + orphan cleanup | `data/SpellRepository.kt` |
+| SharedPreferences + персонажи | `data/SpellStorage.kt` |
 | Цвета и тема | `ui/theme/Color.kt`, `ui/theme/Theme.kt` |
 | Главный экран (3 секции) | `ui/home/HomeScreen.kt` + `HomeViewModel.kt` |
-| Список заклинаний | `ui/spells/SpellsScreen.kt` + `SpellsViewModel.kt` |
-| Детали заклинания | `ui/detail/SpellDetailScreen.kt` + `SpellDetailViewModel.kt` |
+| Список заклинаний + 13 секций фильтра | `ui/spells/SpellsScreen.kt` + `SpellsViewModel.kt` |
+| Детали заклинания (HTML render) | `ui/detail/SpellDetailScreen.kt` + `SpellDetailViewModel.kt` |
+| HTML → AnnotatedString парсер | `ui/detail/SpellHtml.kt` |
 | Навигация | `ui/nav/AppNavigation.kt` |
 | Снимок состояния главного экрана | `ui/home/HomeViewModel.kt` → `HomeState` |
-| Single source of truth | `data/SpellStorage.kt` |
-| Парсер CSV | `data/SpellParser.kt` |
+| Single source of truth (state) | `data/SpellStorage.kt` |
 | CI / Release | `.github/workflows/release.yml` |
 | Версии | `gradle/libs.versions.toml` |
 | AGP / KSP gotchas | комментарии в `build.gradle.kts`, `settings.gradle.kts`, `gradle.properties` |
+| Build-time таска нормализации | `app/build.gradle.kts` → `GenerateSpellsDbTask` |
+| Исходные данные (1000 JSON) | `spells_data/` |
+| Маппинг подклассов (reference) | `class-subclass.txt` |
+| Референс фильтр-меню | `menu_json.txt` |
+| Output pipeline (1 файл в APK) | `app/build/generated/assets/spells_normalized.json` |
