@@ -178,6 +178,15 @@ abstract class GenerateSpellsDbTask : DefaultTask() {
     abstract val sourceDir: DirectoryProperty
 
     /**
+     * Вторая директория с «потерянными» заклинаниями — там могут быть
+     * кантипы (level 0) и другие, не попавшие в основной каталог. Объединяем
+     * с [sourceDir], конфликты по id решаются в пользу losses (идёт последним
+     * в обходе — он перезаписывает версию из основной папки).
+     */
+    @get:InputDirectory
+    abstract val lossesDir: DirectoryProperty
+
+    /**
      * Куда положить сгенерированный артефакт. Ожидаем
      * `DirectoryProperty`, потому что AGP Variant API
      * `addGeneratedSourceDirectory` ищет директорию-источник,
@@ -189,6 +198,7 @@ abstract class GenerateSpellsDbTask : DefaultTask() {
     @TaskAction
     fun execute() {
         val src = sourceDir.get().asFile
+        val losses = lossesDir.get().asFile
         val dir = outputDir.get().asFile
         dir.mkdirs()
         val out = dir.resolve("spells_normalized.json")
@@ -247,37 +257,54 @@ abstract class GenerateSpellsDbTask : DefaultTask() {
         // Маркер «расходуемый» в тексте материального компонента.
         val consumedRegex = Regex("расход", RegexOption.IGNORE_CASE)
 
+        // Словарь для дедупликации: при повторе id последняя запись побеждает.
+        // Порядок: sourceDir (основной каталог) → lossesDir (потерянные).
+        // Если в losses есть улучшенная/полная версия спелла — она перезапишет.
+        val byId = LinkedHashMap<Long, Map<String, Any?>>()
+
         val slurper = JsonSlurper()
-        val out0 = mutableListOf<Map<String, Any?>>()
         var total = 0
         var dropped = 0
         var stripped = 0
         val errors = mutableListOf<String>()
 
-        val files = src.listFiles { f -> f.isFile && f.extension == "json" } ?: emptyArray()
-        files.sortedBy { it.name }.forEach { file ->
-            total++
-            try {
-                @Suppress("UNCHECKED_CAST")
-                val raw = slurper.parse(file) as Map<String, Any?>
-                val result = normalize(
-                    raw, ignoredClasses, classNameToId, schoolToKey,
-                    idFromUrl, stRegex, consumedRegex,
-                )
-                if (result != null) {
-                    out0.add(result.first)
-                    if (result.second) stripped++
-                } else {
-                    dropped++
+        // Обход двух директорий: сначала основная, потом losses (вторичная).
+        val dirs = listOf(src, losses)
+        val dirsLabel = listOf("spells_data", "losses")
+
+        for ((d, dLabel) in dirs.zip(dirsLabel)) {
+            val files = d.listFiles { f -> f.isFile && f.extension == "json" } ?: emptyArray()
+            for (file in files.sortedBy { it.name }) {
+                total++
+                try {
+                    @Suppress("UNCHECKED_CAST")
+                    val raw = slurper.parse(file) as Map<String, Any?>
+                    val result = normalize(
+                        raw, ignoredClasses, classNameToId, schoolToKey,
+                        idFromUrl, stRegex, consumedRegex,
+                    )
+                    if (result != null) {
+                        val id = (raw["id"] as? Number)?.toLong() ?: continue
+                        if (byId.containsKey(id)) {
+                            // Дубль по id — перезаписываем (losses побеждает по порядку)
+                            stripped++
+                        }
+                        byId[id] = result.first
+                        if (result.second) stripped++
+                    } else {
+                        dropped++
+                    }
+                } catch (e: Exception) {
+                    errors.add("$dLabel/${file.name}: ${e.message}")
                 }
-            } catch (e: Exception) {
-                errors.add("${file.name}: ${e.message}")
             }
         }
 
+        val out0 = byId.values.toList()
+
         out.writeText(JsonOutput.toJson(out0))
 
-        logger.lifecycle("Spells: total=$total, kept=${out0.size}, dropped=$dropped (целиком из ignored-классов), stripped=$stripped (часть классов отфильтрована)")
+        logger.lifecycle("Spells: total=$total, kept=${out0.size}, dropped=$dropped (целиком из ignored-классов), stripped=$stripped (часть классов отфильтрована или дубль по id)")
         if (errors.isNotEmpty()) {
             logger.warn("Ошибок разбора: ${errors.size}")
             errors.take(20).forEach { logger.warn(" - $it") }
@@ -408,9 +435,10 @@ abstract class GenerateSpellsDbTask : DefaultTask() {
 
 val generateSpellsDb by tasks.registering(GenerateSpellsDbTask::class) {
     group = "build"
-    description = "Препроцессит spells_data/*.json в один spells_normalized.json для APK"
+    description = "Препроцессит spells_data/ и losses/ в один spells_normalized.json для APK"
 
     sourceDir.set(rootProject.file("spells_data"))
+    lossesDir.set(rootProject.file("losses"))
     outputDir.set(layout.buildDirectory.dir("generated/assets"))
 }
 
