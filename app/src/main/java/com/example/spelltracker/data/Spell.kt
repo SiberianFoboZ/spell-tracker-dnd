@@ -15,8 +15,8 @@ import androidx.room.PrimaryKey
  * Для поиска «содержит X» достаточно `csv.contains("X")`.
  *
  * Эволюция схемы:
- *   v3 (предыдущая) — 11 полей, данные из `assets/spells.csv` + `class_*.json`,
- *     id = name.hashCode().
+ *   v3 (предыдущая) — 11 полей, данные из `assets/spells_normalized.json`
+ *   (при старом pipeline'е: CSV + class_*.json, id = name.hashCode()).
  *   v4 (текущая) — 24 поля, данные из `assets/spells_normalized.json`,
  *     id = стабильный numeric из source-системы. Миграция destructive
  *     через `fallbackToDestructiveMigration` — справочник приходит из

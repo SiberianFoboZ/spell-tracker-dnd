@@ -18,7 +18,7 @@ package com.example.spelltracker.data
  *
  * Файл `assetFile` сохранён для справки (раньше загружали по одному
  * JSON на класс), но сейчас справочник заклинаний общий — один
- * `spells.csv` в assets, см. [SpellParser.loadFromAssets].
+ * `spells_normalized.json` в assets, см. [SpellParser.loadFromAssets].
  */
 object Classes {
 

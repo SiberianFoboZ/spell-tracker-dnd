@@ -14,7 +14,9 @@ import kotlinx.coroutines.withContext
  * Единая точка доступа к Room-базе со справочником заклинаний.
  *
  * Приложение запускает [ensureInitialized] при старте, и если БД пуста —
- * парсит `spells.csv` из assets и заливает все заклинания в таблицу
+ * парсит `spells_normalized.json` из assets и заливает все заклинания в таблицу
+ * `spells`. Данные собраны build-time Gradle-таской `generateSpellsDb` из
+ * per-spell JSON в `spells_data/` (см. app/build.gradle.kts).
  * `spells`. После этого [initialized] становится true, и ViewModel-ы
  * могут реагировать.
  */
