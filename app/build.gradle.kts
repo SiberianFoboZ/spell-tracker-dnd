@@ -1,5 +1,7 @@
 import java.io.FileInputStream
 import java.util.Properties
+import groovy.json.JsonOutput
+import groovy.json.JsonSlurper
 
 plugins {
     id("com.android.application")
@@ -150,4 +152,278 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
+}
+
+// ─── Этап N: build-time preprocessing справочника заклинаний ───
+//
+// Задача собирает 843 (или сколько есть) JSON-файлов из `spells_data/`
+// в корне проекта в ОДИН `spells_normalized.json`, который:
+//   1. клаётся в `app/build/generated/assets/` (build dir, .gitignore),
+//   2. подцепляется к Android `assets` source set — попадает в APK,
+//   3. парсится на устройстве ОДИН раз при первом запуске приложения.
+//
+// Плюсы:
+//   • runtime: 1× JSON-parse вместо 843×;
+//   • денормализация: enum-keys, regex-флаг "расходуемый компонент",
+//     parent-class из subclasses[], saving throws из HTML —
+//     делаются один раз на сборочной машине, не на телефоне;
+//   • удаление «нежелательных» классов (homebrew/UA) — без копий в APK.
+//
+// Выход и вход объявлены как AbstractTask properties — Gradle сам
+// отслеживает аптайм между сборками (если ничего не менялось — skip).
+
+abstract class GenerateSpellsDbTask : DefaultTask() {
+
+    @get:InputDirectory
+    abstract val sourceDir: DirectoryProperty
+
+    /**
+     * Куда положить сгенерированный артефакт. Ожидаем
+     * `DirectoryProperty`, потому что AGP Variant API
+     * `addGeneratedSourceDirectory` ищет директорию-источник,
+     * а не файл. Внутри создаём `spells_normalized.json`.
+     */
+    @get:OutputDirectory
+    abstract val outputDir: DirectoryProperty
+
+    @TaskAction
+    fun execute() {
+        val src = sourceDir.get().asFile
+        val dir = outputDir.get().asFile
+        dir.mkdirs()
+        val out = dir.resolve("spells_normalized.json")
+
+        // Классы, которые вычёркиваем (homebrew/UA, не нужны для трекера).
+        // Имена — как они приходят в JSON `classes[].name`. Любой спелл,
+        // у которого после вычёркивания НЕ осталось ни classes[], ни
+        // parent-классов в subclasses[], — дропается целиком.
+        val ignoredClasses = setOf(
+            "Шаман", "Магус", "Хранитель Рун", "Савант", "Неупокоенная душа",
+            "Мистик", "Кровавый Охотник", "Звездочет", "Егерь", "Воевода",
+            "Альтернативный плут", "Альтернативный монах",
+            "Альтернативный воин", "Альтернативный варвар",
+            "Альтернативный следопыт", "Алхимик",
+        )
+
+        // Маппинг русского имени класса → English id из Classes.kt.
+        // Совпадает с тем, что лежит в `SpellStorage.computeCasterLevel()`.
+        val classNameToId = mapOf(
+            "Бард" to "bard",
+            "Волшебник" to "wizard",
+            "Друид" to "druid",
+            "Жрец" to "cleric",
+            "Колдун" to "warlock",
+            "Паладин" to "paladin",
+            "Следопыт" to "ranger",
+            "Чародей" to "sorcerer",
+            "Изобретатель" to "artificer",
+            // Официальные 1/3-кастеры — архетипы Воина и Плута
+            "Мистический Рыцарь" to "fighter_mystic",
+            "Мистический Ловкач" to "rogue_mystic",
+        )
+
+        // Школа магии: в JSON приходит свободным RU ("вызов"),
+        // menu_json.txt — enum-key ("CONJURATION"). Маппим для фильтра.
+        val schoolToKey = mapOf(
+            "вызов" to "CONJURATION",
+            "воплощение" to "EVOCATION",
+            "иллюзия" to "ILLUSION",
+            "некромантия" to "NECROMANCY",
+            "ограждение" to "ABJURATION",
+            "очарование" to "ENCHANTMENT",
+            "преобразование" to "TRANSMUTATION",
+            "прорицание" to "DIVINATION",
+        )
+
+        // Для классов, не нашедшихся в `classNameToId`, English id
+        // берём из URL: "/classes/druid" → "druid". Это покрывает
+        // домашние/нестандартные имена автоматически.
+        val idFromUrl = """/classes/(\w+)""".toRegex()
+
+        // Спасбросок лежит в HTML-описании как
+        // <span class="saving_throw">Мудрости</span>.
+        val stRegex = Regex("""<span class="saving_throw">([^<]+)</span>""")
+
+        // Маркер «расходуемый» в тексте материального компонента.
+        val consumedRegex = Regex("расход", RegexOption.IGNORE_CASE)
+
+        val slurper = JsonSlurper()
+        val out0 = mutableListOf<Map<String, Any?>>()
+        var total = 0
+        var dropped = 0
+        var stripped = 0
+        val errors = mutableListOf<String>()
+
+        val files = src.listFiles { f -> f.isFile && f.extension == "json" } ?: emptyArray()
+        files.sortedBy { it.name }.forEach { file ->
+            total++
+            try {
+                @Suppress("UNCHECKED_CAST")
+                val raw = slurper.parse(file) as Map<String, Any?>
+                val result = normalize(
+                    raw, ignoredClasses, classNameToId, schoolToKey,
+                    idFromUrl, stRegex, consumedRegex,
+                )
+                if (result != null) {
+                    out0.add(result.first)
+                    if (result.second) stripped++
+                } else {
+                    dropped++
+                }
+            } catch (e: Exception) {
+                errors.add("${file.name}: ${e.message}")
+            }
+        }
+
+        out.writeText(JsonOutput.toJson(out0))
+
+        logger.lifecycle("Spells: total=$total, kept=${out0.size}, dropped=$dropped (целиком из ignored-классов), stripped=$stripped (часть классов отфильтрована)")
+        if (errors.isNotEmpty()) {
+            logger.warn("Ошибок разбора: ${errors.size}")
+            errors.take(20).forEach { logger.warn(" - $it") }
+        }
+    }
+
+    /**
+     * Возвращает null, если после фильтрации у спелла не осталось ни
+     * одного «нашего» класса/подкласса → спелл дропается целиком.
+     * Возвращает (нормализованный_спелл, был_ли_кто-то_отфильтрован).
+     */
+    private fun normalize(
+        raw: Map<String, Any?>,
+        ignoredClasses: Set<String>,
+        classNameToId: Map<String, String>,
+        schoolToKey: Map<String, String>,
+        idFromUrlRegex: Regex,
+        stRegex: Regex,
+        consumedRegex: Regex,
+    ): Pair<Map<String, Any?>, Boolean>? {
+        @Suppress("UNCHECKED_CAST")
+        val nameObj = raw["name"] as? Map<String, Any?> ?: return null
+        val nameRu = nameObj["rus"] as? String ?: return null
+        val nameEng = nameObj["eng"] as? String
+
+        val id = (raw["id"] as? Number)?.toLong() ?: return null
+        val level = (raw["level"] as? Number)?.toInt() ?: return null
+
+        @Suppress("UNCHECKED_CAST")
+        val components = raw["components"] as? Map<String, Any?>
+        val compV = components?.get("v") as? Boolean ?: false
+        val compS = components?.get("s") as? Boolean ?: false
+        val compM = components?.get("m") as? String
+        val hasMaterial = compM != null && compM.isNotBlank()
+        val materialConsumed = hasMaterial && consumedRegex.containsMatchIn(compM)
+
+        var strippedSomething = false
+        @Suppress("UNCHECKED_CAST")
+        val rawClasses = raw["classes"] as? List<Map<String, Any?>> ?: emptyList()
+        val classesEng = rawClasses.mapNotNull { cls ->
+            val name = cls["name"] as? String ?: return@mapNotNull null
+            if (name in ignoredClasses) {
+                strippedSomething = true
+                null
+            } else {
+                classNameToId[name]
+                    ?: cls["url"]?.toString()?.let { url ->
+                        idFromUrlRegex.find(url)?.groupValues?.getOrNull(1)
+                    }
+            }
+        }
+
+        @Suppress("UNCHECKED_CAST")
+        val rawSubclasses = raw["subclasses"] as? List<Map<String, Any?>> ?: emptyList()
+        val subclassesNames = rawSubclasses.mapNotNull { sub ->
+            val parentClass = sub["class"] as? String ?: return@mapNotNull null
+            if (parentClass in ignoredClasses) {
+                strippedSomething = true
+                null
+            } else {
+                sub["name"] as? String
+            }
+        }
+
+        @Suppress("UNCHECKED_CAST")
+        val rawRaces = raw["races"] as? List<Map<String, Any?>> ?: emptyList()
+        val racesNames = rawRaces.mapNotNull { race -> race["name"] as? String }
+
+        // Дропаем спелл, если после фильтрации ничего не осталось — он был
+        // исключительно для ignored-классов.
+        if (classesEng.isEmpty() && subclassesNames.isEmpty()) return null
+
+        val ritual = raw["ritual"] as? Boolean ?: false
+        val concentration = raw["concentration"] as? Boolean ?: false
+
+        val time = raw["time"] as? String ?: ""
+        val range = raw["range"] as? String ?: ""
+        val duration = raw["duration"] as? String ?: ""
+
+        @Suppress("UNCHECKED_CAST")
+        val source = raw["source"] as? Map<String, Any?>
+        val sourceName = source?.get("shortName") as? String ?: ""
+        @Suppress("UNCHECKED_CAST")
+        val sourceGroup = source?.get("group") as? Map<String, Any?>
+        val sourceGroupName = sourceGroup?.get("shortName") as? String ?: ""
+
+        val school = raw["school"] as? String ?: ""
+        val schoolKey = schoolToKey[school.lowercase()] ?: school.uppercase()
+
+        val description = raw["description"] as? String ?: ""
+        val upper = raw["upper"] as? String ?: ""
+
+        val savingThrows = stRegex.findAll(description)
+            .map { it.groupValues[1].trim() }
+            .toList()
+
+        return Pair(
+            linkedMapOf(
+                "id" to id,
+                "name" to nameRu,
+                "nameEng" to (nameEng ?: nameRu),
+                "source" to sourceName,
+                "sourceGroup" to sourceGroupName,
+                "level" to level,
+                "school" to schoolKey,
+                "ritual" to ritual,
+                "concentration" to concentration,
+                "timecast" to time,
+                "distance" to range,
+                "duration" to duration,
+                "componentV" to compV,
+                "componentS" to compS,
+                "componentM" to hasMaterial,
+                "materialConsumed" to materialConsumed,
+                "materialDesc" to (compM ?: ""),
+                "descriptionHtml" to description,
+                "upperLevel" to upper,
+                "url" to (raw["url"] as? String ?: ""),
+                "classes" to classesEng.joinToString(","),
+                "subclasses" to subclassesNames.joinToString(","),
+                "races" to racesNames.joinToString(","),
+                "savingThrows" to savingThrows.joinToString(","),
+            ),
+            strippedSomething,
+        )
+    }
+}
+
+val generateSpellsDb by tasks.registering(GenerateSpellsDbTask::class) {
+    group = "build"
+    description = "Препроцессит spells_data/*.json в один spells_normalized.json для APK"
+
+    sourceDir.set(rootProject.file("spells_data"))
+    outputDir.set(layout.buildDirectory.dir("generated/assets"))
+}
+
+// Сгенерированный JSON кладём в `build/generated/assets/` (вне git)
+// и подцепляем к Android assets source set через Variant API
+// (старый SourceSet API запрещает Provider-инстансы в AGP 9.x).
+// Variant API сам разруливает Gradle-зависимость generateSpellsDb →
+// mergeAssets, вручную dependsOn писать не нужно.
+androidComponents {
+    onVariants(selector().all()) { variant ->
+        variant.sources.assets?.addGeneratedSourceDirectory(
+            tasks.named("generateSpellsDb"),
+            { (it as GenerateSpellsDbTask).outputDir },
+        )
+    }
 }
