@@ -4,7 +4,7 @@
 
 **Android app for tracking D&D 5e spell slots per PHB rules**
 
-[![Release](https://img.shields.io/badge/release-v2.5.4-7c3aed?style=flat-square&logo=github)](https://github.com/SiberianFoboZ/spell-tracker-dnd/releases/tag/v2.5.4)
+[![Release](https://img.shields.io/badge/release-v2.6.0-7c3aed?style=flat-square&logo=github)](https://github.com/SiberianFoboZ/spell-tracker-dnd/releases/tag/v2.6.0)
 [![License](https://img.shields.io/badge/license-MIT-22c55e?style=flat-square)](LICENSE)
 [![Android](https://img.shields.io/badge/Android-7.0--16-3DDC84?style=flat-square&logo=android&logoColor=white)](https://developer.android.com)
 [![Kotlin](https://img.shields.io/badge/Kotlin-2.0.21-7F52FF?style=flat-square&logo=kotlin&logoColor=white)](https://kotlinlang.org)
@@ -20,8 +20,8 @@
 state of spell slots, pact magic, and arcanums on a single screen. No accounts, no
 analytics, no internet — only local data that survives app restarts.
 
-Current version: **v2.5.4** — slot-stretching fix: cells stretch only in width,
-height stays fixed.
+Current version: **v2.6.0** — official sources only, build-time whitelist for
+class/subclass names.
 
 ---
 
@@ -177,7 +177,7 @@ cd spell-tracker-dnd
 
 # Build release APK
 ./gradlew assembleRelease
-# → app/build/outputs/apk/release/spell-tracker-v2.5.4.apk
+# → app/build/outputs/apk/release/spell-tracker-v2.6.0.apk
 ```
 
 Windows (PowerShell):
@@ -189,7 +189,7 @@ Windows (PowerShell):
 ### Install on a device
 
 ```bash
-adb install -r app/build/outputs/apk/release/spell-tracker-v2.5.4.apk
+adb install -r app/build/outputs/apk/release/spell-tracker-v2.6.0.apk
 ```
 
 ### Release APK signing (Stage 23)
@@ -236,6 +236,7 @@ automatically.
 
 | Version | What's new | Date |
 |---------|-----------|------|
+| **v2.6.0** | Official sources only (487 файлов), build-time whitelist для классов/подклассов, фильтр подклассов по выбранному классу, multi-select компонентов | 2026-07-04 |
 | **v2.5.4** | Fix: slots stretch only in width (removed `aspectRatio`; height fixed at 48/38dp) | 2026-07-03 |
 | **v2.5.3** | Custom = ClassCard (shared `GridCard`); slots now distribute across the row width | 2026-07-02 |
 | **v2.5.2** | `longRest` now resets ALL custom slots; custom-slot row styled like pact magic (56dp badge, 16sp title) | 2026-07-02 |
