@@ -1,22 +1,340 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <string name="app_name">Spell Tracker</string>
+<!--
+    Все пользовательские строки UI.
 
-    <!-- Этап 15. Кнопки отдыха (Spell Slots UI) -->
+    Конвенция ключей: snake_case, сгруппированы по фиче/экрану.
+    Префиксы:
+      common_*     — общие (Cancel, Back, Loading, NotFound)
+      home_*       — главный экран
+      spells_*     — экран списка заклинаний + фильтры
+      detail_*     — детальная карточка заклинания
+      characters_* — экран мульти-персонажей
+      custom_slot_* — пользовательские ячейки (форма + редактирование)
+      rest_*       — кнопки отдыха + диалоги + снекбары (Этап 15-17)
+      arcanum_*    — арканумы Колдуна (Этап 17)
+      class_*      — имена классов D&D (bard, wizard, ...)
+      school_*     — школы магии (ABJURATION → Ограждение)
+      source_*     — конкретные книги (PHB, XGE, ...)
+      source_group_* — группы книг (Базовые, Приключения, ...)
+      saving_throw_* — типы спасбросков
+      component_*  — компоненты заклинаний (V/S/M/расходуемый)
+      tri_state_*  — 3-state фильтр (Любое/Да/Нет)
+      lang_*       — переключатель языка
+
+    В English-версии (values-en/strings.xml) тот же набор ключей —
+    добавлять/удалять ключи синхронно в обоих файлах.
+-->
+<resources>
+    <!-- ─── Общие ─── -->
+    <string name="common_back">Назад</string>
+    <string name="common_close">Закрыть</string>
+    <string name="common_cancel">Отмена</string>
+    <string name="common_save">Сохранить</string>
+    <string name="common_delete">Удалить</string>
+    <string name="common_create">Создать</string>
+    <string name="common_loading">Загрузка...</string>
+
+    <!-- ─── Приложение ─── -->
+    <string name="app_name">Spell Tracker</string>
+    <string name="app_subtitle">Мультикласс по правилам PHB</string>
+
+    <!-- ─── Главный экран: заголовок + caster level ─── -->
+    <string name="home_effective_caster_level_caption">УРОВЕНЬ ЗАКЛИНАТЕЛЯ</string>
+
+    <!-- ─── Главный экран: секция «Классы» ─── -->
+    <string name="home_section_classes">Классы</string>
+    <string name="home_section_classes_collapse">Свернуть</string>
+    <string name="home_section_classes_expand">Развернуть</string>
+    <string name="home_class_factor_one">1.0</string>
+    <string name="home_class_factor_half_up">0.5↑</string>
+    <string name="home_class_factor_half">0.5</string>
+    <string name="home_class_factor_third_up">1/3↑</string>
+    <string name="home_class_non_caster">пзак</string>
+    <string name="home_class_add_custom_title">Custom</string>
+    <string name="home_class_add_custom_subtitle">+ ячейка</string>
+    <string name="home_class_add_custom_content_description">Добавить пользовательскую ячейку</string>
+
+    <!-- ─── Главный экран: пакт-магия Колдуна ─── -->
+    <string name="home_section_pact_magic">Магия договора</string>
+    <string name="home_pact_magic_class_label">Колдун</string>
+
+    <!-- ─── Главный экран: ячейки заклинаний ─── -->
+    <string name="home_section_spell_slots">Ячейки заклинаний</string>
+    <string name="home_spell_slots_empty">Нет доступных ячеек — укажите уровень хотя бы одного заклинателя.</string>
+
+    <!-- ─── Главный экран: арканумы ─── -->
+    <string name="home_section_arcanums">Арканумы</string>
+    <string name="home_arcanum_locked">Доступно с 11 уровня Колдуна</string>
+    <string name="home_arcanum_empty">Нет доступных арканумов</string>
+
+    <!-- ─── Главный экран: пользовательские ячейки ─── -->
+    <string name="home_section_custom_slots">Пользовательские ячейки</string>
+    <string name="home_custom_slots_empty">Нет пользовательских ячеек. Разверните «Классы» выше и нажмите «+» внизу сетки.</string>
+    <string name="home_custom_slot_no_title">Без названия</string>
+    <string name="home_custom_slot_rest_short">К</string>
+    <string name="home_custom_slot_rest_long">Д</string>
+    <string name="home_slots_remaining_count">осталось %1$d</string>
+
+    <!-- ─── Главный экран: FAB + кнопки ─── -->
+    <string name="home_fab_open_spells_content_description">Открыть список заклинаний</string>
+
+    <!-- ─── Отдых (Этап 15, 17) ─── -->
     <string name="rest_short_title">Короткий отдых</string>
     <string name="rest_long_title">Длинный отдых</string>
     <string name="rest_short_confirm_title">Короткий отдых?</string>
     <string name="rest_long_confirm_title">Длинный отдых?</string>
-    <string name="rest_short_confirm_body">Восстановить ячейки пакт-магии Колдуна. Ячейки других классов останутся потраченными.</string>
-    <string name="rest_long_confirm_body">Восстановить все ячейки заклинаний и пакт-магии. Классы сохранятся.</string>
+    <string name="rest_short_confirm_body">Восстановить ячейки пакт-магии Колдуна. Ячейки других классов и арканумы останутся потраченными.</string>
+    <string name="rest_long_confirm_body">Восстановить все ячейки заклинаний, пакт-магии и арканумы. Классы сохранятся.</string>
     <string name="rest_short_done">Ячейки Колдуна восстановлены</string>
     <string name="rest_long_done">Все ячейки восстановлены</string>
-    <string name="cancel">Отмена</string>
+    <string name="arcanum_blocked_short_rest">Арканумы восстанавливаются только после длинного отдыха</string>
+
+    <!-- ─── Список заклинаний: top bar + общие ─── -->
+    <string name="spells_title_with_count">Заклинания (%1$d)</string>
+    <string name="spells_empty_no_prepared">Отметьте заклинания галочкой в общем списке, чтобы они появились здесь.</string>
+    <string name="spells_empty_no_prepared_with_filters">Нет подготовленных заклинаний под выбранные фильтры.</string>
+    <string name="spells_empty_no_match">Ничего не найдено по выбранным фильтрам.</string>
+    <string name="spells_search_placeholder">Поиск по названию</string>
+    <string name="spells_subtitle_ritual_suffix"> · ритуал</string>
+
+    <!-- ─── Список заклинаний: закладка «Подготовленные» ─── -->
+    <string name="spells_prepared_action_show_all">Показать все</string>
+    <string name="spells_prepared_action_only_prepared">Только подготовленные</string>
+
+    <!-- ─── Список заклинаний: фильтры ─── -->
+    <string name="spells_filter_button">Фильтры</string>
+    <string name="spells_filter_clear">Сбросить фильтры</string>
+    <string name="spells_filter_section_source">Источник</string>
+    <string name="spells_filter_section_class">Класс</string>
+    <string name="spells_filter_section_level">Уровень</string>
+    <string name="spells_filter_section_school">Школа</string>
+    <string name="spells_filter_section_subclass_with_count">Подкласс (%1$d)</string>
+    <string name="spells_filter_section_ritual">Ритуал</string>
+    <string name="spells_filter_section_concentration">Концентрация</string>
+    <string name="spells_filter_section_components">Компоненты (выбраны — обязательны у спелла)</string>
+    <string name="spells_filter_section_saving_throw">Спасбросок</string>
+    <string name="spells_filter_chip_all">Все</string>
+    <string name="spells_filter_chip_all_sources">Все источники</string>
+    <string name="spells_filter_chip_all_subclasses">Все подклассы</string>
+    <string name="spells_filter_chip_any">Любой</string>
+    <string name="spells_filter_chip_cantrip">Заговор</string>
+    <string name="spells_filter_chip_level">Уровень %1$s</string>
+
+    <!-- ─── Детальная карточка ─── -->
+    <string name="detail_not_found">Заклинание не найдено</string>
+    <string name="detail_section_description">Описание</string>
+    <string name="detail_section_upper_level">На высших уровнях</string>
+    <string name="detail_button_mark_prepared">Отметить как подготовленное</string>
+    <string name="detail_button_unmark_prepared">В списке подготовленных</string>
+    <string name="detail_pill_ritual">ритуал</string>
+    <string name="detail_pill_concentration">концентрация</string>
+    <string name="detail_label_cantrip">Заговор</string>
+    <string name="detail_label_level_with_roman">Уровень %1$s</string>
+    <string name="detail_meta_casting_time">Время</string>
+    <string name="detail_meta_range">Дистанция</string>
+    <string name="detail_meta_duration">Длительность</string>
+    <string name="detail_meta_components">Компоненты</string>
+    <string name="detail_meta_classes">Классы</string>
+    <string name="detail_meta_subclasses">Подклассы</string>
+    <string name="detail_meta_races">Расы</string>
+    <string name="detail_meta_material">Материал</string>
+    <string name="detail_meta_saving_throws">Спасброски</string>
+    <string name="detail_material_consumed_suffix"> (расх.)</string>
+
+    <!-- ─── Персонажи ─── -->
+    <string name="characters_title">Персонажи</string>
+    <string name="characters_empty">Нет персонажей</string>
+    <string name="characters_active_content_description">Активный</string>
+    <string name="characters_create_fab_content_description">Создать персонажа</string>
+    <string name="characters_create_dialog_title">Новый персонаж</string>
+    <string name="characters_name_field_placeholder">Имя персонажа</string>
+    <string name="characters_create_confirm">Создать</string>
+    <string name="characters_edit_sheet_title">Редактировать персонажа</string>
+    <string name="characters_name_label">Имя</string>
+    <string name="characters_save">Сохранить</string>
+    <string name="characters_default_name">Без имени</string>
+    <string name="characters_delete_disabled">Удалить (нельзя — последний)</string>
+    <string name="characters_delete_dialog_title">Удалить персонажа?</string>
+    <string name="characters_delete_dialog_body">«%1$s» будет удалён без возможности восстановления. Использованные ячейки и подготовленные заклинания этого персонажа не вернутся.</string>
+    <string name="characters_delete_confirm">Удалить</string>
+
+    <!-- ─── Пользовательская ячейка: форма ─── -->
+    <string name="custom_slot_not_found">Ячейка не найдена</string>
+    <string name="custom_slot_new_sheet_title">Новая ячейка</string>
+    <string name="custom_slot_edit_screen_title">Редактирование</string>
+    <string name="custom_slot_field_title">Название</string>
+    <string name="custom_slot_field_title_placeholder">Дыхание дракона</string>
+    <string name="custom_slot_field_amount">Количество</string>
+    <string name="custom_slot_stepper_decrease">Уменьшить</string>
+    <string name="custom_slot_stepper_increase">Увеличить</string>
+    <string name="custom_slot_field_die">Кубик</string>
+    <string name="custom_slot_field_rest_type">Восстановление</string>
+    <string name="custom_slot_delete_dialog_title">Удалить ячейку?</string>
+    <string name="custom_slot_delete_dialog_body">«%1$s» будет удалена без возможности восстановления. Использованные ячейки не вернутся.</string>
+    <string name="custom_slot_delete_confirm">Удалить</string>
+
+    <!-- ─── FAB списка заклинаний (на HomeScreen) ─── -->
     <string name="fab_open_spells">Открыть список заклинаний</string>
 
-    <!-- Этап 17. Арканумы Колдуна -->
-    <string name="section_arcanums">Арканумы</string>
-    <string name="arcanum_locked_message">Доступно с 11 уровня Колдуна</string>
-    <string name="arcanum_blocked_short_rest">Арканумы восстанавливаются только после длинного отдыха</string>
-    <string name="rest_long_confirm_body_with_arcanums">Восстановить все ячейки заклинаний, пакт-магии и арканумы. Классы сохранятся.</string>
+    <!-- ═══════════════════════════════════════════════════════════ -->
+    <!-- Классы D&D 5e (для локализации имён из Classes.kt)          -->
+    <!-- ═══════════════════════════════════════════════════════════ -->
+    <string name="class_bard">Бард</string>
+    <string name="class_wizard">Волшебник</string>
+    <string name="class_druid">Друид</string>
+    <string name="class_cleric">Жрец</string>
+    <string name="class_warlock">Колдун</string>
+    <string name="class_paladin">Паладин</string>
+    <string name="class_ranger">Следопыт</string>
+    <string name="class_sorcerer">Чародей</string>
+    <string name="class_artificer">Изобретатель</string>
+    <string name="class_fighter_mystic">Воин (мистический рыцарь)</string>
+    <string name="class_rogue_mystic">Плут (мистический ловкач)</string>
+    <string name="class_unknown">?</string>
+
+    <!-- ═══════════════════════════════════════════════════════════ -->
+    <!-- Школы магии (SpellMenuConfig.SCHOOLS)                      -->
+    <!-- ═══════════════════════════════════════════════════════════ -->
+    <string name="school_ABJURATION">Ограждение</string>
+    <string name="school_CONJURATION">Вызов</string>
+    <string name="school_DIVINATION">Прорицание</string>
+    <string name="school_ENCHANTMENT">Очарование</string>
+    <string name="school_EVOCATION">Воплощение</string>
+    <string name="school_ILLUSION">Иллюзия</string>
+    <string name="school_NECROMANCY">Некромантия</string>
+    <string name="school_TRANSMUTATION">Преобразование</string>
+    <string name="school_unknown">?</string>
+
+    <!-- ═══════════════════════════════════════════════════════════ -->
+    <!-- Группы источников (SpellMenuConfig.SOURCE_GROUPS)          -->
+    <!-- ═══════════════════════════════════════════════════════════ -->
+    <string name="source_group_OFFICAL">Базовые</string>
+    <string name="source_group_MODULE">Приключения</string>
+    <string name="source_group_SETTING">Сеттинги</string>
+    <string name="source_group_TEST">Unearthed Arcana</string>
+    <string name="source_group_THIRD_PARTY">3rd party</string>
+    <string name="source_group_CUSTOM">Homebrew</string>
+
+    <!-- ═══════════════════════════════════════════════════════════ -->
+    <!-- Конкретные книги (Source.label/tooltip). Метки (PHB, XGE…)
+         — это аббревиатуры, одинаковые во всех локалях, поэтому для
+         label используется ключ source_<KEY> с тем же текстом, что и
+         в английской версии. Tooltip — полное название, локализуется. -->
+    <!-- ═══════════════════════════════════════════════════════════ -->
+    <string name="source_PHB_label">PHB</string>
+    <string name="source_PHB_tooltip">Книга игрока</string>
+    <string name="source_XGE_label">XGE</string>
+    <string name="source_XGE_tooltip">Руководство Занатара обо всем</string>
+    <string name="source_TCE_label">TCE</string>
+    <string name="source_TCE_tooltip">Котел Таши со всякой всячиной</string>
+    <string name="source_FTD_label">FTD</string>
+    <string name="source_FTD_tooltip">Сокровищница драконов Фицбана</string>
+    <string name="source_BMT_label">BMT</string>
+    <string name="source_BMT_tooltip">Книга многих вещей</string>
+
+    <string name="source_LLK_label">LLK</string>
+    <string name="source_LLK_tooltip">Потерянная лаборатория Квалиша</string>
+    <string name="source_AI_label">AI</string>
+    <string name="source_AI_tooltip">Корпорация приобретений</string>
+    <string name="source_IDRotf_label">IDRotf</string>
+    <string name="source_IDRotf_tooltip">Долина Ледяного Ветра: Иней Морозной девы</string>
+
+    <string name="source_SCAG_label">SCAG</string>
+    <string name="source_SCAG_tooltip">Путеводитель приключенца по Побережью меча</string>
+    <string name="source_GGR_label">GGR</string>
+    <string name="source_GGR_tooltip">Справочник гильдмастера по Равнике</string>
+    <string name="source_SCC_label">SCC</string>
+    <string name="source_SCC_tooltip">Стриксхейвен: Учебная программа хаоса</string>
+    <string name="source_AAG_label">AAG</string>
+    <string name="source_AAG_tooltip">Руководство астрального приключенца</string>
+    <string name="source_SatO_label">SatO</string>
+    <string name="source_SatO_tooltip">Сигил и Внешние Земли</string>
+
+    <string name="source_UAMM_label">UAMM</string>
+    <string name="source_UAMM_tooltip">Modern Magic</string>
+    <string name="source_UATOBM_label">UATOBM</string>
+    <string name="source_UATOBM_tooltip">Древняя черная магия</string>
+    <string name="source_UASS_label">UASS</string>
+    <string name="source_UASS_tooltip">Стартовые заклинания</string>
+    <string name="source_UACDW_label">UACDW</string>
+    <string name="source_UACDW_tooltip">Жрец, Друид, Волшебник</string>
+    <string name="source_UAFRW_label">UAFRW</string>
+    <string name="source_UAFRW_tooltip">Воин, Следопыт, Волшебник</string>
+    <string name="source_UA20POR_label">UA20POR</string>
+    <string name="source_UA20POR_tooltip">Пересмотр псионических способностей</string>
+    <string name="source_UASMT_label">UASMT</string>
+    <string name="source_UASMT_tooltip">Заклинания и магические тату</string>
+    <string name="source_UA21DO_label">UA21DO</string>
+    <string name="source_UA21DO_tooltip">Драконьи варианты</string>
+    <string name="source_UA22WotM_label">UA22WotM</string>
+    <string name="source_UA22WotM_tooltip">Чудеса Мультивселенной</string>
+
+    <string name="source_MHH_label">MHH</string>
+    <string name="source_MHH_tooltip">Midgard Hero Handbook</string>
+    <string name="source_ODL_label">ODL</string>
+    <string name="source_ODL_tooltip">Odyssey of the Dragonlords</string>
+    <string name="source_DMf5E_label">DMf5E</string>
+    <string name="source_DMf5E_tooltip">Deep Magic for 5e</string>
+    <string name="source_EGtW_label">EGtW</string>
+    <string name="source_EGtW_tooltip">Explorer\'s Guide to Wildemount</string>
+    <string name="source_GHtPG_label">GHtPG</string>
+    <string name="source_GHtPG_tooltip">Ghoulhaven Player\'s Guide</string>
+    <string name="source_TDCS_label">TDCS</string>
+    <string name="source_TDCS_tooltip">Tal\'Dorei Campaign Setting</string>
+    <string name="source_VSoS_label">VSoS</string>
+    <string name="source_VSoS_tooltip">Valda\'s Spire of Secrets</string>
+    <string name="source_DoDk_label">DoDk</string>
+    <string name="source_DoDk_tooltip">Drakkenheim</string>
+
+    <string name="source_ICB_label">ICB</string>
+    <string name="source_ICB_tooltip">Книга класса Механист</string>
+    <string name="source_LH_label">LH</string>
+    <string name="source_LH_tooltip">Laserllama</string>
+    <string name="source_PG_label">PG</string>
+    <string name="source_PG_tooltip">Player\'s Guide: Proliferating Chaos</string>
+
+    <!-- ═══════════════════════════════════════════════════════════ -->
+    <!-- Спасброски (SpellMenuConfig.SAVING_THROWS)                  -->
+    <!-- ═══════════════════════════════════════════════════════════ -->
+    <string name="saving_throw_STR">Сила</string>
+    <string name="saving_throw_DEX">Ловкость</string>
+    <string name="saving_throw_CON">Телосложение</string>
+    <string name="saving_throw_INT">Интеллект</string>
+    <string name="saving_throw_WIS">Мудрость</string>
+    <string name="saving_throw_CHA">Харизма</string>
+
+    <!-- ═══════════════════════════════════════════════════════════ -->
+    <!-- Компоненты заклинаний (V/S/M/расходуемый)                   -->
+    <!-- В UI chip-метки — это однобуквенные коды V/S/M и «Расх» для -->
+    <!-- расходуемого, совпадают во всех локалях (стандарт D&D PHB).  -->
+    <!-- ═══════════════════════════════════════════════════════════ -->
+    <string name="component_V_label">В</string>
+    <string name="component_S_label">С</string>
+    <string name="component_M_label">М</string>
+    <string name="component_RC_label">Расх</string>
+
+    <!-- ═══════════════════════════════════════════════════════════ -->
+    <!-- Тип восстановления (CustomSlot.RestType.displayName)        -->
+    <!-- ═══════════════════════════════════════════════════════════ -->
+    <string name="rest_type_SHORT">Короткий</string>
+    <string name="rest_type_LONG">Длинный</string>
+
+    <!-- ═══════════════════════════════════════════════════════════ -->
+    <!-- Tri-state фильтр (Любое/Да/Нет)                            -->
+    <!-- ═══════════════════════════════════════════════════════════ -->
+    <string name="tri_state_ANY">Любое</string>
+    <string name="tri_state_YES">Да</string>
+    <string name="tri_state_NO">Нет</string>
+
+    <!-- ═══════════════════════════════════════════════════════════ -->
+    <!-- Переключатель языка (TopAppBar Home)                        -->
+    <!-- ═══════════════════════════════════════════════════════════ -->
+    <string name="lang_action_content_description">Сменить язык</string>
+    <string name="lang_menu_title">Язык интерфейса</string>
+    <string name="lang_ru">Русский</string>
+    <string name="lang_en">English</string>
+
+    <!-- ─── Настройки (Экран «Settings», шестерёнка в Home TopAppBar) ─── -->
+    <string name="settings_title">Настройки</string>
+    <string name="settings_open_content_description">Открыть настройки</string>
 </resources>

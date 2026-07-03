@@ -1,6 +1,9 @@
 package com.example.spelltracker.ui.nav
 
+import android.app.Activity
 import android.app.Application
+import android.content.Context
+import android.content.ContextWrapper
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -15,6 +18,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.example.spelltracker.LocaleStorage
 import com.example.spelltracker.ui.characters.CharactersScreen
 import com.example.spelltracker.ui.characters.CharactersViewModel
 import com.example.spelltracker.ui.customslot.EditCustomSlotScreen
@@ -23,6 +27,7 @@ import com.example.spelltracker.ui.detail.SpellDetailScreen
 import com.example.spelltracker.ui.detail.SpellDetailViewModel
 import com.example.spelltracker.ui.home.HomeScreen
 import com.example.spelltracker.ui.home.HomeViewModel
+import com.example.spelltracker.ui.settings.SettingsScreen
 import com.example.spelltracker.ui.spells.SpellsScreen
 import com.example.spelltracker.ui.spells.SpellsViewModel
 
@@ -36,6 +41,8 @@ import com.example.spelltracker.ui.spells.SpellsViewModel
  *                            ячейки (Этап 20, long press 1.5с)
  *   characters             — экран мульти-персонажей (Этап 22,
  *                            свайп влево из HomeScreen)
+ *   settings               — экран настроек (Этап 26, шестерёнка
+ *                            в TopAppBar Home)
  */
 @Composable
 fun AppNavigation() {
@@ -83,6 +90,7 @@ fun AppNavigation() {
                 onOpenSpells = { nav.navigate(Routes.SPELLS) },
                 onEditCustomSlot = { id -> nav.navigate(Routes.customSlotEdit(id)) },
                 onOpenCharacters = { nav.navigate(Routes.CHARACTERS) },
+                onOpenSettings = { nav.navigate(Routes.SETTINGS) },
             )
         }
 
@@ -92,6 +100,20 @@ fun AppNavigation() {
             val vm: CharactersViewModel = viewModel(factory = factory)
             CharactersScreen(
                 viewModel = vm,
+                onBack = { nav.popBackStack() },
+            )
+        }
+
+        // Этап 26: экран настроек. Шестерёнка в Home TopAppBar.
+        composable(Routes.SETTINGS) {
+            SettingsScreen(
+                currentTag = currentLocaleTag(context),
+                onLanguageSelected = { tag ->
+                    LocaleStorage.setTag(context, tag)
+                    // Без recreate() Compose-дерево остаётся на старой локали —
+                    // переключение визуально не работает до следующего запуска.
+                    context.findActivity()?.recreate()
+                },
                 onBack = { nav.popBackStack() },
             )
         }
@@ -143,9 +165,34 @@ object Routes {
     const val CUSTOM_SLOT_EDIT_PATTERN = "customslot/{id}"
     // Этап 22: экран мульти-персонажей
     const val CHARACTERS               = "characters"
+    // Этап 26: экран настроек
+    const val SETTINGS                 = "settings"
 
     fun spell(id: Long): String = "spell/$id"
 
     /** Этап 20: маршрут на экран редактирования пользовательской ячейки. */
     fun customSlotEdit(id: Long): String = "customslot/$id"
+}
+
+/**
+ * Текущий per-app locale tag ("ru" / "en" / null если пользователь не выбирал).
+ *
+ * Читаем из [LocaleStorage] — собственный SharedPreferences, потому что
+ * `AppCompatDelegate.getApplicationLocales` на `ComponentActivity` тихо
+ * возвращает пустой список (`sContext == null`).
+ *
+ * Используется в SettingsScreen для подсветки активного radio-пункта.
+ */
+private fun currentLocaleTag(context: Context): String =
+    LocaleStorage.getTag(context) ?: ""
+
+/**
+ * Достаём Activity из произвольного [Context] (LocalContext.current
+ * может быть ContextWrapper). Нужно для [Activity.recreate] после
+ * смены локали в SettingsScreen.
+ */
+private fun Context.findActivity(): Activity? = when (this) {
+    is Activity -> this
+    is ContextWrapper -> baseContext.findActivity()
+    else -> null
 }

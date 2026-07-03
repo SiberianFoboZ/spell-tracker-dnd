@@ -348,12 +348,17 @@ class SpellStorage private constructor(context: Context) {
      * Создать нового персонажа с указанным именем. Не переключает
      * на него — вызывающий код решает, активировать ли сразу.
      * Возвращает созданный [Character].
+     *
+     * **Локализация пустого имени** — на стороне вызывающего
+     * (например, [com.example.spelltracker.ui.characters.CharactersViewModel]):
+     * VM резолвит `R.string.characters_default_name` и подставляет
+     * его до вызова storage. Сам storage хранит то, что получил.
      */
     fun addCharacter(name: String): Character {
         // id = нанотаймстамп — почти гарантированно уникален между
         // быстрыми последовательными созданиями
         val newId = System.nanoTime()
-        val newChar = Character(id = newId, name = name.ifBlank { "Без имени" })
+        val newChar = Character(id = newId, name = name)
         val updated = _characters.value + newChar
         _characters.value = updated
         prefs.edit()
@@ -384,9 +389,8 @@ class SpellStorage private constructor(context: Context) {
 
     fun renameCharacter(id: Long, newName: String) {
         if (_characters.value.none { it.id == id }) return
-        val trimmed = newName.trim().ifBlank { "Без имени" }
         val updated = _characters.value.map {
-            if (it.id == id) it.copy(name = trimmed) else it
+            if (it.id == id) it.copy(name = newName.trim()) else it
         }
         _characters.value = updated
         prefs.edit().putString(KEY_CHARACTERS_JSON, charactersListToJson(updated)).apply()
@@ -398,7 +402,9 @@ class SpellStorage private constructor(context: Context) {
      * Первичная миграция Этапа 22: если флаг [KEY_MIGRATED_V22] ещё
      * не выставлен, читаем «плоские» ключи из старого формата
      * (level_*, used_slot_*, used_pact_slots, arcanum_*, custom_slots_json,
-     * prepared_ids) и сохраняем их как данные персонажа «Персонаж 1».
+     * prepared_ids) и сохраняем их как данные одного персонажа
+     * с пустым именем. UI подставит локализованный fallback
+     * (`R.string.characters_default_name`) при отображении.
      */
     private fun migrateToCharactersIfNeeded() {
         if (prefs.getBoolean(KEY_MIGRATED_V22, false)) return
@@ -423,7 +429,12 @@ class SpellStorage private constructor(context: Context) {
             prepared = prepared,
         )
 
-        val defaultChar = Character(id = 1L, name = "Персонаж 1")
+        // Имя оставляем пустым — UI подставит локализованный
+        // `R.string.characters_default_name` через свой helper
+        // (см. CharactersScreen.characterDisplayName). Это позволяет
+        // data-слою оставаться без зависимости от Android-ресурсов
+        // и одинаково работать при любой активной локали.
+        val defaultChar = Character(id = 1L, name = "")
         prefs.edit()
             .putString(KEY_CHARACTERS_JSON, charactersListToJson(listOf(defaultChar)))
             .putLong(KEY_ACTIVE_CHARACTER_ID, defaultChar.id)

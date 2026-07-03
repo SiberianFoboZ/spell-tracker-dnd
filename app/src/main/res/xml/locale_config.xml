@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Per-app locale config (API 33+).
+
+    Системные настройки Android (Settings → Apps → Spell Tracker → Language)
+    читают этот файл и показывают список доступных языков приложения.
+    Если файл отсутствует — система показывает только языки, которые
+    реально есть в APK как res/values-*/  (по факту те же ru и en,
+    но без явного объявления список в системе может быть неполным).
+
+    На API 24..32 локаль применяется через AppCompatDelegate
+    (см. MainActivity), этот файл там игнорируется.
+-->
+<locale-config xmlns:android="http://schemas.android.com/apk/res/android">
+    <locale android:name="ru" />
+    <locale android:name="en" />
+</locale-config>

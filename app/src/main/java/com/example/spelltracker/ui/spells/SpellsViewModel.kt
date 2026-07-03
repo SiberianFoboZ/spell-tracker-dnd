@@ -130,11 +130,13 @@ class SpellsViewModel(application: Application) : AndroidViewModel(application) 
 
     /**
      * Маппинг «имя подкласса → множество parent class English id».
-     * Считается один раз при загрузке данных. Нужен чтобы в UI показывать
-     * только подклассы выбранных классов (или скрывать секцию, если класс
-     * не выбран вовсе).
+     * Считается на лету из [allSpellsSnapshot] — НЕ кэшируется, потому
+     * что [allSpellsSnapshot] заполняется асинхронно (см. init-блок),
+     * а `by lazy` кэшировал бы пустой результат при первом обращении
+     * до загрузки данных. С 487 спеллами и ~110 подклассами
+     * производительность не страдает — это O(N) один раз за фильтр.
      */
-    private val subclassToParents: Map<String, Set<String>> by lazy {
+    private fun subclassToParents(): Map<String, Set<String>> {
         val map = mutableMapOf<String, MutableSet<String>>()
         for (spell in allSpellsSnapshot) {
             val names = splitCsv(spell.subclasses)
@@ -143,7 +145,7 @@ class SpellsViewModel(application: Application) : AndroidViewModel(application) 
                 map.getOrPut(name) { mutableSetOf() }.add(parent)
             }
         }
-        map.mapValues { it.value.toSet() }
+        return map.mapValues { it.value.toSet() }
     }
 
     /** Снимок allSpells для инициализации lazy-полей выше. */
@@ -162,7 +164,7 @@ class SpellsViewModel(application: Application) : AndroidViewModel(application) 
         get() {
             val selected = state.value.filters.classIds
             if (selected.isEmpty()) return emptySet()
-            return subclassToParents.entries
+            return subclassToParents().entries
                 .filter { (_, parents) -> parents.any { it in selected } }
                 .map { it.key }
                 .toSet()

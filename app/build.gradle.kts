@@ -36,8 +36,8 @@ android {
         applicationId = "com.example.spelltracker"
         minSdk = 24
         targetSdk = 36
-        versionCode = 16
-        versionName = "2.6.0"
+        versionCode = 17
+        versionName = "2.6.1"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
@@ -130,6 +130,7 @@ android {
 
 dependencies {
     implementation(libs.androidx.core.ktx)
+    implementation(libs.androidx.appcompat)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.lifecycle.runtime.compose)
     implementation(libs.androidx.lifecycle.viewmodel.compose)

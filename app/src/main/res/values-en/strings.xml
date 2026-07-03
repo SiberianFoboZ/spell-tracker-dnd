@@ -1,0 +1,327 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    English translations.
+
+    Mirror of res/values/strings.xml. Every key added to the Russian
+    file MUST be added here too — otherwise the app falls back to
+    the Russian version for the missing key (which is fine for graceful
+    degradation, but obviously undesirable for a polished UI).
+
+    Conventions:
+      - Same `<name>` as values/strings.xml
+      - English copy: concise, D&D-flavoured where applicable
+      - Universal abbreviations (PHB, XGE, V/S/M, d4) stay as-is
+      - Punctuation: prefer en-dashes (—) and curly quotes (“ ”) over
+        ASCII variants where they read more naturally
+-->
+<resources>
+    <!-- ─── Common ─── -->
+    <string name="common_back">Back</string>
+    <string name="common_close">Close</string>
+    <string name="common_cancel">Cancel</string>
+    <string name="common_save">Save</string>
+    <string name="common_delete">Delete</string>
+    <string name="common_create">Create</string>
+    <string name="common_loading">Loading…</string>
+
+    <!-- ─── App ─── -->
+    <string name="app_name">Spell Tracker</string>
+    <string name="app_subtitle">Multiclass by PHB rules</string>
+
+    <!-- ─── Home: header + caster level ─── -->
+    <string name="home_effective_caster_level_caption">CASTER LEVEL</string>
+
+    <!-- ─── Home: Classes section ─── -->
+    <string name="home_section_classes">Classes</string>
+    <string name="home_section_classes_collapse">Collapse</string>
+    <string name="home_section_classes_expand">Expand</string>
+    <string name="home_class_factor_one">1.0</string>
+    <string name="home_class_factor_half_up">0.5↑</string>
+    <string name="home_class_factor_half">0.5</string>
+    <string name="home_class_factor_third_up">1/3↑</string>
+    <string name="home_class_non_caster">no spells</string>
+    <string name="home_class_add_custom_title">Custom</string>
+    <string name="home_class_add_custom_subtitle">+ slot</string>
+    <string name="home_class_add_custom_content_description">Add custom slot</string>
+
+    <!-- ─── Home: Pact Magic ─── -->
+    <string name="home_section_pact_magic">Pact Magic</string>
+    <string name="home_pact_magic_class_label">Warlock</string>
+
+    <!-- ─── Home: Spell Slots ─── -->
+    <string name="home_section_spell_slots">Spell Slots</string>
+    <string name="home_spell_slots_empty">No available slots — set at least one caster\'s level.</string>
+
+    <!-- ─── Home: Arcanums ─── -->
+    <string name="home_section_arcanums">Arcanums</string>
+    <string name="home_arcanum_locked">Available from Warlock level 11</string>
+    <string name="home_arcanum_empty">No arcanums available</string>
+
+    <!-- ─── Home: Custom Slots ─── -->
+    <string name="home_section_custom_slots">Custom Slots</string>
+    <string name="home_custom_slots_empty">No custom slots. Expand \"Classes\" above and tap \"+\" at the bottom of the grid.</string>
+    <string name="home_custom_slot_no_title">Untitled</string>
+    <string name="home_custom_slot_rest_short">S</string>
+    <string name="home_custom_slot_rest_long">L</string>
+
+    <!-- ─── Home: FAB + buttons ─── -->
+    <string name="home_fab_open_spells_content_description">Open spell list</string>
+    <string name="home_slots_remaining_count">%1$d remaining</string>
+
+    <!-- ─── Rest (short/long rest, Этап 15, 17) ─── -->
+    <string name="rest_short_title">Short Rest</string>
+    <string name="rest_long_title">Long Rest</string>
+    <string name="rest_short_confirm_title">Short Rest?</string>
+    <string name="rest_long_confirm_title">Long Rest?</string>
+    <string name="rest_short_confirm_body">Restore Warlock pact magic slots. Other class slots and arcanums remain spent.</string>
+    <string name="rest_long_confirm_body">Restore all spell slots, pact magic, and arcanums. Class levels are preserved.</string>
+    <string name="rest_short_done">Warlock slots restored</string>
+    <string name="rest_long_done">All slots restored</string>
+    <string name="arcanum_blocked_short_rest">Arcanums restore only after a long rest</string>
+
+    <!-- ─── Spells list: top bar + general ─── -->
+    <string name="spells_title_with_count">Spells (%1$d)</string>
+    <string name="spells_empty_no_prepared">Mark spells with the checkbox in the main list to see them here.</string>
+    <string name="spells_empty_no_prepared_with_filters">No prepared spells match the selected filters.</string>
+    <string name="spells_empty_no_match">No matches for the selected filters.</string>
+    <string name="spells_search_placeholder">Search by name</string>
+    <string name="spells_subtitle_ritual_suffix"> · ritual</string>
+
+    <!-- ─── Spells list: Prepared bookmark ─── -->
+    <string name="spells_prepared_action_show_all">Show all</string>
+    <string name="spells_prepared_action_only_prepared">Prepared only</string>
+
+    <!-- ─── Spells list: filters ─── -->
+    <string name="spells_filter_button">Filters</string>
+    <string name="spells_filter_clear">Clear filters</string>
+    <string name="spells_filter_section_source">Source</string>
+    <string name="spells_filter_section_class">Class</string>
+    <string name="spells_filter_section_level">Level</string>
+    <string name="spells_filter_section_school">School</string>
+    <string name="spells_filter_section_subclass_with_count">Subclass (%1$d)</string>
+    <string name="spells_filter_section_ritual">Ritual</string>
+    <string name="spells_filter_section_concentration">Concentration</string>
+    <string name="spells_filter_section_components">Components (selected are required)</string>
+    <string name="spells_filter_section_saving_throw">Saving Throw</string>
+    <string name="spells_filter_chip_all">All</string>
+    <string name="spells_filter_chip_all_sources">All sources</string>
+    <string name="spells_filter_chip_all_subclasses">All subclasses</string>
+    <string name="spells_filter_chip_any">Any</string>
+    <string name="spells_filter_chip_cantrip">Cantrip</string>
+    <string name="spells_filter_chip_level">Level %1$s</string>
+
+    <!-- ─── Spell Detail ─── -->
+    <string name="detail_not_found">Spell not found</string>
+    <string name="detail_section_description">Description</string>
+    <string name="detail_section_upper_level">At Higher Levels</string>
+    <string name="detail_button_mark_prepared">Mark as prepared</string>
+    <string name="detail_button_unmark_prepared">In prepared list</string>
+    <string name="detail_pill_ritual">ritual</string>
+    <string name="detail_pill_concentration">concentration</string>
+    <string name="detail_label_cantrip">Cantrip</string>
+    <string name="detail_label_level_with_roman">Level %1$s</string>
+    <string name="detail_meta_casting_time">Casting Time</string>
+    <string name="detail_meta_range">Range</string>
+    <string name="detail_meta_duration">Duration</string>
+    <string name="detail_meta_components">Components</string>
+    <string name="detail_meta_classes">Classes</string>
+    <string name="detail_meta_subclasses">Subclasses</string>
+    <string name="detail_meta_races">Races</string>
+    <string name="detail_meta_material">Material</string>
+    <string name="detail_meta_saving_throws">Saving Throws</string>
+    <string name="detail_material_consumed_suffix"> (consumed)</string>
+
+    <!-- ─── Characters ─── -->
+    <string name="characters_title">Characters</string>
+    <string name="characters_empty">No characters</string>
+    <string name="characters_active_content_description">Active</string>
+    <string name="characters_create_fab_content_description">Create character</string>
+    <string name="characters_create_dialog_title">New character</string>
+    <string name="characters_name_field_placeholder">Character name</string>
+    <string name="characters_create_confirm">Create</string>
+    <string name="characters_edit_sheet_title">Edit character</string>
+    <string name="characters_name_label">Name</string>
+    <string name="characters_save">Save</string>
+    <string name="characters_default_name">Unnamed</string>
+    <string name="characters_delete_disabled">Delete (last character)</string>
+    <string name="characters_delete_dialog_title">Delete character?</string>
+    <string name="characters_delete_dialog_body">“%1$s” will be deleted permanently. Spent slots and prepared spells for this character will be lost.</string>
+    <string name="characters_delete_confirm">Delete</string>
+
+    <!-- ─── Custom slot: form ─── -->
+    <string name="custom_slot_not_found">Slot not found</string>
+    <string name="custom_slot_new_sheet_title">New slot</string>
+    <string name="custom_slot_edit_screen_title">Edit</string>
+    <string name="custom_slot_field_title">Title</string>
+    <string name="custom_slot_field_title_placeholder">Dragon breath</string>
+    <string name="custom_slot_field_amount">Amount</string>
+    <string name="custom_slot_stepper_decrease">Decrease</string>
+    <string name="custom_slot_stepper_increase">Increase</string>
+    <string name="custom_slot_field_die">Die</string>
+    <string name="custom_slot_field_rest_type">Recovery</string>
+    <string name="custom_slot_delete_dialog_title">Delete slot?</string>
+    <string name="custom_slot_delete_dialog_body">“%1$s” will be deleted permanently. Spent uses won\'t return.</string>
+    <string name="custom_slot_delete_confirm">Delete</string>
+
+    <!-- ─── FAB on HomeScreen ─── -->
+    <string name="fab_open_spells">Open spell list</string>
+
+    <!-- ═══════════════════════════════════════════════════════════ -->
+    <!-- D&D 5e Classes (Classes.kt lookup)                           -->
+    <!-- ═══════════════════════════════════════════════════════════ -->
+    <string name="class_bard">Bard</string>
+    <string name="class_wizard">Wizard</string>
+    <string name="class_druid">Druid</string>
+    <string name="class_cleric">Cleric</string>
+    <string name="class_warlock">Warlock</string>
+    <string name="class_paladin">Paladin</string>
+    <string name="class_ranger">Ranger</string>
+    <string name="class_sorcerer">Sorcerer</string>
+    <string name="class_artificer">Artificer</string>
+    <string name="class_fighter_mystic">Fighter (Eldritch Knight)</string>
+    <string name="class_rogue_mystic">Rogue (Arcane Trickster)</string>
+    <string name="class_unknown">?</string>
+
+    <!-- ═══════════════════════════════════════════════════════════ -->
+    <!-- Schools of magic (SpellMenuConfig.SCHOOLS)                   -->
+    <!-- ═══════════════════════════════════════════════════════════ -->
+    <string name="school_ABJURATION">Abjuration</string>
+    <string name="school_CONJURATION">Conjuration</string>
+    <string name="school_DIVINATION">Divination</string>
+    <string name="school_ENCHANTMENT">Enchantment</string>
+    <string name="school_EVOCATION">Evocation</string>
+    <string name="school_ILLUSION">Illusion</string>
+    <string name="school_NECROMANCY">Necromancy</string>
+    <string name="school_TRANSMUTATION">Transmutation</string>
+    <string name="school_unknown">?</string>
+
+    <!-- ═══════════════════════════════════════════════════════════ -->
+    <!-- Source groups (SpellMenuConfig.SOURCE_GROUPS)               -->
+    <!-- ═══════════════════════════════════════════════════════════ -->
+    <string name="source_group_OFFICAL">Core</string>
+    <string name="source_group_MODULE">Adventures</string>
+    <string name="source_group_SETTING">Settings</string>
+    <string name="source_group_TEST">Unearthed Arcana</string>
+    <string name="source_group_THIRD_PARTY">3rd party</string>
+    <string name="source_group_CUSTOM">Homebrew</string>
+
+    <!-- ═══════════════════════════════════════════════════════════ -->
+    <!-- Source books. Labels (PHB, XGE…) are universal abbreviations -->
+    <!-- shared across locales; tooltips get translated.             -->
+    <!-- ═══════════════════════════════════════════════════════════ -->
+    <string name="source_PHB_label">PHB</string>
+    <string name="source_PHB_tooltip">Player\'s Handbook</string>
+    <string name="source_XGE_label">XGE</string>
+    <string name="source_XGE_tooltip">Xanathar\'s Guide to Everything</string>
+    <string name="source_TCE_label">TCE</string>
+    <string name="source_TCE_tooltip">Tasha\'s Cauldron of Everything</string>
+    <string name="source_FTD_label">FTD</string>
+    <string name="source_FTD_tooltip">Fizban\'s Treasury of Dragons</string>
+    <string name="source_BMT_label">BMT</string>
+    <string name="source_BMT_tooltip">Bigby Presents: Glory of the Giants</string>
+
+    <string name="source_LLK_label">LLK</string>
+    <string name="source_LLK_tooltip">Lost Laboratory of Kwalish</string>
+    <string name="source_AI_label">AI</string>
+    <string name="source_AI_tooltip">Acquisitions Incorporated</string>
+    <string name="source_IDRotf_label">IDRotf</string>
+    <string name="source_IDRotf_tooltip">Icewind Dale: Rime of the Frostmaiden</string>
+
+    <string name="source_SCAG_label">SCAG</string>
+    <string name="source_SCAG_tooltip">Sword Coast Adventurer\'s Guide</string>
+    <string name="source_GGR_label">GGR</string>
+    <string name="source_GGR_tooltip">Guildmasters\' Guide to Ravnica</string>
+    <string name="source_SCC_label">SCC</string>
+    <string name="source_SCC_tooltip">Strixhaven: A Curriculum of Chaos</string>
+    <string name="source_AAG_label">AAG</string>
+    <string name="source_AAG_tooltip">Astral Adventurer\'s Guide</string>
+    <string name="source_SatO_label">SatO</string>
+    <string name="source_SatO_tooltip">Sigil and the Outer Planes</string>
+
+    <string name="source_UAMM_label">UAMM</string>
+    <string name="source_UAMM_tooltip">Modern Magic</string>
+    <string name="source_UATOBM_label">UATOBM</string>
+    <string name="source_UATOBM_tooltip">Ancient Black Magic</string>
+    <string name="source_UASS_label">UASS</string>
+    <string name="source_UASS_tooltip">Starter Spells</string>
+    <string name="source_UACDW_label">UACDW</string>
+    <string name="source_UACDW_tooltip">Cleric, Druid, Wizard</string>
+    <string name="source_UAFRW_label">UAFRW</string>
+    <string name="source_UAFRW_tooltip">Fighter, Ranger, Wizard</string>
+    <string name="source_UA20POR_label">UA20POR</string>
+    <string name="source_UA20POR_tooltip">Psionic Options Revisited</string>
+    <string name="source_UASMT_label">UASMT</string>
+    <string name="source_UASMT_tooltip">Spells and Magic Tattoos</string>
+    <string name="source_UA21DO_label">UA21DO</string>
+    <string name="source_UA21DO_tooltip">Draconic Options</string>
+    <string name="source_UA22WotM_label">UA22WotM</string>
+    <string name="source_UA22WotM_tooltip">Wonders of the Multiverse</string>
+
+    <string name="source_MHH_label">MHH</string>
+    <string name="source_MHH_tooltip">Midgard Hero Handbook</string>
+    <string name="source_ODL_label">ODL</string>
+    <string name="source_ODL_tooltip">Odyssey of the Dragonlords</string>
+    <string name="source_DMf5E_label">DMf5E</string>
+    <string name="source_DMf5E_tooltip">Deep Magic for 5e</string>
+    <string name="source_EGtW_label">EGtW</string>
+    <string name="source_EGtW_tooltip">Explorer\'s Guide to Wildemount</string>
+    <string name="source_GHtPG_label">GHtPG</string>
+    <string name="source_GHtPG_tooltip">Ghoulhaven Player\'s Guide</string>
+    <string name="source_TDCS_label">TDCS</string>
+    <string name="source_TDCS_tooltip">Tal\'Dorei Campaign Setting</string>
+    <string name="source_VSoS_label">VSoS</string>
+    <string name="source_VSoS_tooltip">Valda\'s Spire of Secrets</string>
+    <string name="source_DoDk_label">DoDk</string>
+    <string name="source_DoDk_tooltip">Drakkenheim</string>
+
+    <string name="source_ICB_label">ICB</string>
+    <string name="source_ICB_tooltip">Inventor Class Book</string>
+    <string name="source_LH_label">LH</string>
+    <string name="source_LH_tooltip">Laserllama</string>
+    <string name="source_PG_label">PG</string>
+    <string name="source_PG_tooltip">Player\'s Guide: Proliferating Chaos</string>
+
+    <!-- ═══════════════════════════════════════════════════════════ -->
+    <!-- Saving throws (SpellMenuConfig.SAVING_THROWS)               -->
+    <!-- ═══════════════════════════════════════════════════════════ -->
+    <string name="saving_throw_STR">Strength</string>
+    <string name="saving_throw_DEX">Dexterity</string>
+    <string name="saving_throw_CON">Constitution</string>
+    <string name="saving_throw_INT">Intelligence</string>
+    <string name="saving_throw_WIS">Wisdom</string>
+    <string name="saving_throw_CHA">Charisma</string>
+
+    <!-- ═══════════════════════════════════════════════════════════ -->
+    <!-- Spell components (V/S/M/consumed)                           -->
+    <!-- Universal PHB notation (V/S/M); "Cons" for consumed.        -->
+    <!-- ═══════════════════════════════════════════════════════════ -->
+    <string name="component_V_label">V</string>
+    <string name="component_S_label">S</string>
+    <string name="component_M_label">M</string>
+    <string name="component_RC_label">Cons</string>
+
+    <!-- ═══════════════════════════════════════════════════════════ -->
+    <!-- Rest type (CustomSlot.RestType)                             -->
+    <!-- ═══════════════════════════════════════════════════════════ -->
+    <string name="rest_type_SHORT">Short</string>
+    <string name="rest_type_LONG">Long</string>
+
+    <!-- ═══════════════════════════════════════════════════════════ -->
+    <!-- Tri-state filter (Any/Yes/No)                               -->
+    <!-- ═══════════════════════════════════════════════════════════ -->
+    <string name="tri_state_ANY">Any</string>
+    <string name="tri_state_YES">Yes</string>
+    <string name="tri_state_NO">No</string>
+
+    <!-- ═══════════════════════════════════════════════════════════ -->
+    <!-- Language switcher (TopAppBar Home)                          -->
+    <!-- ═══════════════════════════════════════════════════════════ -->
+    <string name="lang_action_content_description">Switch language</string>
+    <string name="lang_menu_title">Interface language</string>
+    <string name="lang_ru">Русский</string>
+    <string name="lang_en">English</string>
+
+    <!-- ─── Settings screen (gear icon in Home TopAppBar) ─── -->
+    <string name="settings_title">Settings</string>
+    <string name="settings_open_content_description">Open settings</string>
+</resources>

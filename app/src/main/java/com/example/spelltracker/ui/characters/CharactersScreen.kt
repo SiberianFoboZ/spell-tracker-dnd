@@ -65,10 +65,12 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.spelltracker.R
 import com.example.spelltracker.data.Character
 import com.example.spelltracker.ui.theme.AppColors
 
@@ -113,7 +115,7 @@ fun CharactersScreen(
             CenterAlignedTopAppBar(
                 title = {
                     Text(
-                        "Персонажи",
+                        stringResource(R.string.characters_title),
                         color = AppColors.TextWhite,
                         fontWeight = FontWeight.SemiBold,
                     )
@@ -122,7 +124,7 @@ fun CharactersScreen(
                     IconButton(onClick = onBack) {
                         Icon(
                             Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = "Назад",
+                            contentDescription = stringResource(R.string.common_back),
                             tint = AppColors.TextWhite,
                         )
                     }
@@ -144,7 +146,7 @@ fun CharactersScreen(
             ) {
                 Icon(
                     Icons.Filled.Add,
-                    contentDescription = "Создать персонажа",
+                    contentDescription = stringResource(R.string.characters_create_fab_content_description),
                     tint = AppColors.BgDark,
                     modifier = Modifier.size(28.dp),
                 )
@@ -161,7 +163,7 @@ fun CharactersScreen(
                 contentAlignment = Alignment.Center,
             ) {
                 Text(
-                    "Нет персонажей",
+                    stringResource(R.string.characters_empty),
                     color = AppColors.TextGrey,
                     fontSize = 14.sp,
                 )
@@ -252,6 +254,19 @@ fun CharactersScreen(
 }
 
 /**
+ * Отображаемое имя персонажа. Если в storage лежит пустая строка
+ * (миграция Этапа 22, либо специально очищенное имя) — подставляем
+ * локализованный fallback `R.string.characters_default_name`.
+ *
+ * Сама строка из storage не модифицируется: подстановка происходит
+ * только в момент отрисовки, чтобы при смене языка имя сразу
+ * обновилось без миграции данных.
+ */
+@Composable
+private fun characterDisplayName(raw: String): String =
+    raw.ifBlank { stringResource(R.string.characters_default_name) }
+
+/**
  * Одна строка персонажа в списке. Активный — с золотой обводкой и
  * галочкой справа; неактивный — нейтральный серый бордюр.
  *
@@ -308,7 +323,7 @@ private fun CharacterRow(
         Spacer(Modifier.width(12.dp))
         // Имя (растягивается)
         Text(
-            text = character.name,
+            text = characterDisplayName(character.name),
             color = if (isActive) AppColors.Gold else AppColors.TextWhite,
             fontSize = 16.sp,
             fontWeight = if (isActive) FontWeight.Bold else FontWeight.Medium,
@@ -321,7 +336,7 @@ private fun CharacterRow(
             Spacer(Modifier.width(8.dp))
             Icon(
                 Icons.Filled.Check,
-                contentDescription = "Активный",
+                contentDescription = stringResource(R.string.characters_active_content_description),
                 tint = AppColors.Gold,
                 modifier = Modifier.size(22.dp),
             )
@@ -342,7 +357,7 @@ private fun CreateCharacterDialog(
         onDismissRequest = onDismiss,
         title = {
             Text(
-                "Новый персонаж",
+                stringResource(R.string.characters_create_dialog_title),
                 color = AppColors.TextWhite,
                 fontWeight = FontWeight.SemiBold,
             )
@@ -351,7 +366,7 @@ private fun CreateCharacterDialog(
             OutlinedTextField(
                 value = name,
                 onValueChange = { name = it },
-                placeholder = { Text("Имя персонажа", color = AppColors.TextGreyDark) },
+                placeholder = { Text(stringResource(R.string.characters_name_field_placeholder), color = AppColors.TextGreyDark) },
                 singleLine = true,
                 colors = OutlinedTextFieldDefaults.colors(
                     focusedTextColor = AppColors.TextWhite,
@@ -372,11 +387,11 @@ private fun CreateCharacterDialog(
                     disabledContainerColor = AppColors.CardBg,
                     disabledContentColor = AppColors.TextGreyDark,
                 ),
-            ) { Text("Создать", fontWeight = FontWeight.Bold) }
+            ) { Text(stringResource(R.string.common_create), fontWeight = FontWeight.Bold) }
         },
         dismissButton = {
             TextButton(onClick = onDismiss) {
-                Text("Отмена", color = AppColors.TextGrey)
+                Text(stringResource(R.string.common_cancel), color = AppColors.TextGrey)
             }
         },
         containerColor = AppColors.CardBg,
@@ -440,7 +455,7 @@ private fun EditCharacterSheet(
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 Text(
-                    "Редактировать персонажа",
+                    stringResource(R.string.characters_edit_sheet_title),
                     color = AppColors.TextWhite,
                     fontSize = 18.sp,
                     fontWeight = FontWeight.SemiBold,
@@ -449,7 +464,7 @@ private fun EditCharacterSheet(
                 IconButton(onClick = onDismiss) {
                     Icon(
                         Icons.Filled.Close,
-                        contentDescription = "Закрыть",
+                        contentDescription = stringResource(R.string.common_close),
                         tint = AppColors.TextWhite,
                     )
                 }
@@ -460,8 +475,8 @@ private fun EditCharacterSheet(
             OutlinedTextField(
                 value = initialName,
                 onValueChange = onNameChange,
-                label = { Text("Имя") },
-                placeholder = { Text("Имя персонажа", color = AppColors.TextGreyDark) },
+                label = { Text(stringResource(R.string.characters_name_label)) },
+                placeholder = { Text(stringResource(R.string.characters_name_field_placeholder), color = AppColors.TextGreyDark) },
                 singleLine = true,
                 modifier = Modifier
                     .fillMaxWidth()
@@ -498,7 +513,7 @@ private fun EditCharacterSheet(
                 ),
             ) {
                 Text(
-                    "Сохранить",
+                    stringResource(R.string.common_save),
                     fontWeight = FontWeight.Bold,
                     fontSize = 15.sp,
                 )
@@ -526,7 +541,10 @@ private fun EditCharacterSheet(
                 )
                 Spacer(Modifier.width(8.dp))
                 Text(
-                    if (canDelete) "Удалить" else "Удалить (нельзя — последний)",
+                    stringResource(
+                        if (canDelete) R.string.common_delete
+                        else R.string.characters_delete_disabled,
+                    ),
                     fontWeight = FontWeight.SemiBold,
                     fontSize = 15.sp,
                 )
@@ -551,23 +569,21 @@ private fun DeleteCharacterDialog(
         onDismissRequest = onDismiss,
         title = {
             Text(
-                "Удалить персонажа?",
+                stringResource(R.string.characters_delete_dialog_title),
                 color = AppColors.TextWhite,
                 fontWeight = FontWeight.SemiBold,
             )
         },
         text = {
             Text(
-                "«$characterName» будет удалён без возможности восстановления. " +
-                    "Использованные ячейки и подготовленные заклинания этого " +
-                    "персонажа не вернутся.",
+                stringResource(R.string.characters_delete_dialog_body, characterDisplayName(characterName)),
                 color = AppColors.TextGrey,
             )
         },
         confirmButton = {
             TextButton(onClick = onConfirm) {
                 Text(
-                    "Удалить",
+                    stringResource(R.string.characters_delete_confirm),
                     color = AppColors.Error,
                     fontWeight = FontWeight.Bold,
                 )
@@ -575,7 +591,7 @@ private fun DeleteCharacterDialog(
         },
         dismissButton = {
             TextButton(onClick = onDismiss) {
-                Text("Отмена", color = AppColors.TextGrey)
+                Text(stringResource(R.string.common_cancel), color = AppColors.TextGrey)
             }
         },
         containerColor = AppColors.CardBg,

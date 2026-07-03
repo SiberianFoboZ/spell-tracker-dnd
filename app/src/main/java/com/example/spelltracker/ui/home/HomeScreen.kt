@@ -42,15 +42,21 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.AutoStories
 import androidx.compose.material.icons.filled.Bed
+import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material.icons.filled.LocalCafe
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Snackbar
@@ -58,6 +64,7 @@ import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -77,6 +84,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
@@ -84,7 +92,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.spelltracker.R
 import com.example.spelltracker.data.Classes
+import com.example.spelltracker.nameRes
 import com.example.spelltracker.ui.theme.AppColors
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
@@ -125,6 +135,7 @@ fun HomeScreen(
     onOpenSpells: () -> Unit,
     onEditCustomSlot: (Long) -> Unit,
     onOpenCharacters: () -> Unit,
+    onOpenSettings: () -> Unit,
 ) {
     val state by viewModel.state.collectAsState()
     val snackbarHostState = remember { SnackbarHostState() }
@@ -144,13 +155,18 @@ fun HomeScreen(
     // Snackbar события от VM. collectLatest отменяет предыдущий
     // showSnackbar при поступлении нового — гарантирует, что всегда
     // виден самый свежий результат.
+    //
+    // Строки резолвим ЗДЕСЬ (в Composable-контексте) — внутри лямбды
+    // LaunchedEffect вызывать stringResource нельзя.
+    val shortRestMsg    = stringResource(R.string.rest_short_done)
+    val longRestMsg     = stringResource(R.string.rest_long_done)
+    val arcanumRestMsg  = stringResource(R.string.arcanum_blocked_short_rest)
     LaunchedEffect(Unit) {
         viewModel.events.collectLatest { event ->
             val msg = when (event) {
-                HomeEvent.ShortRest               -> "Ячейки Колдуна восстановлены"
-                HomeEvent.LongRest                -> "Все ячейки восстановлены"
-                HomeEvent.ArcanumShortRestBlocked ->
-                    "Арканумы восстанавливаются только после длинного отдыха"
+                HomeEvent.ShortRest               -> shortRestMsg
+                HomeEvent.LongRest                -> longRestMsg
+                HomeEvent.ArcanumShortRestBlocked -> arcanumRestMsg
             }
             snackbarHostState.showSnackbar(msg)
         }
@@ -165,6 +181,36 @@ fun HomeScreen(
                     contentColor   = AppColors.Gold,
                 )
             }
+        },
+        topBar = {
+            // Тонкая панель с одной action-кнопкой — переход в Настройки.
+            // Заголовка на Home нет: «Spell Tracker» + подзаголовок
+            // уже отрисованы [Header] в самом контенте, дублировать
+            // в TopAppBar смысла нет.
+            //
+            // Фон — сплошной [AppColors.BgPurpleDeep], НЕ прозрачный.
+            // Раньше был Color.Transparent, и над прозрачным Scaffold'ом
+            // (containerColor=Transparent) проступал тёмный фон окна —
+            // получалось «чёрное поле» с иконкой-глобусом, плохо
+            // читаемое. Теперь TopAppBar визуально сливается с фоном
+            // верхней части градиента.
+            CenterAlignedTopAppBar(
+                title = {},
+                actions = {
+                    IconButton(onClick = onOpenSettings) {
+                        Icon(
+                            imageVector = Icons.Filled.Settings,
+                            contentDescription = stringResource(R.string.settings_open_content_description),
+                            tint = AppColors.TextWhite,
+                        )
+                    }
+                },
+                colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
+                    containerColor = AppColors.BgPurpleDeep,
+                    titleContentColor = AppColors.TextWhite,
+                    actionIconContentColor = AppColors.TextWhite,
+                ),
+            )
         },
         bottomBar = {
             RestButtonsBar(
@@ -181,7 +227,7 @@ fun HomeScreen(
             ) {
                 Icon(
                     Icons.Filled.AutoStories,
-                    contentDescription = "Открыть список заклинаний",
+                    contentDescription = stringResource(R.string.home_fab_open_spells_content_description),
                 )
             }
         },
@@ -271,13 +317,20 @@ fun HomeScreen(
         val isShort = kind == RestKind.Short
         AlertDialog(
             onDismissRequest = { restDialog = null },
-            title = { Text(if (isShort) "Короткий отдых?" else "Длинный отдых?") },
+            title = {
+                Text(
+                    stringResource(
+                        if (isShort) R.string.rest_short_confirm_title
+                        else R.string.rest_long_confirm_title,
+                    )
+                )
+            },
             text = {
                 Text(
-                    if (isShort)
-                        "Восстановить ячейки пакт-магии Колдуна. Ячейки других классов и арканумы останутся потраченными."
-                    else
-                        "Восстановить все ячейки заклинаний, пакт-магии и арканумы. Классы сохранятся."
+                    stringResource(
+                        if (isShort) R.string.rest_short_confirm_body
+                        else R.string.rest_long_confirm_body,
+                    )
                 )
             },
             confirmButton = {
@@ -286,7 +339,10 @@ fun HomeScreen(
                     restDialog = null
                 }) {
                     Text(
-                        if (isShort) "Короткий отдых" else "Длинный отдых",
+                        stringResource(
+                            if (isShort) R.string.rest_short_title
+                            else R.string.rest_long_title,
+                        ),
                         color = AppColors.Gold,
                         fontWeight = FontWeight.SemiBold,
                     )
@@ -294,7 +350,7 @@ fun HomeScreen(
             },
             dismissButton = {
                 TextButton(onClick = { restDialog = null }) {
-                    Text("Отмена", color = AppColors.TextGrey)
+                    Text(stringResource(R.string.common_cancel), color = AppColors.TextGrey)
                 }
             },
             containerColor   = AppColors.CardBg,
@@ -330,13 +386,13 @@ private enum class RestKind { Short, Long }
 private fun Header() {
     Column(modifier = Modifier.fillMaxWidth()) {
         Text(
-            text = "Spell Tracker",
+            text = stringResource(R.string.app_name),
             color = AppColors.TextWhite,
             fontSize = 28.sp,
             fontWeight = FontWeight.Bold,
         )
         Text(
-            text = "Мультикласс по правилам PHB",
+            text = stringResource(R.string.app_subtitle),
             color = AppColors.TextGrey,
             fontSize = 13.sp,
         )
@@ -364,7 +420,7 @@ private fun EffectiveLevelPanel(casterLevel: Int) {
     ) {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
             Text(
-                text = "УРОВЕНЬ ЗАКЛИНАТЕЛЯ",
+                text = stringResource(R.string.home_effective_caster_level_caption),
                 color = AppColors.Cream,
                 fontSize = 11.sp,
                 fontWeight = FontWeight.SemiBold,
@@ -516,8 +572,8 @@ private fun ClassCard(
     val hasCasting = info.factor > 0.0
     val isMulticlass = level > 0 && hasCasting
     GridCard(
-        title = info.name,
-        subtitle = if (hasCasting) "×${formatFactor(info)}" else "пзак",
+        title = stringResource(info.nameRes()),
+        subtitle = if (hasCasting) "×${stringResource(factorRes(info))}" else stringResource(R.string.home_class_non_caster),
         titleColor = AppColors.TextWhite,
         subtitleColor = if (hasCasting) AppColors.Gold else AppColors.TextGreyDark,
         onClick = null,
@@ -615,8 +671,8 @@ private fun AddClassButton(
     onClick: () -> Unit = {},
 ) {
     GridCard(
-        title = "Custom",
-        subtitle = "+ ячейка",
+        title = stringResource(R.string.home_class_add_custom_title),
+        subtitle = stringResource(R.string.home_class_add_custom_subtitle),
         titleColor = AppColors.Gold,
         subtitleColor = AppColors.TextGrey,
         onClick = onClick,
@@ -630,7 +686,7 @@ private fun AddClassButton(
             ) {
                 Icon(
                     imageVector = Icons.Filled.Add,
-                    contentDescription = "Добавить пользовательскую ячейку",
+                    contentDescription = stringResource(R.string.home_class_add_custom_content_description),
                     tint = AppColors.Gold,
                     modifier = Modifier.size(36.dp),
                 )
@@ -639,20 +695,40 @@ private fun AddClassButton(
     )
 }
 
-private fun formatFactor(info: Classes.Info): String = when {
-    info.factor >= 1.0 -> "1.0"
-    // Этап 19: 1/3 кастер (Eldritch Knight / Arcane Trickster).
-    // Проверяем **перед** roundUp — у этих классов factor=1/3, а не 0.5,
-    // и обычная ветка roundUp дала бы «0.5↑» вместо «1/3↑».
-    info.isThirdCaster -> "1/3↑"
-    info.roundUp -> "0.5↑"
-    else -> "0.5"
+/**
+ * Возвращает `@StringRes Int` для множителя caster level,
+ * отображаемого в подзаголовке карточки класса (формат «×0.5»).
+ *
+ * Порядок проверок важен:
+ *   1. `factor >= 1.0` — полный заклинатель, без стрелки
+ *   2. `isThirdCaster` — 1/3 кастер (Eldritch Knight / Arcane Trickster),
+ *      ДО проверки roundUp, иначе обычная ветка roundUp дала бы «0.5↑»
+ *   3. `roundUp` — полузаклинатель с округлением вверх (Изобретатель)
+ *   4. else — обычный полузаклинатель (Паладин, Следопыт)
+ */
+@androidx.annotation.StringRes
+private fun factorRes(info: Classes.Info): Int = when {
+    info.factor >= 1.0          -> R.string.home_class_factor_one
+    info.isThirdCaster          -> R.string.home_class_factor_third_up
+    info.roundUp                -> R.string.home_class_factor_half_up
+    else                        -> R.string.home_class_factor_half
 }
 
 @Composable
 private fun SectionTitle(text: String) {
     Text(
         text = text.uppercase(),
+        color = AppColors.PurpleLight,
+        fontSize = 12.sp,
+        fontWeight = FontWeight.SemiBold,
+        letterSpacing = 1.sp,
+    )
+}
+
+@Composable
+private fun SectionTitle(@androidx.annotation.StringRes textRes: Int) {
+    Text(
+        text = stringResource(textRes).uppercase(),
         color = AppColors.PurpleLight,
         fontSize = 12.sp,
         fontWeight = FontWeight.SemiBold,
@@ -686,7 +762,7 @@ private fun SectionTitle(text: String) {
 private fun PactMagicSection(state: HomeState, viewModel: HomeViewModel) {
     val pact = state.pactSlot ?: return
     Column {
-        SectionTitle("Магия договора")
+        SectionTitle(R.string.home_section_pact_magic)
         Spacer(Modifier.height(10.dp))
         PactMagicRow(
             slot = pact,
@@ -740,7 +816,7 @@ private fun PactMagicRow(
                 }
                 Spacer(Modifier.height(2.dp))
                 Text(
-                    text = "Колдун",
+                    text = stringResource(R.string.home_pact_magic_class_label),
                     color = AppColors.TextGrey,
                     fontSize = 9.sp,
                     maxLines = 1,
@@ -770,11 +846,11 @@ private fun PactMagicRow(
 @Composable
 private fun SpellSlotsSection(state: HomeState, viewModel: HomeViewModel) {
     Column {
-        SectionTitle("Ячейки заклинаний")
+        SectionTitle(R.string.home_section_spell_slots)
         Spacer(Modifier.height(10.dp))
         if (state.regularSlots.isEmpty()) {
             Text(
-                "Нет доступных ячеек — укажите уровень хотя бы одного заклинателя.",
+                stringResource(R.string.home_spell_slots_empty),
                 color = AppColors.TextGrey,
                 fontSize = 12.sp,
             )
@@ -912,19 +988,19 @@ private fun SpellSlotRow(
 private fun ArcanumsSection(state: HomeState, viewModel: HomeViewModel) {
     if (state.warlockLevel == 0) return
     Column {
-        SectionTitle("Арканумы")
+        SectionTitle(R.string.home_section_arcanums)
         Spacer(Modifier.height(10.dp))
         when {
             state.warlockLevel < 11 -> {
                 Text(
-                    "Доступно с 11 уровня Колдуна",
+                    stringResource(R.string.home_arcanum_locked),
                     color = AppColors.TextGrey,
                     fontSize = 12.sp,
                 )
             }
             state.arcanums.isEmpty() -> {
                 Text(
-                    "Нет доступных арканумов",
+                    stringResource(R.string.home_arcanum_empty),
                     color = AppColors.TextGrey,
                     fontSize = 12.sp,
                 )
@@ -1028,7 +1104,7 @@ private fun RestButtonsBar(
             )
             Spacer(Modifier.width(8.dp))
             Text(
-                "Короткий отдых",
+                stringResource(R.string.rest_short_title),
                 color = AppColors.Gold,
                 fontWeight = FontWeight.SemiBold,
                 maxLines = 1,
@@ -1055,7 +1131,7 @@ private fun RestButtonsBar(
             )
             Spacer(Modifier.width(8.dp))
             Text(
-                "Длинный отдых",
+                stringResource(R.string.rest_long_title),
                 color = AppColors.BgDark,
                 fontWeight = FontWeight.Bold,
                 maxLines = 1,
@@ -1114,12 +1190,15 @@ private fun CollapsibleClassesSection(
                 .padding(vertical = 6.dp),
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            SectionTitle("Классы")
+            SectionTitle(R.string.home_section_classes)
             Spacer(Modifier.width(8.dp))
             Icon(
                 imageVector = if (expanded) Icons.Filled.KeyboardArrowUp
                               else Icons.Filled.KeyboardArrowDown,
-                contentDescription = if (expanded) "Свернуть" else "Развернуть",
+                contentDescription = stringResource(
+                    if (expanded) R.string.home_section_classes_collapse
+                    else R.string.home_section_classes_expand,
+                ),
                 tint = AppColors.PurpleLight,
                 modifier = Modifier.size(20.dp),
             )
@@ -1156,13 +1235,13 @@ private fun CustomSlotsSection(
     Column {
         // Этап 20 v2: «+» перенесён в [AddClassButton] внутри сетки
         // классов. Заголовок секции — простой [SectionTitle].
-        SectionTitle("Пользовательские ячейки")
+        SectionTitle(R.string.home_section_custom_slots)
         Spacer(Modifier.height(10.dp))
         if (slots.isEmpty()) {
             // Пустое состояние — подсказка, что кнопка добавления
             // теперь в сетке классов (нужно развернуть «Классы»).
             Text(
-                "Нет пользовательских ячеек. Разверните «Классы» выше и нажмите «+» внизу сетки.",
+                stringResource(R.string.home_custom_slots_empty),
                 color = AppColors.TextGrey,
                 fontSize = 12.sp,
                 modifier = Modifier.padding(vertical = 4.dp),
@@ -1249,7 +1328,7 @@ private fun CustomSlotRow(
         // Заголовок — крупно (16sp), как у остальных рядов ячеек.
         // Раньше был 14sp — слишком мелкий по сравнению с бейджем.
         Text(
-            text = slot.title.ifBlank { "Без названия" },
+            text = slot.title.ifBlank { stringResource(R.string.home_custom_slot_no_title) },
             color = AppColors.TextWhite,
             fontSize = 16.sp,
             fontWeight = FontWeight.SemiBold,
@@ -1286,10 +1365,12 @@ private fun CustomSlotRow(
                 // Тип восстановления: К (короткий) / Д (длинный) —
                 // маленькая подпись под бейджем, как «Колдун» у PactMagicRow.
                 Text(
-                    text = when (slot.restType) {
-                        com.example.spelltracker.data.RestType.SHORT -> "Кор."
-                        com.example.spelltracker.data.RestType.LONG  -> "Длин."
-                    },
+                    text = stringResource(
+                        when (slot.restType) {
+                            com.example.spelltracker.data.RestType.SHORT -> R.string.home_custom_slot_rest_short
+                            com.example.spelltracker.data.RestType.LONG  -> R.string.home_custom_slot_rest_long
+                        }
+                    ),
                     color = AppColors.TextGrey,
                     fontSize = 9.sp,
                     maxLines = 1,

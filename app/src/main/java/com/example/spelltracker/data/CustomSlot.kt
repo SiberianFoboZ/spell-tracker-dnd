@@ -1,5 +1,7 @@
 package com.example.spelltracker.data
 
+import androidx.annotation.StringRes
+import com.example.spelltracker.R
 import org.json.JSONArray
 import org.json.JSONObject
 
@@ -17,6 +19,9 @@ import org.json.JSONObject
  * нет объёма (бросок кубика не важен), только факт «использовано /
  * доступно». В бейдже рендерится звездочкой `★`, чип в форме
  * подхватывается автоматически через `DieType.entries`.
+ *
+ * `label` — универсальная математическая нотация (d4, d6, ★), не
+ * локализуется.
  */
 enum class DieType(val label: String) {
     D4("d4"),
@@ -34,17 +39,9 @@ enum class DieType(val label: String) {
  *  - [LONG]:  восстанавливается только на **длинном** отдыхе
  *    (по аналогии с арканумами)
  */
-enum class RestType {
-    SHORT,
-    LONG,
-    ;
-
-    /** Подпись для UI. */
-    val displayName: String
-        get() = when (this) {
-            SHORT -> "Короткий"
-            LONG  -> "Длинный"
-        }
+enum class RestType(@field:StringRes val displayNameRes: Int) {
+    SHORT(R.string.rest_type_SHORT),
+    LONG(R.string.rest_type_LONG),
 }
 
 /**

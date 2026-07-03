@@ -573,17 +573,131 @@ JDK 21. Сам проектный `gradle.properties` остаётся порт�
 - **Не** удалять `assets/class_*.json` без подтверждения (хотя они не
   читаются runtime — могут пригодиться как reference).
 
----
+### 11.1 Остаточный русский текст в data-слое (намеренно)
+
+После Этапа 25 весь UI чист (`grep "text\s*=\s*\"[А-Я]` → 0 совпадений),
+но в data-слое остаются русские литералы **по делу**:
+
+| Файл | Что | Почему не локализуем |
+|------|-----|----------------------|
+| `data/Classes.kt` | `assetFile: String = "бард.json"` | Legacy filename, помечен `@Suppress("unused")`, runtime не читается. Удалить в Этапе N+2 когда полностью избавимся от legacy-структуры |
+| `data/SpellMenuConfig.SAVING_THROWS.key` | `"Сила"`, `"Ловкости"` (род. падеж) | Это **ключи** для матчинга сохранённых данных в БД (где они лежат в родительном падеже как в HTML). Локализованный лейбл — в `labelRes` |
+| `data/TriState.kt` парсер | `"да"`, `"нет"` в `fromString` | Legacy-парсинг сохранённых значений; новый код использует enum напрямую |
+| `data/SpellStorage.kt` дефолты | `"Без имени"`, `"Персонаж 1"` | Fallback для пустого ввода. Пользователь сразу переименовывает; внутренние дефолты не показываются в UI как «переведённые». Тоже кандидат на `Context.getString()` если появится надобность |
+| Комментарии + `@Deprecated("...")` | Пояснения в коде | Код читается разработчиком (вероятно, на русском); пользователь их не видит |
+
+Принцип: локализуем то, что **видит пользователь**. Внутренние
+идентификаторы, ключи для матчинга данных, fallback'и для edge-case'ов
+оставляем как есть, чтобы не размывать границу между «данные» и
+«представление».
+
+## 13. Интернационализация (i18n) и миграции
+
+### 13.1 Поддерживаемые локали
+
+- **Русский** (`values/strings.xml`) — дефолт.
+- **Английский** (`values-en/strings.xml`) — добавляется в Этапе 25.
+
+Добавление нового языка = создать `res/values-XX/strings.xml` с тем же
+набором ключей + добавить `<locale android:name="XX"/>` в
+`res/xml/locale_config.xml`.
+
+### 13.2 Локаль в runtime
+
+Два механизма, выбираются платформой автоматически:
+
+| API | Механизм | Где настраивается |
+|-----|----------|-------------------|
+| 33+ (Android 13+) | Системные настройки (Settings → Apps → язык) | `android:localeConfig="@xml/locale_config"` в `AndroidManifest.xml` |
+| 24..32 | `AppCompatDelegate.setApplicationLocales(...)` | `MainActivity.onCreate` (восстанавливает + переключатель в UI) |
+
+Per-app локаль персистится через AppCompat Storage Service (API 24..32) —
+пользователю не нужно выбирать язык заново после перезапуска.
+
+### 13.3 Переключатель в UI
+
+Иконка-глобус (`Icons.Filled.Public`) в TopAppBar главного экрана →
+`DropdownMenu` с пунктами «Русский» / «English». Тап по пункту вызывает
+`AppCompatDelegate.setApplicationLocales(LocaleListCompat.forLanguageTags("ru"|"en"))`,
+после чего Activity пересоздаётся системой и Compose подхватывает
+новую локаль через `stringResource(...)`.
+
+На API 33+ в системных настройках появляется тот же список языков
+(благодаря `locale_config.xml`).
+
+### 13.4 Локализация data-слоя
+
+`Classes`, `SpellMenuConfig`, `CustomSlot` хранят стабильные ключи
+(English id, Russian именительный/родительный падеж) и ссылки на
+`@StringRes Int`. UI резолвит через `stringResource(...)`:
+
+```kotlin
+// data/Classes.kt
+data class Info(
+    val id: String,           // "warlock" — стабильный ключ
+    @Suppress("unused") val assetFile: String,
+    val factor: Double,
+    val roundUp: Boolean,
+    val isThirdCaster: Boolean = false,
+    // name вынесено: см. ClassNames.kt
+)
+
+// ClassNames.kt
+@StringRes
+fun Classes.Info.nameRes(): Int = ClassNames.resFor(id)
+
+// В UI:
+Text(stringResource(info.nameRes()))
+```
+
+Аналогично:
+- `SpellMenuConfig.Source/SourceGroup/School/SavingThrow` → `labelRes: Int`
+- `ComponentFlag.labelRes: Int` (В/С/М/Cons)
+- `RestType.displayNameRes: Int` (Короткий/Длинный / Short/Long)
+- `TriState` через `TRI_ANY_LABEL: Int` и т.д.
+
+Хранение ключей + ресурсов разделено, чтобы data-слой не зависел от R.
+
+### 13.5 Миграции Room (Этап 25)
+
+`SpellDatabase.get(context)` теперь регистрирует массив миграций:
+
+```kotlin
+private val MIGRATIONS: Array<Migration> = arrayOf(
+    // MIGRATION_5_6, // ← раскомментировать при первом изменении схемы
+)
+.addMigrations(*MIGRATIONS)
+.fallbackToDestructiveMigration()   // safety-net
+.build()
+```
+
+Workflow при изменении схемы:
+1. Изменить `Spell` (добавить поле, переименовать)
+2. Поднять `version` в `@Database(...)`
+3. Добавить `MIGRATION_N_M` (написать SQL в `migrate(db)`)
+4. Положить его в `MIGRATIONS`
+5. Можно убрать `.fallbackToDestructiveMigration()`, если уверены,
+   что все пути апгрейда покрыты
+
+`fallbackToDestructiveMigration()` оставлен как **safety-net**:
+если на устройстве лежит БД версии, для которой миграции не
+написаны (например, debug-сборка с экспериментальной схемой), Room
+дропнет таблицу и перечитает данные из `spells_normalized.json`.
+Пользовательские `prepared` id при этом чистятся отдельным проходом
+через `SpellRepository.pruneOrphanedPrepared()` (логика из v2.6.0).
 
 ## 12. Файлы-якоря (быстрая навигация)
 
 | Что ищешь | Где |
 |-----------|-----|
-| Таблица ячеек по caster level | `data/SpellStorage.kt` → `SLOT_TABLE` |
-| Таблица пакт-магии Колдуна | `data/SpellStorage.kt` → `WARLOCK_SLOTS` |
-| Список арканумов (VI–IX) | `data/SpellStorage.kt` → `ARCANUM_LEVELS` |
-| Логика мультикласса PHB | `data/SpellStorage.kt` → `computeCasterLevel()` |
-| Фильтр-матчер (все оси) | `data/ClassFilter.kt` → `matches()` |
+| Локализованные строки (RU) | `res/values/strings.xml` |
+| Локализованные строки (EN) | `res/values-en/strings.xml` |
+| Per-app locale config (API 33+) | `res/xml/locale_config.xml` |
+| Карта class_id → @StringRes | `ClassNames.kt` |
+| Переключатель языка (UI) | `ui/home/HomeScreen.kt` → `LanguageSwitcherAction` |
+| Восстановление локали при старте | `MainActivity.kt` → `onCreate` |
+| Миграции Room | `data/SpellDatabase.kt` → `MIGRATIONS` |
+| Build-time нормализация спеллов | `app/build.gradle.kts` → `GenerateSpellsDbTask` |
 | Состояние фильтров (snapshot) | `data/ClassFilter.kt` → `SpellFilterState` |
 | Enum компонентов | `data/SpellMenuConfig.kt` → `ComponentFlag` |
 | TriState YES/NO/ANY | `data/TriState.kt` |

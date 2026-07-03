@@ -2,6 +2,7 @@
 agp = "9.1.1"
 kotlin = "2.0.21"
 coreKtx = "1.13.1"
+appcompat = "1.7.0"
 junit = "4.13.2"
 junitVersion = "1.3.0"
 espressoCore = "3.7.0"
@@ -15,6 +16,11 @@ ksp = "2.0.21-1.0.27"
 [libraries]
 # Core
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
+
+# AppCompat — нужен для AppCompatDelegate.setApplicationLocales()
+# (per-app locale на API 24..32). На API 33+ локаль управляется системой
+# через android:localeConfig в AndroidManifest.
+androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
 
 # Lifecycle
 androidx-lifecycle-runtime-ktx = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "lifecycle" }

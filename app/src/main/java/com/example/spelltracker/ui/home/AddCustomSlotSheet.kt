@@ -32,9 +32,11 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.spelltracker.R
 import com.example.spelltracker.data.CustomSlot
 import com.example.spelltracker.data.DieType
 import com.example.spelltracker.data.RestType
@@ -114,7 +116,7 @@ fun AddCustomSlotSheet(
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 Text(
-                    "Новая ячейка",
+                    stringResource(R.string.custom_slot_new_sheet_title),
                     color = AppColors.TextWhite,
                     fontSize = 20.sp,
                     fontWeight = FontWeight.SemiBold,
@@ -123,7 +125,7 @@ fun AddCustomSlotSheet(
                 IconButton(onClick = onDismiss) {
                     Icon(
                         Icons.Filled.Close,
-                        contentDescription = "Закрыть",
+                        contentDescription = stringResource(R.string.common_close),
                         tint = AppColors.TextWhite,
                     )
                 }
@@ -154,7 +156,7 @@ fun AddCustomSlotSheet(
                 ),
             ) {
                 Text(
-                    "Сохранить",
+                    stringResource(R.string.common_save),
                     fontWeight = FontWeight.Bold,
                     fontSize = 15.sp,
                 )

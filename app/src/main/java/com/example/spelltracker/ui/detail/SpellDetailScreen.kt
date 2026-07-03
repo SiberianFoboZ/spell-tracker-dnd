@@ -37,12 +37,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.spelltracker.R
 import com.example.spelltracker.data.Spell
 import com.example.spelltracker.data.SpellMenuConfig
+import com.example.spelltracker.nameRes
 import com.example.spelltracker.ui.theme.AppColors
 
 /**
@@ -84,7 +87,7 @@ fun SpellDetailScreen(
                     IconButton(onClick = onBack) {
                         Icon(
                             Icons.AutoMirrored.Filled.ArrowBack,
-                            "Назад",
+                            stringResource(R.string.common_back),
                             tint = AppColors.TextWhite,
                         )
                     }
@@ -111,7 +114,7 @@ fun SpellDetailScreen(
                 state.spell == null -> {
                     Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                         Text(
-                            "Заклинание не найдено",
+                            stringResource(R.string.detail_not_found),
                             color = AppColors.TextGrey,
                             fontSize = 14.sp,
                         )
@@ -129,10 +132,10 @@ fun SpellDetailScreen(
                         HeaderCard(spell)
                         MetaCard(spell)
                         if (spell.descriptionHtml.isNotBlank()) {
-                            HtmlBlock("Описание", parseSpellHtml(spell.descriptionHtml))
+                            HtmlBlock(stringResource(R.string.detail_section_description), parseSpellHtml(spell.descriptionHtml))
                         }
                         if (spell.upperLevel.isNotBlank()) {
-                            HtmlBlock("На высших уровнях", parseSpellHtml(spell.upperLevel))
+                            HtmlBlock(stringResource(R.string.detail_section_upper_level), parseSpellHtml(spell.upperLevel))
                         }
                         Spacer(Modifier.height(8.dp))
                         Button(
@@ -154,8 +157,8 @@ fun SpellDetailScreen(
                             )
                             Spacer(Modifier.width(6.dp))
                             Text(
-                                text = if (state.isPrepared) "В списке подготовленных"
-                                else "Отметить как подготовленное",
+                                text = if (state.isPrepared) stringResource(R.string.detail_button_unmark_prepared)
+                                else stringResource(R.string.detail_button_mark_prepared),
                                 fontWeight = FontWeight.Bold,
                             )
                         }
@@ -210,11 +213,11 @@ private fun HeaderCard(spell: Spell) {
                 }
                 if (spell.ritual) {
                     Spacer(Modifier.width(8.dp))
-                    PillTag("ритуал")
+                    PillTag(stringResource(R.string.detail_pill_ritual))
                 }
                 if (spell.concentration) {
                     Spacer(Modifier.width(6.dp))
-                    PillTag("концентрация")
+                    PillTag(stringResource(R.string.detail_pill_concentration))
                 }
                 if (spell.source.isNotBlank()) {
                     Spacer(Modifier.width(6.dp))
@@ -253,30 +256,30 @@ private fun MetaCard(spell: Spell) {
             .padding(12.dp),
     ) {
         Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
-            if (spell.timecast.isNotBlank()) MetaRow("Время", spell.timecast)
-            if (spell.distance.isNotBlank()) MetaRow("Дистанция", spell.distance)
-            if (spell.duration.isNotBlank()) MetaRow("Длительность", spell.duration)
-            MetaRow("Компоненты", componentsLabel(spell))
+            if (spell.timecast.isNotBlank()) MetaRow(stringResource(R.string.detail_meta_casting_time), spell.timecast)
+            if (spell.distance.isNotBlank()) MetaRow(stringResource(R.string.detail_meta_range), spell.distance)
+            if (spell.duration.isNotBlank()) MetaRow(stringResource(R.string.detail_meta_duration), spell.duration)
+            MetaRow(stringResource(R.string.detail_meta_components), componentsLabel(spell))
 
             val classesLine = classesLine(spell)
-            if (classesLine.isNotBlank()) MetaRow("Классы", classesLine)
+            if (classesLine.isNotBlank()) MetaRow(stringResource(R.string.detail_meta_classes), classesLine)
 
             val subclassesLine = spell.subclasses.split(',')
                 .map(String::trim).filter(String::isNotEmpty).joinToString(", ")
-            if (subclassesLine.isNotBlank()) MetaRow("Подклассы", subclassesLine)
+            if (subclassesLine.isNotBlank()) MetaRow(stringResource(R.string.detail_meta_subclasses), subclassesLine)
 
             val racesLine = spell.races.split(',')
                 .map(String::trim).filter(String::isNotEmpty).joinToString(", ")
-            if (racesLine.isNotBlank()) MetaRow("Расы", racesLine)
+            if (racesLine.isNotBlank()) MetaRow(stringResource(R.string.detail_meta_races), racesLine)
 
             if (spell.materialDesc.isNotBlank()) {
                 MetaRow(
-                    "Материал",
-                    spell.materialDesc + if (spell.materialConsumed) " (расх.)" else "",
+                    stringResource(R.string.detail_meta_material),
+                    spell.materialDesc + if (spell.materialConsumed) stringResource(R.string.detail_material_consumed_suffix) else "",
                 )
             }
 
-            if (spell.savingThrows.isNotBlank()) MetaRow("Спасброски", spellsSaveLabel(spell.savingThrows))
+            if (spell.savingThrows.isNotBlank()) MetaRow(stringResource(R.string.detail_meta_saving_throws), spellsSaveLabel(spell.savingThrows))
         }
     }
 }
@@ -328,40 +331,39 @@ private fun HtmlBlock(title: String, body: AnnotatedString) {
 
 // ─── helpers ─────────────────────────────────────────────────────────────
 
+@Composable
 private fun componentsLabel(spell: Spell): String {
     val parts = mutableListOf<String>()
-    if (spell.componentV) parts += "В"
-    if (spell.componentS) parts += "С"
-    if (spell.componentM) parts += "М"
-    val base = parts.joinToString(", ")
-    return if (spell.materialConsumed && spell.componentM) "$base ($base — расх.)".let { "$base*" } else base
+    if (spell.componentV) parts += stringResource(R.string.component_V_label)
+    if (spell.componentS) parts += stringResource(R.string.component_S_label)
+    if (spell.componentM) parts += stringResource(R.string.component_M_label)
+    return parts.joinToString(", ")
 }
 
+@Composable
 private fun classesLine(spell: Spell): String =
-    spell.classes.split(',').mapNotNull { id ->
-        Classes.info(id)
-    }.joinToString(", ")
+    spell.classes.split(',')
+        .mapNotNull { id ->
+            val info = com.example.spelltracker.data.Classes.BY_ID[id] ?: return@mapNotNull null
+            stringResource(info.nameRes())
+        }
+        .joinToString(", ")
 
-// Локальная обёртка — классы как объект уже импортированы из data-слоя,
-// здесь достаточно тонкой связки.
-
-private object Classes {
-    fun info(id: String): String? {
-        val info = com.example.spelltracker.data.Classes.BY_ID[id] ?: return null
-        return info.name
-    }
-}
-
+@Composable
 private fun schoolLabel(key: String): String =
-    SpellMenuConfig.SCHOOLS.firstOrNull { it.key == key }?.label ?: key
+    SpellMenuConfig.SCHOOLS.firstOrNull { it.key == key }
+        ?.let { stringResource(it.labelRes) }
+        ?: key
 
+@Composable
 private fun spellsSaveLabel(csv: String): String =
     csv.split(',').map(String::trim).filter(String::isNotEmpty)
         .joinToString(", ")
 
+@Composable
 private fun spellLevelLabel(level: Int): String = when (level) {
-    0 -> "Заговор"
-    else -> "Уровень ${romanLevel(level)}"
+    0 -> stringResource(R.string.detail_label_cantrip)
+    else -> stringResource(R.string.detail_label_level_with_roman, romanLevel(level))
 }
 
 private fun romanLevel(n: Int): String = when (n) {

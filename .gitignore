@@ -79,3 +79,7 @@ debug_regex.py
 inspect_*.py
 verify_patch.py
 build.log
+
+# === Локальные инструменты инспекции APK (не для публичного репо) ===
+apk_inspect/
+apk_inspect.zip

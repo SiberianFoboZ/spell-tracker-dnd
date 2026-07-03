@@ -35,9 +35,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.spelltracker.R
 import com.example.spelltracker.ui.theme.AppColors
 
 /**
@@ -68,7 +70,7 @@ fun EditCustomSlotScreen(
             CenterAlignedTopAppBar(
                 title = {
                     Text(
-                        "Редактирование",
+                        stringResource(R.string.custom_slot_edit_screen_title),
                         color = AppColors.TextWhite,
                         fontWeight = FontWeight.SemiBold,
                     )
@@ -77,7 +79,7 @@ fun EditCustomSlotScreen(
                     IconButton(onClick = onBack) {
                         Icon(
                             Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = "Назад",
+                            stringResource(R.string.common_back),
                             tint = AppColors.TextWhite,
                         )
                     }
@@ -99,7 +101,8 @@ fun EditCustomSlotScreen(
                 contentAlignment = Alignment.Center,
             ) {
                 Text(
-                    if (state.isFound) "Загрузка..." else "Ячейка не найдена",
+                    if (state.isFound) stringResource(R.string.common_loading)
+                    else stringResource(R.string.custom_slot_not_found),
                     color = AppColors.TextGrey,
                     fontSize = 14.sp,
                 )
@@ -139,7 +142,7 @@ fun EditCustomSlotScreen(
                     ),
                 ) {
                     Text(
-                        "Сохранить",
+                        stringResource(R.string.common_save),
                         fontWeight = FontWeight.Bold,
                         fontSize = 15.sp,
                     )
@@ -165,7 +168,7 @@ fun EditCustomSlotScreen(
                             .height(18.dp),
                     )
                     Text(
-                        "Удалить",
+                        stringResource(R.string.common_delete),
                         fontWeight = FontWeight.SemiBold,
                         fontSize = 15.sp,
                     )
@@ -181,11 +184,10 @@ fun EditCustomSlotScreen(
         val title = state.slot?.title.orEmpty()
         AlertDialog(
             onDismissRequest = { showDeleteConfirm = false },
-            title = { Text("Удалить ячейку?") },
+            title = { Text(stringResource(R.string.custom_slot_delete_dialog_title)) },
             text = {
                 Text(
-                    "«$title» будет удалена без возможности восстановления. " +
-                        "Использованные ячейки не вернутся."
+                    stringResource(R.string.custom_slot_delete_dialog_body, title)
                 )
             },
             confirmButton = {
@@ -195,7 +197,7 @@ fun EditCustomSlotScreen(
                     onBack()
                 }) {
                     Text(
-                        "Удалить",
+                        stringResource(R.string.custom_slot_delete_confirm),
                         color = AppColors.Error,
                         fontWeight = FontWeight.SemiBold,
                     )
@@ -203,7 +205,7 @@ fun EditCustomSlotScreen(
             },
             dismissButton = {
                 TextButton(onClick = { showDeleteConfirm = false }) {
-                    Text("Отмена", color = AppColors.TextGrey)
+                    Text(stringResource(R.string.common_cancel), color = AppColors.TextGrey)
                 }
             },
             containerColor   = AppColors.CardBg,

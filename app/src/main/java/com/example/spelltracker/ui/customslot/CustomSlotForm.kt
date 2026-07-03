@@ -26,10 +26,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.spelltracker.R
 import com.example.spelltracker.data.CustomSlot
 import com.example.spelltracker.data.DieType
 import com.example.spelltracker.data.RestType
@@ -73,8 +75,8 @@ internal fun CustomSlotForm(
         OutlinedTextField(
             value = slot.title,
             onValueChange = { onChange(slot.copy(title = it)) },
-            label = { Text("Название") },
-            placeholder = { Text("Дыхание дракона") },
+            label = { Text(stringResource(R.string.custom_slot_field_title)) },
+            placeholder = { Text(stringResource(R.string.custom_slot_field_title_placeholder)) },
             singleLine = true,
             modifier = Modifier.fillMaxWidth(),
             colors = OutlinedTextFieldDefaults.colors(
@@ -89,7 +91,7 @@ internal fun CustomSlotForm(
         // ─── Количество (степпер) ──────────────────────────────
         Column {
             Text(
-                "Количество",
+                stringResource(R.string.custom_slot_field_amount),
                 color = AppColors.TextGrey,
                 fontSize = 12.sp,
                 fontWeight = FontWeight.SemiBold,
@@ -102,7 +104,7 @@ internal fun CustomSlotForm(
             ) {
                 StepperButton(
                     icon = Icons.Filled.Remove,
-                    description = "Уменьшить",
+                    description = stringResource(R.string.custom_slot_stepper_decrease),
                     enabled = slot.total > 1,
                     onClick = { onChange(slot.copy(total = (slot.total - 1).coerceAtLeast(1))) },
                 )
@@ -124,7 +126,7 @@ internal fun CustomSlotForm(
                 }
                 StepperButton(
                     icon = Icons.Filled.Add,
-                    description = "Увеличить",
+                    description = stringResource(R.string.custom_slot_stepper_increase),
                     enabled = slot.total < 20,
                     onClick = { onChange(slot.copy(total = (slot.total + 1).coerceAtMost(20))) },
                 )
@@ -134,7 +136,7 @@ internal fun CustomSlotForm(
         // ─── Кубик (d4..d12) ───────────────────────────────────
         Column {
             Text(
-                "Кубик",
+                stringResource(R.string.custom_slot_field_die),
                 color = AppColors.TextGrey,
                 fontSize = 12.sp,
                 fontWeight = FontWeight.SemiBold,
@@ -158,7 +160,7 @@ internal fun CustomSlotForm(
         // ─── Восстановление (Короткий / Длинный) ───────────────
         Column {
             Text(
-                "Восстановление",
+                stringResource(R.string.custom_slot_field_rest_type),
                 color = AppColors.TextGrey,
                 fontSize = 12.sp,
                 fontWeight = FontWeight.SemiBold,
@@ -167,7 +169,7 @@ internal fun CustomSlotForm(
             Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                 RestType.entries.forEach { type ->
                     FilterChipMini(
-                        label = type.displayName,
+                        label = stringResource(type.displayNameRes),
                         selected = slot.restType == type,
                         onClick = { onChange(slot.copy(restType = type)) },
                     )

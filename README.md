@@ -4,7 +4,7 @@
 
 **Android app for tracking D&D 5e spell slots per PHB rules**
 
-[![Release](https://img.shields.io/badge/release-v2.6.0-7c3aed?style=flat-square&logo=github)](https://github.com/SiberianFoboZ/spell-tracker-dnd/releases/tag/v2.6.0)
+[![Release](https://img.shields.io/badge/release-v2.6.1-7c3aed?style=flat-square&logo=github)](https://github.com/SiberianFoboZ/spell-tracker-dnd/releases/tag/v2.6.1)
 [![License](https://img.shields.io/badge/license-MIT-22c55e?style=flat-square)](LICENSE)
 [![Android](https://img.shields.io/badge/Android-7.0--16-3DDC84?style=flat-square&logo=android&logoColor=white)](https://developer.android.com)
 [![Kotlin](https://img.shields.io/badge/Kotlin-2.0.21-7F52FF?style=flat-square&logo=kotlin&logoColor=white)](https://kotlinlang.org)
@@ -20,10 +20,24 @@
 state of spell slots, pact magic, and arcanums on a single screen. No accounts, no
 analytics, no internet — only local data that survives app restarts.
 
-Current version: **v2.6.0** — official sources only, build-time whitelist for
-class/subclass names.
+Current version: **v2.6.1** — official sources only, build-time whitelist for
+class/subclass names. Russian + English UI with an in-app language switcher.
 
 ---
+
+## 🆕 What's new in v2.6.1
+
+### 🌐 Полный перевод интерфейса на русский и английский
+- `res/values/strings.xml` (русский) и `res/values-en/strings.xml` (английский) — полностью синхронизированы (~200 ключей: home, spells, detail, characters, custom_slot, rest, arcanum, classes, schools, sources, saving throws, components, tri-state, language switcher, settings).
+- **Локализованные классы** D&D 5e (`class_bard`/`class_wizard`/...), **школы магии** (`school_ABJURATION`/...), **книги-источники** (`source_PHB_tooltip`/...), **спасброски** (`saving_throw_STR`/...) — все через `@StringRes` ресурсы.
+- **In-app переключатель языка** в `SettingsScreen` (шестерёнка в Home TopAppBar): два radio-пункта «Русский» / «English». Выбор записывается в `LocaleStorage` (SharedPreferences) и применяется через `Activity.recreate()`.
+- **API 33+ per-app locale**: `res/xml/locale_config.xml` объявляет ru + en, `AndroidManifest` ссылается через `android:localeConfig`. На Android 13+ язык также виден в системных Settings → Apps → Spell Tracker → Language.
+- Миграция v22 создаёт персонажа с пустым именем — UI подставляет локализованный `R.string.characters_default_name` («Без имени» / «Unnamed»).
+
+### 🔧 Технические детали
+- `LocaleStorage.kt` — собственный SharedPreferences-источник истины для per-app locale, потому что `AppCompatDelegate.sContext == null` на `ComponentActivity` (Compose-only проект), и AppCompatDelegate-методы тихо деградируют.
+- `ClassNames.kt` — централизованная карта `class_id → @StringRes Int` для имён классов. Хранится отдельно от data-слоя, чтобы `Classes.kt` оставался без зависимости от Android-ресурсов.
+- `attachBaseContext` в `MainActivity` применяет локаль через `createConfigurationContext` **до** загрузки ресурсов — никакого flash при первом запуске, никакого recreate-цикла.
 
 ## 🆕 What's new in v2.5.0
 
