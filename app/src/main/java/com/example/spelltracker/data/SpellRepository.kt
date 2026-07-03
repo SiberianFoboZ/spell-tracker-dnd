@@ -38,8 +38,27 @@ class SpellRepository(context: Context) {
                     dao.insertAll(allSpells)
                 }
             }
+            // После destructive-миграции (v3→v4 при смене схемы Room)
+            // `prepared` в SharedPreferences может ссылаться на старые id,
+            // которых больше нет в БД — почистить «сироты» одним вызовом.
+            pruneOrphanedPrepared()
             _initialized.value = true
         }
+    }
+
+    /**
+     * Удалить из [SpellStorage.prepared] все id, которых нет в БД.
+     *
+     * Контекст: до Этапа N id был `name.hashCode()` — переживал любую
+     * переустановку данных. Сейчас id = numeric из source-системы, и при
+     * пере-импорте справочника (destructive migration или правка
+     * `spells_normalized.json`) прежние prepared-отметки могут
+     * указывать на несуществующие записи.
+     */
+    private fun pruneOrphanedPrepared() {
+        val storage = SpellStorage.get(appContext)
+        val validIds = dao.getAllIds().toHashSet()
+        storage.pruneOrphanedPrepared(validIds)
     }
 
     suspend fun getAll(): List<Spell> = withContext(Dispatchers.IO) { dao.getAll() }

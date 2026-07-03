@@ -264,6 +264,25 @@ class SpellStorage private constructor(context: Context) {
     /** Проверить, подготовлено ли заклинание (для UI-кнопок). */
     fun isPrepared(spellId: Long): Boolean = _prepared.value.contains(spellId)
 
+    /**
+     * Удалить из [prepared] все id, которых нет в [validIds].
+     * Используется после destructive-миграции БД (v3→v4) — старые id
+     * из SharedPreferences (были основаны на name.hashCode()) могут больше
+     * не существовать в v4-таблице (id = numeric из source-системы).
+     * Без этой чистки «сироты» висят в БД-несуществующем состоянии и
+     * показываются в бейдже «N подготовленных», но не подсвечиваются ни
+     * в одном ряду списка.
+     *
+     * Сохранение в SharedPreferences происходит в конце (через [persistCurrentCharacter]).
+     */
+    fun pruneOrphanedPrepared(validIds: Set<Long>) {
+        val current = _prepared.value
+        val orphans = current - validIds
+        if (orphans.isEmpty()) return
+        _prepared.value = current - orphans
+        persistCurrentCharacter()
+    }
+
     // ─────────── Пользовательские ячейки (Этап 20) ───────────
 
     fun getCustomSlotById(id: Long): CustomSlot? =

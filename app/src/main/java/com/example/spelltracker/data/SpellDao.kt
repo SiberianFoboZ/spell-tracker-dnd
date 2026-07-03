@@ -15,6 +15,10 @@ interface SpellDao {
     @Query("SELECT COUNT(*) FROM spells")
     fun count(): Int
 
+    /** Все id из таблицы — для быстрой проверки orphan'ов в SharedPreferences. */
+    @Query("SELECT id FROM spells")
+    fun getAllIds(): List<Long>
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertAll(spells: List<Spell>)
 
