@@ -1,0 +1,836 @@
+{
+    "expand": true,
+    "sources": [
+        {
+            "name": "Базовые",
+            "key": "OFFICAL",
+            "expand": true,
+            "values": [
+                {
+                    "label": "PHB",
+                    "key": "PHB",
+                    "tooltip": "Книга игрока",
+                    "default": true
+                },
+                {
+                    "label": "XGE",
+                    "key": "XGE",
+                    "tooltip": "Руководство Занатара обо всем",
+                    "default": true
+                },
+                {
+                    "label": "TCE",
+                    "key": "TCE",
+                    "tooltip": "Котел Таши со всякой всячиной",
+                    "default": true
+                },
+                {
+                    "label": "FTD",
+                    "key": "FTD",
+                    "tooltip": "Сокровищница драконов Фицбана",
+                    "default": true
+                },
+                {
+                    "label": "BMT",
+                    "key": "BMT",
+                    "tooltip": "Книга многих вещей",
+                    "default": true
+                }
+            ]
+        },
+        {
+            "name": "Приключения",
+            "key": "MODULE",
+            "expand": true,
+            "values": [
+                {
+                    "label": "LLK",
+                    "key": "LLK",
+                    "tooltip": "Потерянная лаборатория Квалиша",
+                    "default": true
+                },
+                {
+                    "label": "AI",
+                    "key": "AI",
+                    "tooltip": "Корпорация приобретений",
+                    "default": true
+                },
+                {
+                    "label": "IDRotF",
+                    "key": "IDRotF",
+                    "tooltip": "Долина Ледяного Ветра: Иней Морозной девы",
+                    "default": true
+                }
+            ]
+        },
+        {
+            "name": "Сеттинги",
+            "key": "SETTING",
+            "expand": true,
+            "values": [
+                {
+                    "label": "SCAG",
+                    "key": "SCAG",
+                    "tooltip": "Путеводитель приключенца по Побережью меча",
+                    "default": true
+                },
+                {
+                    "label": "GGR",
+                    "key": "GGR",
+                    "tooltip": "Справочник гильдмастера по Равнике",
+                    "default": true
+                },
+                {
+                    "label": "SCC",
+                    "key": "SCC",
+                    "tooltip": "Стриксхейвен: Учебная программа хаоса",
+                    "default": true
+                },
+                {
+                    "label": "AAG",
+                    "key": "AAG",
+                    "tooltip": "Руководство астрального приключенца",
+                    "default": true
+                },
+                {
+                    "label": "SatO",
+                    "key": "SatO",
+                    "tooltip": "Сигил и Внешние Земли",
+                    "default": true
+                }
+            ]
+        },
+        {
+            "name": "Unearthed Arcana",
+            "key": "TEST",
+            "expand": true,
+            "values": [
+                {
+                    "label": "UAMM",
+                    "key": "UAMM",
+                    "tooltip": "Unearthed Arcana: Современная магия",
+                    "default": true
+                },
+                {
+                    "label": "UATOBM",
+                    "key": "UATOBM",
+                    "tooltip": "Unearthed Arcana: Древняя черная магия",
+                    "default": true
+                },
+                {
+                    "label": "UASS",
+                    "key": "UASS",
+                    "tooltip": "Unearthed Arcana: Стартовые заклинания",
+                    "default": true
+                },
+                {
+                    "label": "UACDW",
+                    "key": "UACDW",
+                    "tooltip": "Unearthed Arcana: Жрец, Друид и Волшебник",
+                    "default": true
+                },
+                {
+                    "label": "UAFRW",
+                    "key": "UAFRW",
+                    "tooltip": "Unearthed Arcana: Воин, Следопыт и Волшебник",
+                    "default": true
+                },
+                {
+                    "label": "UA20POR",
+                    "key": "UA20POR",
+                    "tooltip": "Unearthed Arcana: Пересмотр псионических способностей",
+                    "default": true
+                },
+                {
+                    "label": "UASMT",
+                    "key": "UASMT",
+                    "tooltip": "Unearthed Arcana: Заклинания и магические тату",
+                    "default": true
+                },
+                {
+                    "label": "UA21DO",
+                    "key": "UA21DO",
+                    "tooltip": "Unearthed Arcana: Драконьи варианты",
+                    "default": true
+                },
+                {
+                    "label": "UA22WotM",
+                    "key": "UA22WotM",
+                    "tooltip": "Unearthed Arcana: Чудеса Мультивселенной",
+                    "default": true
+                }
+            ]
+        },
+        {
+            "name": "3rd party",
+            "key": "THIRD_PARTY",
+            "expand": true,
+            "values": [
+                {
+                    "label": "MHH",
+                    "key": "MHH",
+                    "tooltip": "Мидгард Справочник героя",
+                    "default": true
+                },
+                {
+                    "label": "ODL",
+                    "key": "ODL",
+                    "tooltip": "Одиссея Повелителей драконов",
+                    "default": true
+                },
+                {
+                    "label": "DMf5E",
+                    "key": "DMf5E",
+                    "tooltip": "Углубленная Магия для 5 редакции",
+                    "default": true
+                },
+                {
+                    "label": "EGtW",
+                    "key": "EGtW",
+                    "tooltip": "Путеводитель исследователя по Дикогорью",
+                    "default": true
+                },
+                {
+                    "label": "GHtPG",
+                    "key": "GHtPG",
+                    "tooltip": "Руководство игрока в Мрачной лощине",
+                    "default": true
+                },
+                {
+                    "label": "TDCS",
+                    "key": "TDCS",
+                    "tooltip": "Сеттинг кампании Тал`Дорей",
+                    "default": true
+                },
+                {
+                    "label": "VSoS",
+                    "key": "VSoS",
+                    "tooltip": "Шпиль тайн Вальды",
+                    "default": true
+                },
+                {
+                    "label": "DoDk",
+                    "key": "DoDk",
+                    "tooltip": "Подземелья Драккенхайма",
+                    "default": true
+                }
+            ]
+        },
+        {
+            "name": "Homebrew",
+            "key": "CUSTOM",
+            "expand": true,
+            "values": [
+                {
+                    "label": "ICB",
+                    "key": "ICB",
+                    "tooltip": "Книга класса Механист",
+                    "default": true
+                },
+                {
+                    "label": "LH",
+                    "key": "LH",
+                    "tooltip": "Лазерлама",
+                    "default": true
+                },
+                {
+                    "label": "PG",
+                    "key": "PG",
+                    "tooltip": "Путеводитель игрока: Прорастающий хаос",
+                    "default": true
+                }
+            ]
+        }
+    ],
+    "other": [
+        {
+            "name": "Уровень",
+            "key": "level",
+            "expand": true,
+            "values": [
+                {
+                    "label": "заговор",
+                    "key": "0",
+                    "default": false
+                },
+                {
+                    "label": "1",
+                    "key": "1",
+                    "default": false
+                },
+                {
+                    "label": "2",
+                    "key": "2",
+                    "default": false
+                },
+                {
+                    "label": "3",
+                    "key": "3",
+                    "default": false
+                },
+                {
+                    "label": "4",
+                    "key": "4",
+                    "default": false
+                },
+                {
+                    "label": "5",
+                    "key": "5",
+                    "default": false
+                },
+                {
+                    "label": "6",
+                    "key": "6",
+                    "default": false
+                },
+                {
+                    "label": "7",
+                    "key": "7",
+                    "default": false
+                },
+                {
+                    "label": "8",
+                    "key": "8",
+                    "default": false
+                },
+                {
+                    "label": "9",
+                    "key": "9",
+                    "default": false
+                }
+            ]
+        },
+        {
+            "name": "Классы",
+            "key": "class",
+            "expand": true,
+            "values": [
+                {
+                    "label": "Бард",
+                    "key": "1",
+                    "default": false
+                },
+                {
+                    "label": "Волшебник",
+                    "key": "2",
+                    "default": false
+                },
+                {
+                    "label": "Друид",
+                    "key": "3",
+                    "default": false
+                },
+                {
+                    "label": "Жрец",
+                    "key": "4",
+                    "default": false
+                },
+                {
+                    "label": "Колдун",
+                    "key": "5",
+                    "default": false
+                },
+                {
+                    "label": "Паладин",
+                    "key": "6",
+                    "default": false
+                },
+                {
+                    "label": "Следопыт",
+                    "key": "7",
+                    "default": false
+                },
+                {
+                    "label": "Чародей",
+                    "key": "8",
+                    "default": false
+                },
+                {
+                    "label": "Изобретатель",
+                    "key": "14",
+                    "default": false
+                },
+                {
+                    "label": "Шаман",
+                    "key": "22",
+                    "default": false
+                },
+                {
+                    "label": "Магус",
+                    "key": "23",
+                    "default": false
+                }
+            ]
+        },
+        {
+            "name": "Школа",
+            "key": "school",
+            "expand": true,
+            "values": [
+                {
+                    "label": "вызов",
+                    "key": "CONJURATION",
+                    "default": false
+                },
+                {
+                    "label": "воплощение",
+                    "key": "EVOCATION",
+                    "default": false
+                },
+                {
+                    "label": "иллюзия",
+                    "key": "ILLUSION",
+                    "default": false
+                },
+                {
+                    "label": "некромантия",
+                    "key": "NECROMANCY",
+                    "default": false
+                },
+                {
+                    "label": "ограждение",
+                    "key": "ABJURATION",
+                    "default": false
+                },
+                {
+                    "label": "очарование",
+                    "key": "ENCHANTMENT",
+                    "default": false
+                },
+                {
+                    "label": "преобразование",
+                    "key": "TRANSMUTATION",
+                    "default": false
+                },
+                {
+                    "label": "прорицание",
+                    "key": "DIVINATION",
+                    "default": false
+                }
+            ]
+        },
+        {
+            "name": "Ритуал",
+            "key": "ritual",
+            "expand": true,
+            "values": [
+                {
+                    "label": "да",
+                    "key": "yes",
+                    "default": false
+                },
+                {
+                    "label": "нет",
+                    "key": "no",
+                    "default": false
+                }
+            ]
+        },
+        {
+            "name": "Концентрация",
+            "key": "concentration",
+            "expand": true,
+            "values": [
+                {
+                    "label": "требуется",
+                    "key": "yes",
+                    "default": false
+                },
+                {
+                    "label": "не требуется",
+                    "key": "no",
+                    "default": false
+                }
+            ]
+        },
+        {
+            "name": "Тип урона",
+            "key": "damageType",
+            "expand": true,
+            "values": [
+                {
+                    "label": "без урона",
+                    "key": "NO_DAMAGE",
+                    "default": false
+                },
+                {
+                    "label": "дробящий",
+                    "key": "BLUDGEONING",
+                    "default": false
+                },
+                {
+                    "label": "колющий",
+                    "key": "PIERCING",
+                    "default": false
+                },
+                {
+                    "label": "рубящий",
+                    "key": "SLASHING",
+                    "default": false
+                },
+                {
+                    "label": "огонь",
+                    "key": "FAIR",
+                    "default": false
+                },
+                {
+                    "label": "холод",
+                    "key": "COLD",
+                    "default": false
+                },
+                {
+                    "label": "электричество",
+                    "key": "LIGHTNING",
+                    "default": false
+                },
+                {
+                    "label": "яд",
+                    "key": "POISON",
+                    "default": false
+                },
+                {
+                    "label": "кислота",
+                    "key": "ACID",
+                    "default": false
+                },
+                {
+                    "label": "звук",
+                    "key": "SOUND",
+                    "default": false
+                },
+                {
+                    "label": "некротическая энергия",
+                    "key": "NECTOTIC",
+                    "default": false
+                },
+                {
+                    "label": "излучение",
+                    "key": "RADIANT",
+                    "default": false
+                },
+                {
+                    "label": "силовое поле",
+                    "key": "FORCE",
+                    "default": false
+                },
+                {
+                    "label": "психическая энергия",
+                    "key": "PSYCHIC",
+                    "default": false
+                }
+            ]
+        },
+        {
+            "name": "Лечение",
+            "key": "healType",
+            "expand": true,
+            "values": [
+                {
+                    "label": "Хиты",
+                    "key": "HP",
+                    "default": false
+                },
+                {
+                    "label": "Временные хиты",
+                    "key": "THP",
+                    "default": false
+                }
+            ]
+        },
+        {
+            "name": "Спасбросок",
+            "key": "savingThrow",
+            "expand": true,
+            "values": [
+                {
+                    "label": "Сила",
+                    "key": "STRENGTH",
+                    "default": false
+                },
+                {
+                    "label": "Ловкость",
+                    "key": "DEXTERITY",
+                    "default": false
+                },
+                {
+                    "label": "Телосложение",
+                    "key": "CONSTITUTION",
+                    "default": false
+                },
+                {
+                    "label": "Интеллект",
+                    "key": "INTELLIGENCE",
+                    "default": false
+                },
+                {
+                    "label": "Мудрость",
+                    "key": "WISDOM",
+                    "default": false
+                },
+                {
+                    "label": "Харизма",
+                    "key": "CHARISMA",
+                    "default": false
+                }
+            ]
+        },
+        {
+            "name": "Время накладывания",
+            "key": "timecast",
+            "expand": true,
+            "values": [
+                {
+                    "label": "бонусное действие",
+                    "key": "1 BONUS",
+                    "default": false
+                },
+                {
+                    "label": "реакция",
+                    "key": "1 REACTION",
+                    "default": false
+                },
+                {
+                    "label": "действие",
+                    "key": "1 ACTION",
+                    "default": false
+                },
+                {
+                    "label": "ход",
+                    "key": "1 ROUND",
+                    "default": false
+                },
+                {
+                    "label": "1 минута",
+                    "key": "1 MINUTE",
+                    "default": false
+                },
+                {
+                    "label": "10 минут",
+                    "key": "10 MINUTE",
+                    "default": false
+                },
+                {
+                    "label": "1 час",
+                    "key": "1 HOUR",
+                    "default": false
+                },
+                {
+                    "label": "8 час",
+                    "key": "8 HOUR",
+                    "default": false
+                },
+                {
+                    "label": "12 час",
+                    "key": "12 HOUR",
+                    "default": false
+                },
+                {
+                    "label": "24 час",
+                    "key": "24 HOUR",
+                    "default": false
+                }
+            ]
+        },
+        {
+            "name": "Дистанция",
+            "key": "distance",
+            "expand": true,
+            "values": [
+                {
+                    "label": "на себя",
+                    "key": "На себя",
+                    "default": false
+                },
+                {
+                    "label": "касание",
+                    "key": "Касание",
+                    "default": false
+                },
+                {
+                    "label": "5 футов",
+                    "key": "5 футов",
+                    "default": false
+                },
+                {
+                    "label": "10 футов",
+                    "key": "10 футов",
+                    "default": false
+                },
+                {
+                    "label": "20 футов",
+                    "key": "20 футов",
+                    "default": false
+                },
+                {
+                    "label": "25 футов",
+                    "key": "25 футов",
+                    "default": false
+                },
+                {
+                    "label": "30 футов",
+                    "key": "30 футов",
+                    "default": false
+                },
+                {
+                    "label": "40 футов",
+                    "key": "40 футов",
+                    "default": false
+                },
+                {
+                    "label": "50 футов",
+                    "key": "50 футов",
+                    "default": false
+                },
+                {
+                    "label": "60 футов",
+                    "key": "60 футов",
+                    "default": false
+                },
+                {
+                    "label": "90 футов",
+                    "key": "90 футов",
+                    "default": false
+                },
+                {
+                    "label": "100 футов",
+                    "key": "100 футов",
+                    "default": false
+                },
+                {
+                    "label": "120 футов",
+                    "key": "120 футов",
+                    "default": false
+                },
+                {
+                    "label": "150 футов",
+                    "key": "150 футов",
+                    "default": false
+                },
+                {
+                    "label": "300 футов",
+                    "key": "300 футов",
+                    "default": false
+                },
+                {
+                    "label": "400 футов",
+                    "key": "400 футов",
+                    "default": false
+                },
+                {
+                    "label": "1000 футов",
+                    "key": "1000 футов",
+                    "default": false
+                },
+                {
+                    "label": "1 миля",
+                    "key": "1 миля",
+                    "default": false
+                },
+                {
+                    "label": "500 миль",
+                    "key": "500 миль",
+                    "default": false
+                }
+            ]
+        },
+        {
+            "name": "Длительность",
+            "key": "duration",
+            "expand": true,
+            "values": [
+                {
+                    "label": "Мгновенная",
+                    "key": "Мгновенная",
+                    "default": false
+                },
+                {
+                    "label": "1 раунд",
+                    "key": "1 раунд",
+                    "default": false
+                },
+                {
+                    "label": "1 минута",
+                    "key": "1 минута",
+                    "default": false
+                },
+                {
+                    "label": "10 минут",
+                    "key": "10 минут",
+                    "default": false
+                },
+                {
+                    "label": "1 час",
+                    "key": "1 час",
+                    "default": false
+                },
+                {
+                    "label": "8 часов",
+                    "key": "8 часов",
+                    "default": false
+                },
+                {
+                    "label": "12 часов",
+                    "key": "12 часов",
+                    "default": false
+                },
+                {
+                    "label": "24 часа",
+                    "key": "24 часа",
+                    "default": false
+                },
+                {
+                    "label": "1 день",
+                    "key": "1 день",
+                    "default": false
+                },
+                {
+                    "label": "7 дней",
+                    "key": "7 дней",
+                    "default": false
+                },
+                {
+                    "label": "10 дней",
+                    "key": "10 дней",
+                    "default": false
+                },
+                {
+                    "label": "1 год",
+                    "key": "1 год",
+                    "default": false
+                }
+            ]
+        },
+        {
+            "name": "Компоненты",
+            "key": "components",
+            "expand": true,
+            "values": [
+                {
+                    "label": "вербальный",
+                    "key": "1",
+                    "default": false
+                },
+                {
+                    "label": "соматический",
+                    "key": "2",
+                    "default": false
+                },
+                {
+                    "label": "материальный",
+                    "key": "3",
+                    "default": false
+                },
+                {
+                    "label": "расходуемый",
+                    "key": "4",
+                    "default": false
+                },
+                {
+                    "label": "не расходуемый",
+                    "key": "5",
+                    "default": false
+                }
+            ]
+        }
+    ]
+}
