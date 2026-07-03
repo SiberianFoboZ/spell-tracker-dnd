@@ -14,7 +14,7 @@ D&D 5e следить за ячейками заклинаний, пакт-ма�
 установки APK работает полностью офлайн).
 
 - **applicationId / namespace**: `com.example.spelltracker`
-- **Текущая версия**: v2.5.4 (`versionCode = 15`)
+- **Текущая версия**: v2.6.0 (`versionCode = 16`)
 - **Min SDK**: 24 (Android 7.0). **Target/Compile SDK**: 36 (Android 16).
 - **Язык UI**: русский. Все строки — в `app/src/main/res/values/strings.xml`,
   плюс хардкод русских строк внутри `*Screen.kt` (см. раздел Conventions).
@@ -24,15 +24,16 @@ D&D 5e следить за ячейками заклинаний, пакт-ма�
   1000 per-spell JSON из `spells_data/` в ОДИН `spells_normalized.json`,
   который уходит в APK как asset. На устройстве JSON читается ОДИН раз
   при первом запуске и заливается в Room.
-- **Объём справочника**: 952 заклинания (после фильтрации игнор-листа),
-  включая 75 кантипов (level 0).
+- **Объём справочника**: 487 заклинаний (после удаления 3rd party / homebrew
+  из `spells_data/` и whitelist-фильтра по `class-subclass.txt`).
+  Включая 44 кантипа (level 0).
 - **Игнор-лист классов** (16 классов — homebrew/UA, выкидываются при сборке):
   Шаман, Магус, Хранитель Рун, Савант, Неупокоенная душа, Мистик,
   Кровавый Охотник, Звездочет, Егерь, Воевода, Альтернативный плут,
   Альтернативный монах, Альтернативный воин, Альтернативный варвар,
   Альтернативный следопыт, Алхимик.
 - **Версионирование**: «Этап N» в коммит-сообщениях + SemVer-теги
-  (`v2.5.4`).
+  (`v2.6.0`).
 
 Релиз-флоу:
 - Push тега `v*` → `release.yml` собирает APK и публикует GitHub Release.
@@ -84,7 +85,7 @@ Spelltracker/
 │       ├── AndroidManifest.xml
 │       ├── assets/
 │       │   ├── class_*.json                # legacy per-class файлы (НЕ читаются кодом)
-│       │   └── spells_normalized.json      # 4.7 MB, build-time артефакт (952 спелла)
+│       │   └── spells_normalized.json      # 2.7 MB, build-time артефакт (487 спеллов)
 │       ├── java/com/example/spelltracker/
 │       │   ├── MainActivity.kt
 │       │   ├── data/                       # слои данных
@@ -152,7 +153,7 @@ spells_data/*.json (1000 файлов, по одному на заклинани
         │
         ▼
 app/build/generated/assets/spells_normalized.json
-   (4.7 MB, 952 заклинания, single JSON-array)
+   (2.7 MB, 487 заклинания, single JSON-array)
         │
         ▼  AGP Variant API: addGeneratedSourceDirectory
 APK assets/spells_normalized.json
@@ -164,15 +165,15 @@ APK assets/spells_normalized.json
 APK assets/spells_normalized.json
         │  SpellParser.loadFromAssets() — ОДИН раз
         ▼
-List<Spell> (952 объекта в памяти)
+List<Spell> (487 объектов в памяти)
         │
         ▼  SpellRepository.ensureInitialized()
-        │   if (dao.count() == 0 || dao.count() != 952) {
+        │   if (dao.count() == 0 || dao.count() != 487) {
         │       dao.clearAll(); dao.insertAll(spells)
         │   }
         │   pruneOrphanedPrepared()  // удаляет сирот из SharedPreferences
         ▼
-Room БД `spells.db` (952 записи)
+Room БД `spells.db` (487 записей)
         │
         ▼  SpellsViewModel получает данные через repo.getAll()
         │  Фильтрация — в памяти через ClassFilter.matches()
@@ -293,12 +294,12 @@ abstract class SpellDatabase : RoomDatabase() { ... }
   ritual, concentration, timecast, distance, duration, componentV/S/M,
   materialConsumed, materialDesc, descriptionHtml, upperLevel, url,
   classes, subclasses, subclassParents, races, savingThrows`.
-- **Объём**: 952 записи (после destructive rebuild при mismatch count).
+- **Объём**: 487 записей (после destructive rebuild при mismatch count).
 - **Миграция**: `fallbackToDestructiveMigration()` — данные приходят
   из assets, потеря пользовательских записей невозможна (это справочник).
 - **Авто-реконструкция**: `SpellRepository.ensureInitialized()`
   сравнивает `dao.count()` с `loadFromAssets().size`. Если не совпало
-  (например, APK обновился с 802 на 952), `clearAll()` + `insertAll()`
+  (например, APK обновился с 802 на 487 спеллами), `clearAll()` + `insertAll()`
   перезаливает таблицу.
 - **Cleanup orphan'ов**: после миграции `pruneOrphanedPrepared()`
   удаляет из `SpellStorage.prepared` все id, которых больше нет в БД
@@ -404,14 +405,14 @@ Room БД
 
 # Сборка debug APK (запустит generateSpellsDb как часть pipeline)
 ./gradlew assembleDebug
-# → app/build/outputs/apk/debug/app-debug.apk (переименован в spell-tracker-v2.5.4.apk)
+# → app/build/outputs/apk/debug/app-debug.apk (переименован в spell-tracker-v2.6.0.apk)
 
 # Сборка release APK (подписан debug-ключом, если нет keystore.properties)
 ./gradlew assembleRelease
-# → app/build/outputs/apk/release/spell-tracker-v2.5.4.apk
+# → app/build/outputs/apk/release/spell-tracker-v2.6.0.apk
 
 # Установка на устройство
-adb install -r app/build/outputs/apk/release/spell-tracker-v2.5.4.apk
+adb install -r app/build/outputs/apk/release/spell-tracker-v2.6.0.apk
 
 # Тесты
 ./gradlew test                  # unit (только ExampleUnitTest на данный момент)
@@ -461,13 +462,13 @@ JDK 21. Сам проектный `gradle.properties` остаётся порт�
 2. Обновить `README.md` (история релизов + блок «Что нового»).
 3. `git add ... && git commit -m "..."` в стиле существующих коммитов
    (см. `git log --oneline`).
-4. Поставить тег: `git tag v2.5.4 && git push origin v2.5.4`.
+4. Поставить тег: `git tag v2.6.0 && git push origin v2.6.0`.
 5. CI собирает APK и публикует GitHub Release автоматически
    (`softprops/action-gh-release@v2` с `generate_release_notes: true`).
 
 Стиль существующих коммитов:
 - `feat(subclass): parent class в normalized + скрывать секцию без выбранного класса`
-- `fix: пересобирать БД при mismatch count (802 → 952 при обновлении APK)`
+- `fix: пересобирать БД при mismatch count (802 → 487 при обновлении APK)`
 - `fix: чистить orphan id в prepared при старте (после v3→v4)`
 - `chore: удалить легаси assets/spells.csv + assets/databases/populate.sql`
 - `refactor: объединить spells_data/ + losses/ в единую папку spells_data/`
