@@ -3,46 +3,68 @@ package com.example.spelltracker.ui.spells
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.spelltracker.data.ClassFilter
 import com.example.spelltracker.data.Classes
 import com.example.spelltracker.data.Spell
+import com.example.spelltracker.data.SpellFilterState
+import com.example.spelltracker.data.SpellMenuConfig
 import com.example.spelltracker.data.SpellRepository
 import com.example.spelltracker.data.SpellStorage
+import com.example.spelltracker.data.TriState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.launch
-
-/**
- * Режим фильтра: «по классу» или «по уровню заклинания».
- * Два независимых набора чипов на экране.
- */
-enum class FilterMode { BY_CLASS, BY_LEVEL }
+import kotlinx.coroutines.flow.update
 
 /**
  * Состояние экрана списка заклинаний.
+ *
+ * Поля разделены на три зоны:
+ *   • «загружено» — то, что пришло из БД / хранилища: allSpells, preparedIds,
+ *     available* (уникальные значения для осей фильтра, считаются из data);
+ *   • «выбрано» — filters ([SpellFilterState]);
+ *   • «ui» — флаги UI (isLoading, showPreparedOnly, showFiltersSheet).
+ *
+ * Производные поля (visibleSpells, hasActiveFilters) считаются здесь же —
+ * пересчитываются в combine-блоке, чтобы UI не делал фильтрацию на лету.
  */
 data class SpellsState(
+    // Загружено
     val isLoading: Boolean = true,
     val allSpells: List<Spell> = emptyList(),
-    val visibleSpells: List<Spell> = emptyList(),
     val classes: List<Classes.Info> = Classes.ALL,
     val availableLevels: Set<Int> = emptySet(),
-    val selectedClassIds: Set<String> = emptySet(),
-    val selectedLevel: Int? = null,    // null = «Все»
-    val search: String = "",
-    val mode: FilterMode = FilterMode.BY_CLASS,
+    val availableSubclasses: Set<String> = emptySet(),
+    val availableRaces: Set<String> = emptySet(),
+    val availableSchools: Set<String> = emptySet(),
+    val availableSources: Set<String> = emptySet(),
+    val availableSavingThrows: Set<String> = emptySet(),
     val preparedIds: Set<Long> = emptySet(),
-    val showPreparedOnly: Boolean = false,  // вкл. «только подготовленные»
-    val preparedCount: Int = 0,             // счётчик в TopAppBar
+    val preparedCount: Int = 0,
+
+    // Фильтры (по умолчанию всё пустое = все спеллы показаны)
+    val filters: SpellFilterState = SpellFilterState(),
+
+    // UI
+    val showPreparedOnly: Boolean = false,
+    val showFiltersSheet: Boolean = false,
+
+    // Производное
+    val visibleSpells: List<Spell> = emptyList(),
 )
 
 /**
- * VM для экрана заклинаний. Загружает весь справочник через
- * [SpellRepository] (инициализируется при первом запуске) и применяет
- * фильтры в памяти — справочник маленький, накладных расходов нет.
+ * VM экрана заклинаний. Один источник истины — `state` ([StateFlow]).
+ *
+ * Подписки:
+ *   • `repo.initialized.onEach { ... }` — после заливки данных однажды
+ *     заполняет `allSpells` и `available*` (только при первом запуске).
+ *   • `combine(_state, storage.prepared)` — реактивно пересчитывает
+ *     `visibleSpells` при изменении фильтров или `prepared` (вкл/выкл
+ *     закладки). На пустом allSpells возвращает пустой список.
  */
 class SpellsViewModel(application: Application) : AndroidViewModel(application) {
 
@@ -54,98 +76,132 @@ class SpellsViewModel(application: Application) : AndroidViewModel(application) 
 
     init {
         repo.ensureInitialized()
-        viewModelScope.launch {
-            // Ждём, пока БД наполнится, и загружаем один раз.
-            repo.initialized.collect { ready ->
-                if (ready && _state.value.allSpells.isEmpty()) {
-                    val all = repo.getAll()
-                    val levels = all.map { it.level }.toSet()
-                    _state.value = _state.value.copy(
+
+        // Один раз на старте: тянем данные из БД, считаем available*.
+        // Не зависит от фильтров — только от самих данных.
+        repo.initialized
+            .onEach { ready ->
+                if (!ready || _state.value.allSpells.isNotEmpty()) return@onEach
+                val all = repo.getAll()
+                _state.update {
+                    it.copy(
                         isLoading = false,
                         allSpells = all,
-                        availableLevels = levels,
-                        visibleSpells = applyFilters(all, _state.value),
+                        availableLevels = all.mapTo(HashSet()) { it.level },
+                        availableSubclasses = all.flatMapTo(HashSet()) { splitCsv(it.subclasses) },
+                        availableRaces = all.flatMapTo(HashSet()) { splitCsv(it.races) },
+                        availableSchools = all.mapTo(HashSet()) { it.school }
+                            .filter(String::isNotBlank).toSet(),
+                        availableSources = all.mapTo(HashSet()) { it.source }
+                            .filter(String::isNotBlank).toSet(),
+                        availableSavingThrows = all.flatMapTo(HashSet()) { splitCsv(it.savingThrows) },
                     )
                 }
             }
-        }
-        // Реактивно обновляем видимый список при изменении фильтров/поиска
+            .launchIn(viewModelScope)
+
+        // Реактивный пересчёт visible при ЛЮБОМ изменении _state.filters или
+        // storage.prepared. Statefold-у equality не зацикливается: при
+        // одинаковом State-fold новый State объект равен предыдущему —
+        // MutableStateFlow НЕ эмитит дубль.
         combine(_state, storage.prepared) { s, prep ->
+            val visible = if (s.allSpells.isEmpty()) emptyList()
+                else applyFilters(s.allSpells, s.filters, s.showPreparedOnly, prep)
             s.copy(
                 preparedIds = prep,
                 preparedCount = prep.size,
-                visibleSpells = applyFilters(s.allSpells, s),
+                visibleSpells = visible,
             )
         }.onEach { _state.value = it }.launchIn(viewModelScope)
     }
 
-    private fun applyFilters(all: List<Spell>, s: SpellsState): List<Spell> {
-        val needle = s.search.trim().lowercase()
-        return all
-            .asSequence()
-            .filter { s.showPreparedOnly.not() || s.preparedIds.contains(it.id) }
-            .filter { s.selectedLevel == null || it.level == s.selectedLevel }
-            .filter { s.selectedClassIds.isEmpty() || s.selectedClassIds.any { id -> it.classes.contains(id) } }
-            .filter { needle.isEmpty() || it.name.lowercase().contains(needle) }
-            .toList()
-    }
+    private fun applyFilters(
+        all: List<Spell>,
+        f: SpellFilterState,
+        showPreparedOnly: Boolean,
+        preparedIds: Set<Long>,
+    ): List<Spell> = all
+        .asSequence()
+        .filter { !showPreparedOnly || preparedIds.contains(it.id) }
+        .filter { ClassFilter.matches(it, f) }
+        .toList()
 
-    fun setMode(mode: FilterMode) {
-        _state.value = _state.value.copy(
-            mode = mode,
-            selectedLevel = if (mode == FilterMode.BY_LEVEL) _state.value.selectedLevel else null,
-            // выходим из «только подготовленные» при смене режима фильтра
-            showPreparedOnly = false,
-        )
-    }
+    private fun splitCsv(s: String): List<String> =
+        if (s.isBlank()) emptyList() else s.split(',').map(String::trim).filter(String::isNotEmpty)
 
-    fun setLevel(level: Int?) {
-        _state.value = _state.value.copy(selectedLevel = level)
-    }
+    // ─── Мутаторы фильтров ───
 
-    fun toggleClass(classId: String) {
-        val current = _state.value.selectedClassIds
-        val next = if (classId in current) current - classId else current + classId
-        _state.value = _state.value.copy(selectedClassIds = next)
-    }
+    fun setLevel(level: Int?) =
+        mutate { it.copy(filters = it.filters.copy(level = level)) }
 
-    fun setSearch(q: String) {
-        _state.value = _state.value.copy(search = q)
-    }
+    fun toggleClass(classId: String) =
+        mutate { it.copy(filters = it.filters.copy(classIds = toggleId(it.filters.classIds, classId))) }
 
-    fun togglePreparedOnly() {
-        _state.value = _state.value.copy(showPreparedOnly = !_state.value.showPreparedOnly)
-    }
+    fun toggleSubclass(name: String) =
+        mutate { it.copy(filters = it.filters.copy(subclassNames = toggleId(it.filters.subclassNames, name))) }
+
+    fun toggleRace(name: String) =
+        mutate { it.copy(filters = it.filters.copy(raceNames = toggleId(it.filters.raceNames, name))) }
+
+    fun toggleSource(key: String) =
+        mutate { it.copy(filters = it.filters.copy(sources = toggleId(it.filters.sources, key))) }
+
+    fun setAllSources(on: Boolean) =
+        mutate { it.copy(filters = it.filters.copy(sources = if (on) it.availableSources else emptySet())) }
+
+    fun toggleSchool(key: String) =
+        mutate { it.copy(filters = it.filters.copy(schools = toggleId(it.filters.schools, key))) }
+
+    fun toggleSavingThrow(key: String) =
+        mutate { it.copy(filters = it.filters.copy(savingThrows = toggleId(it.filters.savingThrows, key))) }
+
+    fun setRitual(ts: TriState) =
+        mutate { it.copy(filters = it.filters.copy(ritual = ts)) }
+
+    fun setConcentration(ts: TriState) =
+        mutate { it.copy(filters = it.filters.copy(concentration = ts)) }
+
+    fun setComponentV(ts: TriState) =
+        mutate { it.copy(filters = it.filters.copy(componentV = ts)) }
+
+    fun setComponentS(ts: TriState) =
+        mutate { it.copy(filters = it.filters.copy(componentS = ts)) }
+
+    fun setComponentM(ts: TriState) =
+        mutate { it.copy(filters = it.filters.copy(componentM = ts)) }
+
+    fun setMaterialConsumed(ts: TriState) =
+        mutate { it.copy(filters = it.filters.copy(materialConsumed = ts)) }
+
+    fun setSearch(q: String) =
+        mutate { it.copy(filters = it.filters.copy(search = q)) }
+
+    fun togglePreparedOnly() =
+        mutate { it.copy(showPreparedOnly = !it.showPreparedOnly) }
+
+    fun setShowFiltersSheet(v: Boolean) =
+        mutate { it.copy(showFiltersSheet = v) }
 
     fun togglePrepared(spellId: Long) {
         storage.setPrepared(spellId, !storage.isPrepared(spellId))
     }
 
-    /**
-     * Сбросить фильтр по классам (выбрать «Все классы»).
-     * Используется чекбоксом "Все классы" в Bottom Sheet.
-     */
-    fun clearClassFilter() {
-        _state.value = _state.value.copy(selectedClassIds = emptySet())
+    /** Вызывается чипом «Все» в секции «Класс». */
+    fun clearClassFilter() =
+        mutate { it.copy(filters = it.filters.copy(classIds = emptySet())) }
+
+    /** Вызывается чипом «Все» в секции «Уровень». */
+    fun clearLevelFilter() =
+        mutate { it.copy(filters = it.filters.copy(level = null)) }
+
+    /** Сбросить ВСЕ фильтры — вызывается кнопкой «Сбросить» в BottomSheet. */
+    fun resetFilters() =
+        mutate { it.copy(filters = SpellFilterState()) }
+
+    private inline fun mutate(transform: (SpellsState) -> SpellsState) {
+        _state.update(transform)
     }
 
-    /**
-     * Сбросить фильтр по уровню заклинания.
-     * Используется чипом "Все" в секции уровней внутри Bottom Sheet.
-     */
-    fun clearLevelFilter() {
-        _state.value = _state.value.copy(selectedLevel = null)
-    }
-
-    /**
-     * Сбросить фильтры по классам и уровню одним вызовом.
-     * НЕ сбрасывает режим «только подготовленные» — он управляется
-     * отдельной иконкой закладки в TopAppBar.
-     */
-    fun resetFilters() {
-        _state.value = _state.value.copy(
-            selectedClassIds = emptySet(),
-            selectedLevel = null,
-        )
-    }
+    private fun toggleId(set: Set<String>, v: String): Set<String> =
+        if (v in set) set - v else set + v
 }

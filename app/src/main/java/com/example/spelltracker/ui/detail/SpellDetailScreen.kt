@@ -5,7 +5,6 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -32,22 +31,35 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.spelltracker.data.Spell
+import com.example.spelltracker.data.SpellMenuConfig
 import com.example.spelltracker.ui.theme.AppColors
 
 /**
- * Экран детальной карточки заклинания. Идентификатор приходит из
- * SavedStateHandle через NavType.LongType.
+ * Экран детальной карточки заклинания.
+ *
+ * Отображает:
+ *   • Заголовок: имя (русское + латинский транслит, если есть),
+ *     уровень заклинания, школа, источник.
+ *   • Мету: время накладывания, дистанция, компоненты (+материал),
+ *     длительность, спасброски, классы, подклассы, расы.
+ *   • Описание: HTML→[AnnotatedString] через [parseSpellHtml].
+ *   • «На высших уровнях»: то же.
+ *   • Кнопка «Подготовлено» / «Отметить подготовленным».
+ *
+ * Эволюция схемы: до v4 поля назывались `castingTime`, `range`,
+ * `components`, `description`, `higherLevel`. После v4 — `timecast`,
+ * `distance`, `*` (V/S/M + material*), `descriptionHtml`, `upperLevel`.
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -57,25 +69,24 @@ fun SpellDetailScreen(
 ) {
     val state by viewModel.state.collectAsState()
 
-    // первый запуск — берём id из SavedStateHandle
-    LaunchedEffect(Unit) {
-        // viewModel-у не передали id напрямую, поэтому возьмём его
-        // из SavedStateHandle, который Compose-Nav кладёт в extras.
-        // Здесь мы используем простой путь: id пробрасывается через
-        // ViewModel-фабрику ниже. Но мы храним ссылку и берём через
-        // application, чтобы не тащить абстракции сюда.
-        // (см. AppNavigation — там фабрика передаёт id через extras)
-        // для упрощения оставим прямой вызов load() из эффекта —
-        // SavedStateHandle будет источником id (см. AppNavigation.kt).
-    }
-
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
-                title = { Text("", color = AppColors.TextWhite) },
+                title = {
+                    Text(
+                        text = state.spell?.name.orEmpty(),
+                        color = AppColors.TextWhite,
+                        fontWeight = FontWeight.SemiBold,
+                        maxLines = 1,
+                    )
+                },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, "Назад", tint = AppColors.TextWhite)
+                        Icon(
+                            Icons.AutoMirrored.Filled.ArrowBack,
+                            "Назад",
+                            tint = AppColors.TextWhite,
+                        )
                     }
                 },
                 colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
@@ -99,7 +110,11 @@ fun SpellDetailScreen(
                 }
                 state.spell == null -> {
                     Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                        Text("Заклинание не найдено", color = AppColors.TextGrey, fontSize = 14.sp)
+                        Text(
+                            "Заклинание не найдено",
+                            color = AppColors.TextGrey,
+                            fontSize = 14.sp,
+                        )
                     }
                 }
                 else -> {
@@ -113,16 +128,18 @@ fun SpellDetailScreen(
                     ) {
                         HeaderCard(spell)
                         MetaCard(spell)
-                        if (spell.description.isNotBlank()) {
-                            TextBlock("Описание", spell.description)
+                        if (spell.descriptionHtml.isNotBlank()) {
+                            HtmlBlock("Описание", parseSpellHtml(spell.descriptionHtml))
                         }
-                        if (spell.higherLevel.isNotBlank()) {
-                            TextBlock("На высших уровнях", spell.higherLevel)
+                        if (spell.upperLevel.isNotBlank()) {
+                            HtmlBlock("На высших уровнях", parseSpellHtml(spell.upperLevel))
                         }
                         Spacer(Modifier.height(8.dp))
                         Button(
                             onClick = { viewModel.togglePrepared() },
-                            modifier = Modifier.fillMaxWidth().height(48.dp),
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(48.dp),
                             shape = RoundedCornerShape(12.dp),
                             colors = ButtonDefaults.buttonColors(
                                 containerColor = if (state.isPrepared) AppColors.Purple else AppColors.Gold,
@@ -130,13 +147,15 @@ fun SpellDetailScreen(
                             ),
                         ) {
                             Icon(
-                                imageVector = if (state.isPrepared) Icons.Filled.Bookmark else Icons.Filled.BookmarkBorder,
+                                imageVector = if (state.isPrepared) Icons.Filled.Bookmark
+                                else Icons.Filled.BookmarkBorder,
                                 contentDescription = null,
                                 modifier = Modifier.size(18.dp),
                             )
                             Spacer(Modifier.width(6.dp))
                             Text(
-                                text = if (state.isPrepared) "В списке подготовленных" else "Отметить как подготовленное",
+                                text = if (state.isPrepared) "В списке подготовленных"
+                                else "Отметить как подготовленное",
                                 fontWeight = FontWeight.Bold,
                             )
                         }
@@ -171,15 +190,55 @@ private fun HeaderCard(spell: Spell) {
                 fontSize = 22.sp,
                 fontWeight = FontWeight.Bold,
             )
-            if (spell.school.isNotBlank()) {
-                Spacer(Modifier.height(4.dp))
+            if (spell.nameEng.isNotBlank() && spell.nameEng != spell.name) {
                 Text(
-                    text = spell.school,
-                    color = AppColors.Gold,
+                    text = spell.nameEng,
+                    color = AppColors.Cream,
                     fontSize = 13.sp,
+                    fontStyle = androidx.compose.ui.text.font.FontStyle.Italic,
                 )
             }
+            Spacer(Modifier.height(6.dp))
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                if (spell.school.isNotBlank()) {
+                    Text(
+                        text = schoolLabel(spell.school),
+                        color = AppColors.Gold,
+                        fontSize = 13.sp,
+                        fontWeight = FontWeight.SemiBold,
+                    )
+                }
+                if (spell.ritual) {
+                    Spacer(Modifier.width(8.dp))
+                    PillTag("ритуал")
+                }
+                if (spell.concentration) {
+                    Spacer(Modifier.width(6.dp))
+                    PillTag("концентрация")
+                }
+                if (spell.source.isNotBlank()) {
+                    Spacer(Modifier.width(6.dp))
+                    PillTag(spell.source)
+                }
+            }
         }
+    }
+}
+
+@Composable
+private fun PillTag(text: String) {
+    Box(
+        modifier = Modifier
+            .clip(RoundedCornerShape(8.dp))
+            .background(AppColors.PurpleDeep)
+            .padding(horizontal = 8.dp, vertical = 3.dp),
+    ) {
+        Text(
+            text = text,
+            color = AppColors.Cream,
+            fontSize = 10.sp,
+            fontWeight = FontWeight.SemiBold,
+        )
     }
 }
 
@@ -194,10 +253,30 @@ private fun MetaCard(spell: Spell) {
             .padding(12.dp),
     ) {
         Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
-            if (spell.castingTime.isNotBlank()) MetaRow("Время",   spell.castingTime)
-            if (spell.range.isNotBlank())      MetaRow("Дистанция", spell.range)
-            if (spell.components.isNotBlank()) MetaRow("Компоненты", spell.components)
-            if (spell.duration.isNotBlank())   MetaRow("Длительность", spell.duration)
+            if (spell.timecast.isNotBlank()) MetaRow("Время", spell.timecast)
+            if (spell.distance.isNotBlank()) MetaRow("Дистанция", spell.distance)
+            if (spell.duration.isNotBlank()) MetaRow("Длительность", spell.duration)
+            MetaRow("Компоненты", componentsLabel(spell))
+
+            val classesLine = classesLine(spell)
+            if (classesLine.isNotBlank()) MetaRow("Классы", classesLine)
+
+            val subclassesLine = spell.subclasses.split(',')
+                .map(String::trim).filter(String::isNotEmpty).joinToString(", ")
+            if (subclassesLine.isNotBlank()) MetaRow("Подклассы", subclassesLine)
+
+            val racesLine = spell.races.split(',')
+                .map(String::trim).filter(String::isNotEmpty).joinToString(", ")
+            if (racesLine.isNotBlank()) MetaRow("Расы", racesLine)
+
+            if (spell.materialDesc.isNotBlank()) {
+                MetaRow(
+                    "Материал",
+                    spell.materialDesc + if (spell.materialConsumed) " (расх.)" else "",
+                )
+            }
+
+            if (spell.savingThrows.isNotBlank()) MetaRow("Спасброски", spellsSaveLabel(spell.savingThrows))
         }
     }
 }
@@ -221,7 +300,7 @@ private fun MetaRow(label: String, value: String) {
 }
 
 @Composable
-private fun TextBlock(title: String, body: String) {
+private fun HtmlBlock(title: String, body: AnnotatedString) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -239,13 +318,46 @@ private fun TextBlock(title: String, body: String) {
             )
             Spacer(Modifier.height(6.dp))
             Text(
-                body,
+                text = body,
                 color = AppColors.TextWhite,
                 fontSize = 13.sp,
             )
         }
     }
 }
+
+// ─── helpers ─────────────────────────────────────────────────────────────
+
+private fun componentsLabel(spell: Spell): String {
+    val parts = mutableListOf<String>()
+    if (spell.componentV) parts += "В"
+    if (spell.componentS) parts += "С"
+    if (spell.componentM) parts += "М"
+    val base = parts.joinToString(", ")
+    return if (spell.materialConsumed && spell.componentM) "$base ($base — расх.)".let { "$base*" } else base
+}
+
+private fun classesLine(spell: Spell): String =
+    spell.classes.split(',').mapNotNull { id ->
+        Classes.info(id)
+    }.joinToString(", ")
+
+// Локальная обёртка — классы как объект уже импортированы из data-слоя,
+// здесь достаточно тонкой связки.
+
+private object Classes {
+    fun info(id: String): String? {
+        val info = com.example.spelltracker.data.Classes.BY_ID[id] ?: return null
+        return info.name
+    }
+}
+
+private fun schoolLabel(key: String): String =
+    SpellMenuConfig.SCHOOLS.firstOrNull { it.key == key }?.label ?: key
+
+private fun spellsSaveLabel(csv: String): String =
+    csv.split(',').map(String::trim).filter(String::isNotEmpty)
+        .joinToString(", ")
 
 private fun spellLevelLabel(level: Int): String = when (level) {
     0 -> "Заговор"

@@ -14,7 +14,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -54,10 +53,6 @@ import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -66,43 +61,24 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.spelltracker.data.Classes
 import com.example.spelltracker.data.Spell
+import com.example.spelltracker.data.SpellMenuConfig
+import com.example.spelltracker.data.TriState
 import com.example.spelltracker.ui.theme.AppColors
-import kotlinx.coroutines.launch
 
 /**
- * Экран списка заклинаний с Material 3 Bottom Sheet для фильтров.
+ * Экран списка заклинаний (v2).
  *
- * Главная кнопка "Фильтры" открывает [FilterBottomSheetContent] —
- * Bottom Sheet с компактными чипами классов и уровней (FlowRow).
- * Закладка "Только подготовленные" осталась в тулбаре как отдельный
- * быстрый toggle.
+ * Top-level элементы:
+ *   • [SpellsScreen] — главная composable, читает [SpellsViewModel.state]
+ *     и рендерит TopBar + список + выезжающий фильтр-BottomSheet.
+ *   • [FiltersBottomSheet] — содержимое шторки: секции Источник/Класс/Уровень/
+ *     Школа/Подкласс/Раса/Ритуал/Концентрация/4 Компонента/Спасбросок.
+ *   • [SpellRow] — карточка заклинания в списке (без переноса описания).
  *
- *  ┌──────────────────────────────────┐
- *  │ ←  Заклинания              🔖   │  ← TopAppBar
- *  │ [🔍 Поиск по названию        ]   │
- *  │ [≡ Фильтры ▾]                    │  ← одна кнопка-фильтр
- *  │ ────────────────────────────────  │
- *  │ ☑ Заговор 1 — Огненный снаряд    │  ← список
- *  │ ☐ Заговор 0 — Свет               │
- *  └──────────────────────────────────┘
- *
- *  Bottom Sheet при нажатии на "≡ Фильтры ▾":
- *  ┌──────────────────────────────────┐
- *  │ ─── (drag handle) ───            │
- *  │ Фильтры                     ✕   │
- *  │ ─────────────────────────────    │
- *  │ Класс                            │
- *  │ [Все] [Бард] [Волшебник] [Друид] │  ← компактные чипы
- *  │ [Жрец] [Чародей] [Паладин] …    │     (золото = выбрано)
- *  │ ─────────────────────────────    │
- *  │ Уровень                          │
- *  │ [Все] [Заговор] [I] [II] [III]   │  ← компактные чипы
- *  │ [IV] [V] [VI] [VII] [VIII] [IX]  │     FlowRow, всё видно
- *  │ ─────────────────────────────    │
- *  │ [↻ Сбросить фильтры]             │
- *  └──────────────────────────────────┘
+ * ВАЖНО: внутри @Composable циклы по коллекциям (`for ... in ...`) — это
+ * «прозрачный» scope для compose-compiler. `forEach { }` лямбда — НЕ
+ * @Composable, поэтому composable-вызов внутри неё запрещён.
  */
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
@@ -112,16 +88,14 @@ fun SpellsScreen(
     onOpenSpell: (Long) -> Unit,
 ) {
     val state by viewModel.state.collectAsState()
-    var showFilterSheet by remember { mutableStateOf(false) }
-    val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
-    val scope = rememberCoroutineScope()
 
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
                 title = {
+                    val n = state.visibleSpells.size
                     Text(
-                        "Заклинания",
+                        text = "Заклинания ($n)",
                         color = AppColors.TextWhite,
                         fontWeight = FontWeight.SemiBold,
                     )
@@ -130,7 +104,7 @@ fun SpellsScreen(
                     IconButton(onClick = onBack) {
                         Icon(
                             Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = "Назад",
+                            "Назад",
                             tint = AppColors.TextWhite,
                         )
                     }
@@ -162,13 +136,12 @@ fun SpellsScreen(
             } else {
                 Column(modifier = Modifier.fillMaxSize()) {
                     SearchField(
-                        value = state.search,
+                        value = state.filters.search,
                         onChange = viewModel::setSearch,
                     )
                     FilterButton(
-                        selectedClassCount = state.selectedClassIds.size,
-                        hasLevel = state.selectedLevel != null,
-                        onClick = { showFilterSheet = true },
+                        activeCount = activeFilterCount(state),
+                        onClick = { viewModel.setShowFiltersSheet(true) },
                     )
                     LazyColumn(
                         modifier = Modifier
@@ -193,7 +166,7 @@ fun SpellsScreen(
                                     state.showPreparedOnly && state.preparedCount == 0 ->
                                         "Отметьте заклинания галочкой в общем списке, чтобы они появились здесь."
                                     state.showPreparedOnly ->
-                                        "Нет подготовленных заклинаний, подходящих под фильтры."
+                                        "Нет подготовленных заклинаний под выбранные фильтры."
                                     else ->
                                         "Ничего не найдено по выбранным фильтрам."
                                 }
@@ -211,36 +184,48 @@ fun SpellsScreen(
         }
     }
 
-    if (showFilterSheet) {
+    if (state.showFiltersSheet) {
         ModalBottomSheet(
-            onDismissRequest = { showFilterSheet = false },
-            sheetState = sheetState,
+            onDismissRequest = { viewModel.setShowFiltersSheet(false) },
+            sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true),
             shape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp),
-            containerColor = AppColors.BgDark,    // dark — matches SpellsScreen body
+            containerColor = AppColors.BgDark,
             contentColor = AppColors.TextWhite,
             dragHandle = { BottomSheetDefaults.DragHandle() },
             scrimColor = Color.Black.copy(alpha = 0.55f),
         ) {
-            FilterBottomSheetContent(
+            FiltersBottomSheet(
                 state = state,
-                onToggleClass = viewModel::toggleClass,
-                onClearClasses = viewModel::clearClassFilter,
-                onSelectLevel = viewModel::setLevel,
-                onClearLevel = viewModel::clearLevelFilter,
-                onReset = viewModel::resetFilters,
-                onClose = {
-                    scope.launch {
-                        sheetState.hide()
-                        showFilterSheet = false
-                    }
-                },
+                vm = viewModel,
+                onClose = { viewModel.setShowFiltersSheet(false) },
             )
         }
     }
 }
 
+private fun activeFilterCount(s: SpellsState): Int {
+    var n = 0
+    with(s.filters) {
+        if (level != null) n++
+        if (classIds.isNotEmpty()) n++
+        if (subclassNames.isNotEmpty()) n++
+        if (raceNames.isNotEmpty()) n++
+        if (sources.isNotEmpty()) n++
+        if (schools.isNotEmpty()) n++
+        if (savingThrows.isNotEmpty()) n++
+        if (ritual != TriState.ANY) n++
+        if (concentration != TriState.ANY) n++
+        if (componentV != TriState.ANY) n++
+        if (componentS != TriState.ANY) n++
+        if (componentM != TriState.ANY) n++
+        if (materialConsumed != TriState.ANY) n++
+    }
+    if (s.showPreparedOnly) n++
+    return n
+}
+
 // =============================================================
-// Top-bar bookmark (иконка закладки)
+// Top-bar bookmark
 // =============================================================
 
 @Composable
@@ -262,7 +247,8 @@ private fun PreparedToggleAction(
             }
         ) {
             Icon(
-                imageVector = if (showPreparedOnly) Icons.Filled.Bookmark else Icons.Filled.BookmarkBorder,
+                imageVector = if (showPreparedOnly) Icons.Filled.Bookmark
+                else Icons.Filled.BookmarkBorder,
                 contentDescription = if (showPreparedOnly) "Показать все" else "Только подготовленные",
                 tint = tint,
             )
@@ -271,20 +257,13 @@ private fun PreparedToggleAction(
 }
 
 // =============================================================
-// Top-level filter button (открывает Bottom Sheet)
+// Кнопка «Фильтры»
 // =============================================================
 
 @Composable
-private fun FilterButton(
-    selectedClassCount: Int,
-    hasLevel: Boolean,
-    onClick: () -> Unit,
-) {
-    val hasAnyFilter = selectedClassCount > 0 || hasLevel
-    // Активная кнопка фильтра подсвечивается золотом: более насыщенная
-    // обводка (GoldDeep). Иконка всегда золотая (брендовый цвет).
-    val borderColor = if (hasAnyFilter) AppColors.GoldDeep else AppColors.Outline
-    val iconTint = AppColors.Gold
+private fun FilterButton(activeCount: Int, onClick: () -> Unit) {
+    val hasAny = activeCount > 0
+    val borderColor = if (hasAny) AppColors.GoldDeep else AppColors.Outline
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -302,7 +281,7 @@ private fun FilterButton(
             Icon(
                 imageVector = Icons.Filled.FilterList,
                 contentDescription = null,
-                tint = iconTint,
+                tint = AppColors.Gold,
                 modifier = Modifier.size(20.dp),
             )
             Spacer(Modifier.size(10.dp))
@@ -313,8 +292,7 @@ private fun FilterButton(
                 fontWeight = FontWeight.SemiBold,
                 modifier = Modifier.weight(1f),
             )
-            // Бейдж с числом выбранных классов (только если > 1).
-            if (selectedClassCount > 1) {
+            if (hasAny) {
                 Box(
                     modifier = Modifier
                         .size(22.dp)
@@ -323,7 +301,7 @@ private fun FilterButton(
                     contentAlignment = Alignment.Center,
                 ) {
                     Text(
-                        selectedClassCount.toString(),
+                        activeCount.toString(),
                         color = AppColors.BgDark,
                         fontSize = 11.sp,
                         fontWeight = FontWeight.Bold,
@@ -331,42 +309,29 @@ private fun FilterButton(
                 }
                 Spacer(Modifier.size(8.dp))
             }
-            Text(
-                "▾",
-                color = AppColors.TextGrey,
-                fontSize = 14.sp,
-                fontWeight = FontWeight.SemiBold,
-            )
+            Text("▾", color = AppColors.TextGrey, fontSize = 14.sp, fontWeight = FontWeight.SemiBold)
         }
     }
 }
 
 // =============================================================
-// Bottom Sheet content: компактные чипы классов и уровней (FlowRow)
+// Bottom Sheet content
 // =============================================================
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
-private fun FilterBottomSheetContent(
+private fun FiltersBottomSheet(
     state: SpellsState,
-    onToggleClass: (String) -> Unit,
-    onClearClasses: () -> Unit,
-    onSelectLevel: (Int?) -> Unit,
-    onClearLevel: () -> Unit,
-    onReset: () -> Unit,
+    vm: SpellsViewModel,
     onClose: () -> Unit,
 ) {
-    val allChecked = state.selectedClassIds.isEmpty()
-    // Внутренний scroll: на очень маленьких экранах / при системной
-    // навигации вся форма (заголовок + классы + уровни + reset) может
-    // не поместиться — даём пользователю прокрутить содержимое.
     Column(
         modifier = Modifier
             .fillMaxWidth()
             .verticalScroll(rememberScrollState())
             .windowInsetsPadding(WindowInsets.navigationBars),
     ) {
-        // Заголовок + кнопка закрыть
+        // Заголовок
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -381,76 +346,223 @@ private fun FilterBottomSheetContent(
                 modifier = Modifier.weight(1f),
             )
             IconButton(onClick = onClose) {
-                Icon(
-                    Icons.Filled.Close,
-                    contentDescription = "Закрыть",
-                    tint = AppColors.TextWhite,
-                )
+                Icon(Icons.Filled.Close, "Закрыть", tint = AppColors.TextWhite)
             }
         }
 
-        HorizontalDivider(color = AppColors.Outline)
+        // ─── Источник ───
+        SectionTitle("Источник")
+        Column(modifier = Modifier.padding(horizontal = 16.dp)) {
+            val allSelected = state.filters.sources.isEmpty()
+            FilterChip(
+                text = "Все источники",
+                selected = allSelected,
+                onClick = { vm.setAllSources(true) },
+            )
+            Spacer(Modifier.size(8.dp))
+            for (group in SpellMenuConfig.SOURCE_GROUPS) {
+                Text(
+                    text = group.name,
+                    color = AppColors.TextGrey,
+                    fontSize = 11.sp,
+                    fontWeight = FontWeight.SemiBold,
+                    modifier = Modifier.padding(top = 6.dp, bottom = 4.dp),
+                )
+                FlowRow(
+                    horizontalArrangement = Arrangement.spacedBy(6.dp),
+                    verticalArrangement = Arrangement.spacedBy(6.dp),
+                ) {
+                    for (src in group.sources) {
+                        val available = state.availableSources.contains(src.key)
+                        if (!available) continue
+                        FilterChip(
+                            text = src.label,
+                            selected = state.filters.sources.contains(src.key),
+                            onClick = { vm.toggleSource(src.key) },
+                        )
+                    }
+                }
+            }
+        }
 
-        // Секция: Класс — компактные чипы в FlowRow.
-        // Первый чип "Все" сбрасывает выбор конкретных классов.
+        Divider()
+
+        // ─── Класс ───
         SectionTitle("Класс")
         FlowRow(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp),
-            horizontalArrangement = Arrangement.spacedBy(8.dp),
-            verticalArrangement = Arrangement.spacedBy(8.dp),
+            modifier = Modifier.padding(horizontal = 16.dp),
+            horizontalArrangement = Arrangement.spacedBy(6.dp),
+            verticalArrangement = Arrangement.spacedBy(6.dp),
         ) {
-            FilterChipMini(
-                label = "Все",
-                selected = allChecked,
-                onClick = { if (!allChecked) onClearClasses() },
+            FilterChip(
+                text = "Все",
+                selected = state.filters.classIds.isEmpty(),
+                onClick = { vm.clearClassFilter() },
             )
-            state.classes.forEach { info ->
-                val checked = state.selectedClassIds.contains(info.id)
-                FilterChipMini(
-                    label = info.name,
-                    selected = checked,
-                    onClick = { onToggleClass(info.id) },
+            for (info in state.classes) {
+                val hasAnySpell = state.allSpells.any { it.classes.contains(info.id) }
+                if (!hasAnySpell) continue
+                FilterChip(
+                    text = info.name,
+                    selected = state.filters.classIds.contains(info.id),
+                    onClick = { vm.toggleClass(info.id) },
                 )
             }
         }
 
-        // Отступ перед разделителем — иначе последний ряд чипов
-        // (напр. «Изобретатель») ложится вплотную на линию.
-        Spacer(Modifier.height(8.dp))
-        HorizontalDivider(color = AppColors.Outline)
+        Divider()
 
-        // Секция: Уровень — компактные чипы в FlowRow.
-        // Все 11 чипов (Все + Заговор + I-IX) видны одновременно за счёт
-        // переноса строк. Данные для уровней 6-9 уже есть в assets/spells.csv,
-        // а version=3 в SpellDatabase гарантирует реимпорт при первом запуске.
+        // ─── Уровень ───
         SectionTitle("Уровень")
         FlowRow(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp),
-            horizontalArrangement = Arrangement.spacedBy(8.dp),
-            verticalArrangement = Arrangement.spacedBy(8.dp),
+            modifier = Modifier.padding(horizontal = 16.dp),
+            horizontalArrangement = Arrangement.spacedBy(6.dp),
+            verticalArrangement = Arrangement.spacedBy(6.dp),
         ) {
-            FilterChipMini(
-                label = "Все",
-                selected = state.selectedLevel == null,
-                onClick = { onClearLevel() },
+            FilterChip(
+                text = "Все",
+                selected = state.filters.level == null,
+                onClick = { vm.clearLevelFilter() },
             )
-            (0..9).forEach { lvl ->
-                FilterChipMini(
-                    label = spellLevelLabel(lvl),
-                    selected = state.selectedLevel == lvl,
-                    onClick = { onSelectLevel(lvl) },
+            for (lvl in 0..9) {
+                if (!state.availableLevels.contains(lvl)) continue
+                FilterChip(
+                    text = levelLabel(lvl),
+                    selected = state.filters.level == lvl,
+                    onClick = { vm.setLevel(lvl) },
                 )
             }
         }
 
-        Spacer(Modifier.height(8.dp))
-        HorizontalDivider(color = AppColors.Outline)
+        Divider()
 
-        // Кнопка "Сбросить фильтры" внизу
+        // ─── Школа ───
+        SectionTitle("Школа")
+        FlowRow(
+            modifier = Modifier.padding(horizontal = 16.dp),
+            horizontalArrangement = Arrangement.spacedBy(6.dp),
+            verticalArrangement = Arrangement.spacedBy(6.dp),
+        ) {
+            FilterChip(
+                text = "Все",
+                selected = state.filters.schools.isEmpty(),
+                onClick = {
+                    if (state.filters.schools.isNotEmpty()) {
+                        for (s in SpellMenuConfig.SCHOOLS) vm.toggleSchool(s.key)
+                    }
+                },
+            )
+            for (s in SpellMenuConfig.SCHOOLS) {
+                if (!state.availableSchools.contains(s.key)) continue
+                FilterChip(
+                    text = s.label,
+                    selected = state.filters.schools.contains(s.key),
+                    onClick = { vm.toggleSchool(s.key) },
+                )
+            }
+        }
+
+        Divider()
+
+        // ─── Подкласс ───
+        if (state.availableSubclasses.isNotEmpty()) {
+            SectionTitle("Подкласс")
+            FlowRow(
+                modifier = Modifier.padding(horizontal = 16.dp),
+                horizontalArrangement = Arrangement.spacedBy(6.dp),
+                verticalArrangement = Arrangement.spacedBy(6.dp),
+            ) {
+                FilterChip(
+                    text = "Все",
+                    selected = state.filters.subclassNames.isEmpty(),
+                    onClick = {
+                        if (state.filters.subclassNames.isNotEmpty()) {
+                            for (name in state.filters.subclassNames) vm.toggleSubclass(name)
+                        }
+                    },
+                )
+                for (name in state.availableSubclasses.sorted()) {
+                    FilterChip(
+                        text = name,
+                        selected = state.filters.subclassNames.contains(name),
+                        onClick = { vm.toggleSubclass(name) },
+                    )
+                }
+            }
+            Divider()
+        }
+
+        // ─── Раса ───
+        if (state.availableRaces.isNotEmpty()) {
+            SectionTitle("Раса")
+            FlowRow(
+                modifier = Modifier.padding(horizontal = 16.dp),
+                horizontalArrangement = Arrangement.spacedBy(6.dp),
+                verticalArrangement = Arrangement.spacedBy(6.dp),
+            ) {
+                FilterChip(
+                    text = "Все",
+                    selected = state.filters.raceNames.isEmpty(),
+                    onClick = {
+                        if (state.filters.raceNames.isNotEmpty()) {
+                            for (name in state.filters.raceNames) vm.toggleRace(name)
+                        }
+                    },
+                )
+                for (name in state.availableRaces.sorted()) {
+                    FilterChip(
+                        text = name,
+                        selected = state.filters.raceNames.contains(name),
+                        onClick = { vm.toggleRace(name) },
+                    )
+                }
+            }
+            Divider()
+        }
+
+        // ─── Tri-state секции ───
+        TriStateRow("Ритуал", state.filters.ritual, vm::setRitual)
+        Divider()
+        TriStateRow("Концентрация", state.filters.concentration, vm::setConcentration)
+        Divider()
+        TriStateRow(SpellMenuConfig.COMPONENT_V_LABEL, state.filters.componentV, vm::setComponentV)
+        Divider()
+        TriStateRow(SpellMenuConfig.COMPONENT_S_LABEL, state.filters.componentS, vm::setComponentS)
+        Divider()
+        TriStateRow(SpellMenuConfig.COMPONENT_M_LABEL, state.filters.componentM, vm::setComponentM)
+        Divider()
+        TriStateRow(SpellMenuConfig.COMPONENT_RC_LABEL, state.filters.materialConsumed, vm::setMaterialConsumed)
+        Divider()
+
+        // ─── Спасбросок ───
+        if (state.availableSavingThrows.isNotEmpty()) {
+            SectionTitle("Спасбросок")
+            FlowRow(
+                modifier = Modifier.padding(horizontal = 16.dp),
+                horizontalArrangement = Arrangement.spacedBy(6.dp),
+                verticalArrangement = Arrangement.spacedBy(6.dp),
+            ) {
+                FilterChip(
+                    text = "Любой",
+                    selected = state.filters.savingThrows.isEmpty(),
+                    onClick = {
+                        if (state.filters.savingThrows.isNotEmpty()) {
+                            for (st in state.filters.savingThrows) vm.toggleSavingThrow(st)
+                        }
+                    },
+                )
+                for (st in state.availableSavingThrows.sorted()) {
+                    FilterChip(
+                        text = st,
+                        selected = state.filters.savingThrows.contains(st),
+                        onClick = { vm.toggleSavingThrow(st) },
+                    )
+                }
+            }
+            Divider()
+        }
+
+        // ─── Сбросить ───
         Box(
             modifier = Modifier
                 .fillMaxWidth()
@@ -462,7 +574,7 @@ private fun FilterBottomSheetContent(
                     .clip(RoundedCornerShape(12.dp))
                     .background(AppColors.CardBg)
                     .border(1.dp, AppColors.Outline, RoundedCornerShape(12.dp))
-                    .clickable(onClick = onReset)
+                    .clickable(onClick = { vm.resetFilters() })
                     .padding(vertical = 14.dp),
                 horizontalArrangement = Arrangement.Center,
                 verticalAlignment = Alignment.CenterVertically,
@@ -485,6 +597,10 @@ private fun FilterBottomSheetContent(
     }
 }
 
+// =============================================================
+// Reusable UI atoms
+// =============================================================
+
 @Composable
 private fun SectionTitle(text: String) {
     Text(
@@ -496,23 +612,14 @@ private fun SectionTitle(text: String) {
     )
 }
 
-/**
- * Компактный фильтр-чип: кликабельный бокс с надписью.
- *
- * Выбран:  фон Gold,    текст BgDark, рамка Gold    — золотая подсветка.
- * Не выбран: фон CardBg, текст TextWhite, рамка Outline — нейтральный.
- *
- * Используется в обеих секциях (Класс и Уровень) фильтр-шита. FlowRow
- * даёт перенос строк: 9 классов + «Все» умещаются в 2-3 ряда, а
- * 11 уровней — в 2-3 ряда, итого вся форма помещается в Bottom Sheet
- * даже на узких экранах.
- */
 @Composable
-private fun FilterChipMini(
-    label: String,
-    selected: Boolean,
-    onClick: () -> Unit,
-) {
+private fun Divider() {
+    Spacer(Modifier.size(8.dp))
+    HorizontalDivider(color = AppColors.Outline)
+}
+
+@Composable
+private fun FilterChip(text: String, selected: Boolean, onClick: () -> Unit) {
     val bg = if (selected) AppColors.Gold else AppColors.CardBg
     val fg = if (selected) AppColors.BgDark else AppColors.TextWhite
     val border = if (selected) AppColors.Gold else AppColors.Outline
@@ -525,17 +632,29 @@ private fun FilterChipMini(
             .padding(horizontal = 14.dp, vertical = 7.dp),
         contentAlignment = Alignment.Center,
     ) {
-        Text(
-            label,
-            color = fg,
-            fontSize = 12.sp,
-            fontWeight = FontWeight.SemiBold,
-        )
+        Text(text, color = fg, fontSize = 12.sp, fontWeight = FontWeight.SemiBold)
+    }
+}
+
+@OptIn(ExperimentalLayoutApi::class)
+@Composable
+private fun TriStateRow(label: String, value: TriState, onChange: (TriState) -> Unit) {
+    Column {
+        SectionTitle(label)
+        FlowRow(
+            modifier = Modifier.padding(horizontal = 16.dp),
+            horizontalArrangement = Arrangement.spacedBy(6.dp),
+            verticalArrangement = Arrangement.spacedBy(6.dp),
+        ) {
+            FilterChip(text = SpellMenuConfig.TRI_ANY_LABEL, selected = value == TriState.ANY) { onChange(TriState.ANY) }
+            FilterChip(text = SpellMenuConfig.TRI_YES_LABEL, selected = value == TriState.YES) { onChange(TriState.YES) }
+            FilterChip(text = SpellMenuConfig.TRI_NO_LABEL,  selected = value == TriState.NO)  { onChange(TriState.NO) }
+        }
     }
 }
 
 // =============================================================
-// Поле поиска
+// Search bar + spell row + level badge
 // =============================================================
 
 @Composable
@@ -558,10 +677,6 @@ private fun SearchField(value: String, onChange: (String) -> Unit) {
         ),
     )
 }
-
-// =============================================================
-// Строка заклинания в списке
-// =============================================================
 
 @Composable
 private fun SpellRow(
@@ -601,9 +716,10 @@ private fun SpellRow(
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
             )
-            if (spell.school.isNotBlank()) {
+            val subtitle = subtitleFor(spell)
+            if (subtitle.isNotBlank()) {
                 Text(
-                    spell.school,
+                    subtitle,
                     color = AppColors.TextGrey,
                     fontSize = 11.sp,
                     maxLines = 1,
@@ -615,6 +731,13 @@ private fun SpellRow(
             Icon(Icons.Filled.Check, null, tint = AppColors.Gold, modifier = Modifier.size(18.dp))
         }
     }
+}
+
+private fun subtitleFor(spell: Spell): String {
+    val schoolLabel = SpellMenuConfig.SCHOOLS
+        .firstOrNull { it.key == spell.school }?.label ?: spell.school
+    val flag = if (spell.ritual) " · ритуал" else ""
+    return "$schoolLabel$flag"
 }
 
 @Composable
@@ -636,10 +759,10 @@ private fun LevelBadge(level: Int) {
 }
 
 // =============================================================
-// Утилиты
+// helpers
 // =============================================================
 
-private fun spellLevelLabel(level: Int): String = when (level) {
+private fun levelLabel(level: Int): String = when (level) {
     0 -> "Заговор"
     else -> romanLevel(level)
 }

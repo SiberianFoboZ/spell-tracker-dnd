@@ -17,7 +17,12 @@ import androidx.room.RoomDatabase
  * уничтожит старую БД, и при следующем старте заклинания перечитаются
  * из assets/spells.csv. Потеря данных не страшна — это справочник.
  */
-@Database(entities = [Spell::class], version = 3, exportSchema = false)
+// Этап N: schema v4 — расширенная запись заклинания.
+// Старая v3 (11 полей) перестала подходить под новый
+// `spells_normalized.json`. Migration destructive: справочник
+// приходит из assets/spells_normalized.json (см. generateSpellsDb
+// в app/build.gradle.kts), переустановка данных безопасна.
+@Database(entities = [Spell::class], version = 4, exportSchema = false)
 abstract class SpellDatabase : RoomDatabase() {
 
     abstract fun spellDao(): SpellDao
