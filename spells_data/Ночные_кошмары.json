@@ -1,0 +1,52 @@
+{
+    "name": {
+        "rus": "Ночные кошмары",
+        "eng": "Night Terrors"
+    },
+    "level": 4,
+    "school": "иллюзия",
+    "components": {
+        "v": true,
+        "s": true,
+        "m": "глаз ворона"
+    },
+    "concentration": true,
+    "url": "/spells/night_terrors",
+    "source": {
+        "shortName": "MHH",
+        "name": "Мидгард Справочник героя",
+        "group": {
+            "name": "Контент от третьих лиц",
+            "shortName": "3rd"
+        }
+    },
+    "id": 629,
+    "range": "120 футов",
+    "duration": "Концентрация, вплоть до 1 минуты",
+    "time": "1 действие",
+    "classes": [
+        {
+            "name": "Волшебник",
+            "url": "/classes/wizard",
+            "icon": "class/wizard"
+        }
+    ],
+    "subclasses": [
+        {
+            "name": "Домен Часовых Механизмов",
+            "url": "/classes/cleric/clockwork",
+            "class": "Жрец"
+        },
+        {
+            "name": "Домен Тьмы",
+            "url": "/classes/cleric/darkness",
+            "class": "Жрец"
+        },
+        {
+            "name": "Пожиратель Света",
+            "url": "/classes/warlock/the_light_eater",
+            "class": "Колдун"
+        }
+    ],
+    "description": "<p>Вы пробуждаете древний страх темноты, который скрывается в сердцах всех существ. Выберите точку, которую вы можете видеть в пределах дальности заклинания. Каждое существо в 20 клетках от точки становится <detail-tooltip type=\"screen\"><a href=\"/screens/frightened\">испуганными</a></detail-tooltip> вами до начала вашего следующего хода и должно совершить спасбросок <span class=\"saving_throw\">Мудрости</span>, становясь <detail-tooltip type=\"screen\"><a href=\"/screens/Paralyzed\">парализованным</a></detail-tooltip> при провале.</p><p><detail-tooltip type=\"screen\"><a href=\"/screens/Paralyzed\">Парализованная</a></detail-tooltip> цель может повторять спасбросок в конце каждого своего хода, заканчивая эффект при успехе. Существа, обладающие иммунитетом к испугу не подвержено ночным кошмарам.</p>"
+}

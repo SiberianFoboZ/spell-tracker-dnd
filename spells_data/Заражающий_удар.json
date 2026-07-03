@@ -1,0 +1,35 @@
+{
+    "name": {
+        "rus": "Заражающий удар",
+        "eng": "Sporecaller's Smite"
+    },
+    "level": 2,
+    "school": "вызов",
+    "components": {
+        "v": true,
+        "s": true
+    },
+    "concentration": true,
+    "url": "/spells/sporecaller's_smite",
+    "source": {
+        "shortName": "PG",
+        "name": "Путеводитель игрока: Прорастающий хаос",
+        "group": {
+            "name": "Хомбрю ",
+            "shortName": "HB"
+        },
+        "homebrew": true
+    },
+    "id": 476,
+    "range": "На себя",
+    "duration": "Концентрация, вплоть до 1 минуты",
+    "time": "1 бонусное действие",
+    "classes": [
+        {
+            "name": "Паладин",
+            "url": "/classes/paladin",
+            "icon": "class/paladin"
+        }
+    ],
+    "description": "<p>Пока действует заклинание, ваша следующая <em>рукопашная атака оружием</em> сопровождается облаком спор. Удар наносит дополнительные <dice-roller formula=\"2к6\">2к6</dice-roller> урона ядом и цель должна совершить спасбросок <span class=\"saving_throw\">Телосложения</span> или будет <detail-tooltip type=\"screen\"><a href=\"/screens/deafened\">оглушена</a></detail-tooltip> до конца своего следующего хода спорами, проникшими в ее тело.</p>"
+}

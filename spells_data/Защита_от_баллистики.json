@@ -1,0 +1,46 @@
+{
+    "name": {
+        "rus": "Защита от баллистики",
+        "eng": "Protection from Ballistics"
+    },
+    "level": 3,
+    "school": "ограждение",
+    "additionalType": "техномагия",
+    "components": {
+        "v": true,
+        "s": true,
+        "m": "гильза"
+    },
+    "concentration": true,
+    "url": "/spells/protection_from_ballistics",
+    "source": {
+        "shortName": "UAMM",
+        "name": "Unearthed Arcana: Современная магия",
+        "group": {
+            "name": "Тестовый материал",
+            "shortName": "UA"
+        }
+    },
+    "id": 944,
+    "range": "Касание",
+    "duration": "Концентрация, вплоть до 10 минут",
+    "time": "1 действие",
+    "classes": [
+        {
+            "name": "Волшебник",
+            "url": "/classes/wizard",
+            "icon": "class/wizard"
+        },
+        {
+            "name": "Колдун",
+            "url": "/classes/warlock",
+            "icon": "class/warlock"
+        },
+        {
+            "name": "Чародей",
+            "url": "/classes/sorcerer",
+            "icon": "class/sorcerer"
+        }
+    ],
+    "description": "<p>Это заклинание зачаровывает плоть цели, защищая от ударов пуль.</p><p>Пока заклинание не закончится, цель имеет <strong>сопротивление</strong> немагическому баллистическому урону.</p>"
+}

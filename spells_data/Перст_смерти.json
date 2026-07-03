@@ -1,0 +1,43 @@
+{
+    "name": {
+        "rus": "Перст смерти",
+        "eng": "Finger of Death"
+    },
+    "level": 7,
+    "school": "некромантия",
+    "components": {
+        "v": true,
+        "s": true
+    },
+    "url": "/spells/finger_of_death",
+    "source": {
+        "shortName": "PHB",
+        "name": "Книга игрока",
+        "group": {
+            "name": "Официальные источники",
+            "shortName": "Basic"
+        }
+    },
+    "id": 215,
+    "range": "60 футов",
+    "duration": "Мгновенная",
+    "time": "1 действие",
+    "classes": [
+        {
+            "name": "Волшебник",
+            "url": "/classes/wizard",
+            "icon": "class/wizard"
+        },
+        {
+            "name": "Колдун",
+            "url": "/classes/warlock",
+            "icon": "class/warlock"
+        },
+        {
+            "name": "Чародей",
+            "url": "/classes/sorcerer",
+            "icon": "class/sorcerer"
+        }
+    ],
+    "description": "<p>Вы посылаете негативную энергию в видимое вами существо в пределах дистанции, вызывая у него сильную боль.</p><p>Цель должна совершить спасбросок <span class=\"saving_throw\">Телосложения или в</span>&nbsp;случае провала получает&nbsp;<dice-roller formula=\"7к8 + 30\">7к8 + 30</dice-roller> урона некротической энергией или половину этого урона в случае успеха.</p><p>Гуманоид, убитый этим заклинанием, воскресает в начале вашего следующего хода как <detail-tooltip type=\"creature\"><a href=\"/bestiary/zombie\">зомби [zombie]</a></detail-tooltip>, постоянно находящийся под вашим командованием и выполняющий ваши устные команды.</p>"
+}

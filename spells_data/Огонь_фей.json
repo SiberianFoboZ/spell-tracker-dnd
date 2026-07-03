@@ -1,0 +1,99 @@
+{
+    "name": {
+        "rus": "Огонь фей",
+        "eng": "Faerie Fire"
+    },
+    "level": 1,
+    "school": "воплощение",
+    "components": {
+        "v": true
+    },
+    "concentration": true,
+    "url": "/spells/faerie_fire",
+    "source": {
+        "shortName": "PHB",
+        "name": "Книга игрока",
+        "group": {
+            "name": "Официальные источники",
+            "shortName": "Basic"
+        },
+        "page": 250
+    },
+    "id": 192,
+    "range": "60 футов",
+    "duration": "Концентрация, вплоть до 1 минуты",
+    "time": "1 действие",
+    "classes": [
+        {
+            "name": "Бард",
+            "url": "/classes/bard",
+            "icon": "class/bard"
+        },
+        {
+            "name": "Друид",
+            "url": "/classes/druid",
+            "icon": "class/druid"
+        },
+        {
+            "name": "Изобретатель",
+            "url": "/classes/artificer",
+            "icon": "class/artificer"
+        },
+        {
+            "name": "Магус",
+            "url": "/classes/magus",
+            "icon": "class/magus"
+        }
+    ],
+    "subclasses": [
+        {
+            "name": "Домен Света",
+            "url": "/classes/cleric/light",
+            "class": "Жрец"
+        },
+        {
+            "name": "Архифея",
+            "url": "/classes/warlock/archfey",
+            "class": "Колдун"
+        },
+        {
+            "name": "Домен Сумрака",
+            "url": "/classes/cleric/twilight",
+            "class": "Жрец"
+        },
+        {
+            "name": "Роевод",
+            "url": "/classes/ranger/swarmkeeper",
+            "class": "Следопыт"
+        },
+        {
+            "name": "Домен Луны",
+            "url": "/classes/cleric/moon",
+            "class": "Жрец"
+        },
+        {
+            "name": "Домен Луны",
+            "url": "/classes/cleric/moon_mhh",
+            "class": "Жрец"
+        }
+    ],
+    "races": [
+        {
+            "name": "Эльф (дроу)",
+            "url": "/races/drow"
+        },
+        {
+            "name": "Полуэльф тёмный (полудроу)",
+            "url": "/races/half_drow"
+        },
+        {
+            "name": "Полуорк (метка поиска)",
+            "url": "/races/mark_of_finding"
+        },
+        {
+            "name": "Фэйри",
+            "url": "/races/fairy"
+        }
+    ],
+    "description": "<p>Все предметы в кубе с длиной ребра 20&nbsp;футов в пределах дистанции подсвечиваются синим, зелёным или фиолетовым цветом (на ваш выбор).</p><p>Все существа в этой области тоже подсвечиваются, если проваливают спасбросок <span class=\"saving_throw\">Ловкости</span>. На время длительности заклинания подсвеченные предметы и существа испускают <detail-tooltip type=\"screen\"><a href=\"/screens/dim_light\">тусклый свет</a></detail-tooltip> в радиусе 10&nbsp;футов.</p><p>Все броски атаки по затронутым существам и предметам совершаются с <span class=\"advantage\">преимуществом</span>, если атакующий видит их, и эти существа и предметы не получают преимуществ от <detail-tooltip type=\"screen\"><a href=\"/screens/invisible\">невидимости</a></detail-tooltip>.</p>"
+}

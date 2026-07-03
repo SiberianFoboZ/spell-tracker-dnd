@@ -1,0 +1,46 @@
+{
+    "name": {
+        "rus": "Власть над погодой",
+        "eng": "Control Weather"
+    },
+    "level": 8,
+    "school": "преобразование",
+    "components": {
+        "v": true,
+        "s": true,
+        "m": "горящее благовоние и кусочки земли и дерева, смешанные с водой"
+    },
+    "concentration": true,
+    "url": "/spells/control_weather",
+    "source": {
+        "shortName": "PHB",
+        "name": "Книга игрока",
+        "group": {
+            "name": "Официальные источники",
+            "shortName": "Basic"
+        },
+        "page": 216
+    },
+    "id": 33,
+    "range": "На себя (5-мильный радиус)",
+    "duration": "Концентрация, до 8 часов",
+    "time": "10 минут",
+    "classes": [
+        {
+            "name": "Волшебник",
+            "url": "/classes/wizard",
+            "icon": "class/wizard"
+        },
+        {
+            "name": "Друид",
+            "url": "/classes/druid",
+            "icon": "class/druid"
+        },
+        {
+            "name": "Жрец",
+            "url": "/classes/cleric",
+            "icon": "class/cleric"
+        }
+    ],
+    "description": "<p>Вы получаете на время длительности контроль над погодой в пределах 5 миль от себя. Для накладывания этого заклинания вы должны находиться на открытом воздухе. Если вы переместитесь в место, где над головой не будет неба, заклинание тут же закончится. Когда вы накладываете это заклинание, вы изменяете текущую погоду, которую определяет Мастер в зависимости от климата и времени года. Вы можете изменить осадки, температуру и ветер. Требуется <dice-roller formula=\"1к4*10\">1к4 &times; 10</dice-roller> минут, чтобы новые условия вступили в силу. Когда новые условия вступят в силу, вы можете создать новые условия. Когда заклинание оканчивается, погода постепенно возвращается к нормальной.</p><p>Изменяя погоду, найдите текущее состояние в таблицах и измените их на 1 позицию выше или ниже. Изменяя ветер, можете изменить его направление.</p><p style=\"text-align: center;\"><strong>ОСАДКИ</strong></p><div claass=\"table-responsive\"><table class=\"dnd5_table\"><thead><tr><th style=\"width: 39.5px;\">Сила</th><th style=\"text-align: left; width: 345px;\">Состояние</th></tr></thead><tbody><tr><td style=\"text-align: center; width: 39.5px;\">1</td><td style=\"width: 345px;\">Чистое небо</td></tr><tr><td style=\"text-align: center; width: 39.5px;\">2</td><td style=\"width: 345px;\">Небольшая облачность</td></tr><tr><td style=\"text-align: center; width: 39.5px;\">3</td><td style=\"width: 345px;\">Пасмурно или густой туман</td></tr><tr><td style=\"text-align: center; width: 39.5px;\">4</td><td style=\"width: 345px;\">Дождь, град или снег</td></tr><tr><td style=\"text-align: center; width: 39.5px;\">5</td><td style=\"width: 345px;\">Проливной дождь, сильный град или метель</td></tr></tbody></table></div><p style=\"text-align: center;\"><strong>ТЕМПЕРАТУРА </strong></p><div claass=\"table-responsive\"><table class=\"dnd5_table\"><thead><tr><th style=\"width: 39.5px;\">Сила</th><th style=\"text-align: left; width: 156px;\">Состояние</th></tr></thead><tbody><tr><td style=\"text-align: center; width: 39.5px;\">1</td><td style=\"width: 156px;\">Невыносимая жара</td></tr><tr><td style=\"text-align: center; width: 39.5px;\">2</td><td style=\"width: 156px;\">Жара</td></tr><tr><td style=\"text-align: center; width: 39.5px;\">3</td><td style=\"width: 156px;\">Тепло</td></tr><tr><td style=\"text-align: center; width: 39.5px;\">4</td><td style=\"width: 156px;\">Прохлада</td></tr><tr><td style=\"text-align: center; width: 39.5px;\">5</td><td style=\"width: 156px;\">Холод</td></tr><tr><td style=\"text-align: center; width: 39.5px;\">6</td><td style=\"width: 156px;\">Арктическая стужа</td></tr></tbody></table></div><p style=\"text-align: center;\"><strong>ВЕТЕР </strong></p><div claass=\"table-responsive\"><table class=\"dnd5_table\"><thead><tr><th style=\"text-align: center; width: 39.5px;\">Сила</th><th style=\"text-align: left; width: 145px;\">Состояние</th></tr></thead><tbody><tr><td style=\"text-align: center; width: 39.5px;\">1</td><td style=\"width: 145px;\">Штиль</td></tr><tr><td style=\"text-align: center; width: 39.5px;\">2</td><td style=\"width: 145px;\">Умеренный ветер</td></tr><tr><td style=\"text-align: center; width: 39.5px;\">3</td><td style=\"width: 145px;\">Сильный ветер</td></tr><tr><td style=\"text-align: center; width: 39.5px;\">4</td><td style=\"width: 145px;\">Буря</td></tr><tr><td style=\"text-align: center; width: 39.5px;\">5</td><td style=\"width: 145px;\">Шторм</td></tr></tbody></table></div>"
+}

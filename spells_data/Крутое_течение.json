@@ -1,0 +1,51 @@
+{
+    "name": {
+        "rus": "Крутое течение",
+        "eng": "Riptide"
+    },
+    "level": 3,
+    "school": "воплощение",
+    "additionalType": "Стихийная магия",
+    "components": {
+        "v": true,
+        "s": true
+    },
+    "url": "/spells/riptide",
+    "source": {
+        "shortName": "MHH",
+        "name": "Мидгард Справочник героя",
+        "group": {
+            "name": "Контент от третьих лиц",
+            "shortName": "3rd"
+        }
+    },
+    "id": 592,
+    "range": "60 футов",
+    "duration": "1 раунд",
+    "time": "1 действие",
+    "classes": [
+        {
+            "name": "Волшебник",
+            "url": "/classes/wizard",
+            "icon": "class/wizard"
+        },
+        {
+            "name": "Колдун",
+            "url": "/classes/warlock",
+            "icon": "class/warlock"
+        },
+        {
+            "name": "Чародей",
+            "url": "/classes/sorcerer",
+            "icon": "class/sorcerer"
+        }
+    ],
+    "subclasses": [
+        {
+            "name": "Элементалист",
+            "url": "/classes/wizard/elementalist",
+            "class": "Волшебник"
+        }
+    ],
+    "description": "<p>Широким жестом вы призываете огромную волну воды в цилиндре радиусом 20 футов и высотой 20 футов с центром в точке на земле, которую вы можете видеть. Каждое существо в области действия должно совершить спасбросок <span class=\"saving_throw\">Силы</span>. При провале существо становится <detail-tooltip type=\"screen\"><a href=\"/screens/restrained\">опутанным</a></detail-tooltip> и подвешивается в цилиндре; или перемещается к ближайшему краю цилиндра при успехе. В начале вашего следующего хода, вы можете направить волну по мере её рассеивания.</p><p>Выберите один вариант из следующих:</p><ul><li><strong>Крутое течение.</strong> Вода в цилиндре течёт в выбранном направлении, сметая всех существ в области действия к краю цилиндра. Существа получают <dice-roller formula=\"3к8\">3к8</dice-roller> дробящего урона и отталкиваются до 40 футов в выбранном направлении, или к краю цилиндра, приземляясь <detail-tooltip type=\"screen\"><a href=\"/screens/condition_prone\">ничком</a></detail-tooltip>.</li><li><strong>Подводное течение.</strong> Вода устремляется вниз, стягивая каждое существо в области действия в незанятое пространство в центре. Существа падают <detail-tooltip type=\"screen\"><a href=\"/screens/condition_prone\">ничком</a></detail-tooltip> и должны совершить спасбросок <span class=\"saving_throw\">Телосложения</span>. При провале существо становится <detail-tooltip type=\"screen\"><a href=\"/screens/deafened\">оглушённым</a></detail-tooltip> до начала вашего следующего хода.</li></ul>"
+}

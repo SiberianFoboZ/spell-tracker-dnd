@@ -1,0 +1,109 @@
+{
+    "name": {
+        "rus": "Смятение",
+        "eng": "Confusion"
+    },
+    "level": 4,
+    "school": "очарование",
+    "components": {
+        "v": true,
+        "s": true,
+        "m": "три ореховые скорлупки"
+    },
+    "concentration": true,
+    "url": "/spells/confusion",
+    "source": {
+        "shortName": "PHB",
+        "name": "Книга игрока",
+        "group": {
+            "name": "Официальные источники",
+            "shortName": "Basic"
+        }
+    },
+    "id": 312,
+    "range": "90 футов",
+    "duration": "Концентрация, до 1 минуты",
+    "time": "1 действие",
+    "classes": [
+        {
+            "name": "Бард",
+            "url": "/classes/bard",
+            "icon": "class/bard"
+        },
+        {
+            "name": "Волшебник",
+            "url": "/classes/wizard",
+            "icon": "class/wizard"
+        },
+        {
+            "name": "Друид",
+            "url": "/classes/druid",
+            "icon": "class/druid"
+        },
+        {
+            "name": "Чародей",
+            "url": "/classes/sorcerer",
+            "icon": "class/sorcerer"
+        }
+    ],
+    "subclasses": [
+        {
+            "name": "Домен Знаний",
+            "url": "/classes/cleric/knowledge",
+            "class": "Жрец"
+        },
+        {
+            "name": "Хаос",
+            "url": "/classes/warlock/chaos",
+            "class": "Колдун"
+        },
+        {
+            "name": "Круг Спор",
+            "url": "/classes/druid/spores",
+            "class": "Друид"
+        },
+        {
+            "name": "Клятвопреступник",
+            "url": "/classes/paladin/oathbreaker",
+            "class": "Паладин"
+        },
+        {
+            "name": "Конклав Амазонок",
+            "url": "/classes/ranger/conclave_of_the_amazons",
+            "class": "Следопыт"
+        },
+        {
+            "name": "Домен Разума",
+            "url": "/classes/cleric/intelligence",
+            "class": "Жрец"
+        },
+        {
+            "name": "Домен Пива",
+            "url": "/classes/cleric/beer",
+            "class": "Жрец"
+        },
+        {
+            "name": "Домен Ужаса",
+            "url": "/classes/cleric/eldritch",
+            "class": "Жрец"
+        },
+        {
+            "name": "Клятва Мора",
+            "url": "/classes/paladin/pestilence",
+            "class": "Паладин"
+        },
+        {
+            "name": "Орден Чароборцев",
+            "url": "/classes/magus/spellbreakers",
+            "class": "Магус"
+        }
+    ],
+    "races": [
+        {
+            "name": "Гном (метка письма)",
+            "url": "/races/mark_of_scribing"
+        }
+    ],
+    "description": "<p>Это заклинание атакует и скручивает сознание существ, порождая галлюцинации и провоцируя на необдуманные действия.</p><p>Все существа в сфере с радиусом 10 футов с центром на точке, выбранной в пределах дистанции, должны преуспеть в спасброске <span class=\"saving_throw\">Мудрости</span>, иначе попадут под действие эффекта.</p><p>Попавшая под эффект цель не может совершать реакции и должна бросать <dice-roller formula=\"к10\">к10</dice-roller> в начале каждого своего хода, чтобы определить своё поведение в этом ходу.</p><div claass=\"table-responsive\"><table><thead><tr><th><dice-roller formula=\"к10\">к10</dice-roller></th><th style=\"width: 644.219px; text-align: left;\">Поведение</th></tr></thead><tbody><tr><td style=\"width: 43.7812px; text-align: center;\">1</td><td style=\"width: 644.219px;\">Существо использует всё своё перемещение на движение в случайном направлении. Для определения направления бросьте <dice-roller formula=\"к8\">к8</dice-roller>, назначив каждой грани своё направление. Действие в этом ходу существо не совершает.</td></tr><tr><td style=\"width: 43.7812px; text-align: center;\">2-6</td><td style=\"width: 644.219px;\">Существо в этом ходу не перемещается и не совершает <em>действий</em>.</td></tr><tr><td style=\"width: 43.7812px; text-align: center;\">7-8</td><td style=\"width: 644.219px;\">Cущество действием совершает <em>рукопашную атаку</em> по случайным образом выбранному существу в пределах досягаемости. Если в пределах досягаемости нет других существ, существо в этот ход ничего не делает.</td></tr><tr><td style=\"width: 43.7812px; text-align: center;\">9-10</td><td style=\"width: 644.219px;\">Существо может действовать и перемещаться как обычно.</td></tr></tbody></table></div><p>В конце каждого своего хода цель может совершать спасбросок <span class=\"saving_throw\">Мудрости</span>. В случае успеха на этой цели эффект заканчивается.</p>",
+    "upper": "Если вы накладываете это заклинание, используя ячейку 5 уровня или выше, радиус сферы увеличивается на 5 футов за каждый уровень ячейки выше четвёртого."
+}

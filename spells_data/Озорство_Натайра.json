@@ -1,0 +1,45 @@
+{
+    "name": {
+        "rus": "Озорство Натайра",
+        "eng": "Nathair's Mischief"
+    },
+    "level": 2,
+    "school": "иллюзия",
+    "components": {
+        "s": true,
+        "m": "кусочек корочки от яблочного пирога"
+    },
+    "concentration": true,
+    "url": "/spells/nathair's_mischief",
+    "source": {
+        "shortName": "FTD",
+        "name": "Сокровищница драконов Фицбана",
+        "group": {
+            "name": "Официальные источники",
+            "shortName": "Basic"
+        },
+        "page": 17
+    },
+    "id": 848,
+    "range": "60 футов",
+    "duration": "Концентрация, до 1 минуты",
+    "time": "1 действие",
+    "classes": [
+        {
+            "name": "Бард",
+            "url": "/classes/bard",
+            "icon": "class/bard"
+        },
+        {
+            "name": "Волшебник",
+            "url": "/classes/wizard",
+            "icon": "class/wizard"
+        },
+        {
+            "name": "Чародей",
+            "url": "/classes/sorcerer",
+            "icon": "class/sorcerer"
+        }
+    ],
+    "description": "<p>Вы заполняете 20-футовый куб, который видите в пределах досягаемости, магией фей и драконов.</p><p>Сделайте бросок <dice-roller formula=\"к4\">к4</dice-roller> по таблице &laquo;Озорной всплеск&raquo;, чтобы определить производимый магический эффект, и снова делайте бросок в начале каждого своего хода, пока действие заклинания не закончится.</p><p>Вы можете переместить куб на 10 футов перед тем, как определить эффект броском по таблице.</p><p style=\"text-align: center;\"><strong>Озорной всплеск</strong></p><div claass=\"table-responsive\"><table><thead><tr><th><dice-roller formula=\"к4\" label=\"Эффект\">к4</dice-roller></th><th style=\"width: 666.703px; text-align: left;\">Эффект</th></tr></thead><tbody></tbody><tbody><tr><td style=\"width: 28.2969px; text-align: center;\">1</td><td>Запах яблочного пирога наполняет воздух, и каждое существо в кубе должно преуспеть в спасброске <span class=\"saving_throw\">Мудрости</span> или стать <detail-tooltip type=\"screen\"><a href=\"/screens/charmed\">очарованным</a></detail-tooltip> вами до начала вашего следующего хода.</td></tr><tr><td style=\"width: 28.2969px; text-align: center;\">2</td><td>Букеты цветов появляются повсюду, и каждое существо в кубе должно преуспеть в спасброске <span class=\"saving_throw\">Ловкости</span>, иначе оно будет <detail-tooltip type=\"screen\"><a href=\"/screens/blinded\">ослеплено</a></detail-tooltip> до начала вашего следующего хода, пока цветы брызгают водой в лицо.</td></tr><tr><td style=\"width: 28.2969px; text-align: cent er;\">3</td><td>Каждое существо в кубе должно преуспеть в спасброске <span class=\"saving_throw\">Мудрости</span> или начать хихикать до начала вашего следующего хода. Хихикающее существо становится <detail-tooltip type=\"screen\"><a href=\"/screens/Incapacitated\">недееспособным</a></detail-tooltip> и использует все свои движения, чтобы двигаться в случайном направлении.</td></tr><tr><td style=\"width: 28.2969px; text-align: center;\">4</td><td>Капли патоки парят в кубе, делая его <detail-tooltip type=\"screen\"><a href=\"/screens/difficult_terrain_move\">труднопроходимой местностью</a></detail-tooltip> до начала вашего следующего хода.</td></tr></tbody></table></div>"
+}

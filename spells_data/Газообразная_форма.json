@@ -1,0 +1,83 @@
+{
+    "name": {
+        "rus": "Газообразная форма",
+        "eng": "Gaseous Form"
+    },
+    "level": 3,
+    "school": "преобразование",
+    "components": {
+        "v": true,
+        "s": true,
+        "m": "кусок марли и клуб дыма"
+    },
+    "concentration": true,
+    "url": "/spells/gaseous_form",
+    "source": {
+        "shortName": "PHB",
+        "name": "Книга игрока",
+        "group": {
+            "name": "Официальные источники",
+            "shortName": "Basic"
+        },
+        "page": 220
+    },
+    "id": 53,
+    "range": "Касание",
+    "duration": "Концентрация, вплоть до 1 часа",
+    "time": "1 действие",
+    "classes": [
+        {
+            "name": "Волшебник",
+            "url": "/classes/wizard",
+            "icon": "class/wizard"
+        },
+        {
+            "name": "Колдун",
+            "url": "/classes/warlock",
+            "icon": "class/warlock"
+        },
+        {
+            "name": "Чародей",
+            "url": "/classes/sorcerer",
+            "icon": "class/sorcerer"
+        },
+        {
+            "name": "Шаман",
+            "url": "/classes/shaman",
+            "icon": "class/shaman"
+        }
+    ],
+    "subclasses": [
+        {
+            "name": "Алхимик",
+            "url": "/classes/artificer/alchemist",
+            "class": "Изобретатель"
+        },
+        {
+            "name": "Роевод",
+            "url": "/classes/ranger/swarmkeeper",
+            "class": "Следопыт"
+        },
+        {
+            "name": "Круг Спор",
+            "url": "/classes/druid/spores",
+            "class": "Друид"
+        },
+        {
+            "name": "Домен Океана",
+            "url": "/classes/cleric/ocean",
+            "class": "Жрец"
+        },
+        {
+            "name": "Домен Пустоты",
+            "url": "/classes/cleric/void",
+            "class": "Жрец"
+        },
+        {
+            "name": "Первородный Вампир",
+            "url": "/classes/warlock/the_first_vampire",
+            "class": "Колдун"
+        }
+    ],
+    "description": "<p>Вы превращаете на время действия заклинания согласное существо, которого касаетесь, а также всё, что оно носит и несёт, в туманное облако.</p><p>Заклинание оканчивается, если хиты существа опускаются&nbsp;до&nbsp;<span class=\"dice_text\">0</span>. Бестелесные существа не попадают под действие этого заклинания. Пока цель находится в этой форме, единственной её скоростью перемещения становится скорость полёта&nbsp;10&nbsp;футов. Цель может входить в пространство других существ и оставаться там.</p><p>Существо получает <strong>сопротивление</strong> к немагическому урону, и совершает с <span class=\"advantage\">преимуществом</span> спасброски <span class=\"saving_throw\">Силы</span>, <span class=\"saving_throw\">Ловкости</span> и <span class=\"saving_throw\">Телосложения</span>.</p><p>Цель может проходить через небольшие отверстия, узкие щели, но жидкости для неё считаются твёрдыми поверхностями. Цель не может упасть и остаётся парить, даже если становится <detail-tooltip type=\"screen\"><a href=\"/screens/Stunned\">ошеломлённой</a></detail-tooltip> или <detail-tooltip type=\"screen\"><a href=\"/screens/Incapacitated\">недееспособной</a></detail-tooltip>. Находясь в форме туманного облака, цель не может говорить и манипулировать предметами, и все предметы, которые она несёт или носит, нельзя ронять, использовать и вообще как-либо с ними взаимодействовать.</p><p>Цель не может атаковать и накладывать заклинания.</p>"
+}

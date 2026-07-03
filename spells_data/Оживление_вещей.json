@@ -1,0 +1,77 @@
+{
+    "name": {
+        "rus": "Оживление вещей",
+        "eng": "Animate Objects"
+    },
+    "level": 5,
+    "school": "преобразование",
+    "components": {
+        "v": true,
+        "s": true
+    },
+    "concentration": true,
+    "url": "/spells/animate_objects",
+    "source": {
+        "shortName": "PHB",
+        "name": "Книга игрока",
+        "group": {
+            "name": "Официальные источники",
+            "shortName": "Basic"
+        }
+    },
+    "id": 194,
+    "range": "120 футов",
+    "duration": "Концентрация, вплоть до 1 минуты",
+    "time": "1 действие",
+    "classes": [
+        {
+            "name": "Бард",
+            "url": "/classes/bard",
+            "icon": "class/bard"
+        },
+        {
+            "name": "Волшебник",
+            "url": "/classes/wizard",
+            "icon": "class/wizard"
+        },
+        {
+            "name": "Чародей",
+            "url": "/classes/sorcerer",
+            "icon": "class/sorcerer"
+        },
+        {
+            "name": "Изобретатель",
+            "url": "/classes/artificer",
+            "icon": "class/artificer"
+        },
+        {
+            "name": "Магус",
+            "url": "/classes/magus",
+            "icon": "class/magus"
+        }
+    ],
+    "subclasses": [
+        {
+            "name": "Домен Кузни",
+            "url": "/classes/cleric/forge",
+            "class": "Жрец"
+        },
+        {
+            "name": "Бог-машина",
+            "url": "/classes/warlock/deus_ex_machina",
+            "class": "Колдун"
+        },
+        {
+            "name": "Скаут Зобека",
+            "url": "/classes/ranger/zobecker_scout",
+            "class": "Следопыт"
+        },
+        {
+            "name": "Бог-машина",
+            "url": "/classes/warlock/the_great_machine",
+            "class": "Колдун"
+        }
+    ],
+    "description": "<p>По вашему приказу оживают предметы. Выберите до десяти немагических предмета в пределах дистанции, которые никто не несёт и не носит. Цели <em>Среднего</em> размера считаются за два предмета, <em>Большие</em> цели считаются за четыре предмета, <em>Огромные</em> цели считаются за восемь предметов. Оживлять предметы с размером больше <em>Огромного</em> нельзя.</p><p>Все цели оживают и становятся существами под вашим контролем до окончания действия заклинания или пока их хиты не уменьшатся до <span class=\"dice_text\">0</span>.</p><p>Вы можете <em>бонусным действием</em> мысленно отдать приказ существу, созданному этим заклинанием, если оно находятся в пределах 500 футов от вас (если вы контролируете несколько существ, вы можете отдавать один и тот же приказ любому количеству из них одновременно).</p><p>Вы решаете, какое действие совершит это существо, и куда оно переместится в следующем ходу, или вы можете отдать общий приказ, например, охранять комнату или коридор. Если вы не отдадите команду, существо будет всего лишь защищаться от врагов. Получив приказ, существо продолжает его выполнять, пока задача не будет выполнена.</p><p style=\"text-align: center;\"><strong>Параметры оживлённого предмета</strong></p><div claass=\"table-responsive\"><table class=\"dnd5_table\"><thead><tr><th style=\"text-align: left;\">Размер</th><th>Хиты</th><th>КД</th><th>Атака</th><th>Сил</th><th>Лов</th></tr></thead><tbody><tr><td>Крошечный</td><td style=\"text-align: center;\">20</td><td style=\"text-align: center;\">18</td><td style=\"text-align: left;\"><dice-roller formula=\"к20 + 8\">+8</dice-roller> к атаке, урон <dice-roller formula=\"1к4 + 4\">1к4 + 4</dice-roller></td><td style=\"text-align: center;\">4</td><td style=\"text-align: center;\">18</td></tr><tr><td>Маленький</td><td style=\"text-align: center;\">25</td><td style=\"text-align: center;\">16</td><td style=\"text-align: left;\"><dice-roller formula=\"к20 + 6\">+6</dice-roller> к атаке, урон <dice-roller formula=\"1к8 + 2\">1к8 + 2</dice-roller></td><td style=\"text-align: center;\">5</td><td style=\"text-align: center;\">14</td></tr><tr><td>Средний</td><td style=\"text-align: center;\">40</td><td style=\"text-align: center;\">13</td><td style=\"text-align: left;\"><dice-roller formula=\"к20 + 5\">+5</dice-roller> к атаке, урон <dice-roller formula=\"2к6 + 1\">2к6 + 1</dice-roller></td><td style=\"text-align: center;\">10</td><td style=\"text-align: center;\">12</td></tr><tr><td>Большой</td><td style=\"text-align: center;\">50</td><td style=\"text-align: center;\">10</td><td style=\"text-align: left;\"><dice-roller formula=\"к20 + 6\">+6</dice-roller> к атаке, урон <dice-roller formula=\"2к10 + 2\">2к10 + 2</dice-roller></td><td style=\"text-align: center;\">14</td><td style=\"text-align: center;\">10</td></tr><tr><td>Огромный</td><td style=\"text-align: center;\">80</td><td style=\"text-align: center;\">10</td><td style=\"text-align: left;\"><dice-roller formula=\"к20 + 8\">+8</dice-roller> к атаке, урон <dice-roller formula=\"2к12 + 4\">2к12 + 4</dice-roller></td><td style=\"text-align: center;\">18</td><td style=\"text-align: center;\">6</td></tr></tbody></table></div><p>Оживлённый предмет является конструктом с КД, хитами, атаками, Силой и Ловкостью, зависящими от его размера. Его <strong>Телосложение</strong> 10, <strong>Интеллект</strong> и <strong>Мудрость</strong> 3, а <strong>Харизма</strong> 1. Его скорость 30 футов; если у предмета нет ног или других придатков, которые можно использовать для перемещения, то он получает скорость полёта 30 футов и может парить.</p><p>Если предмет прикреплён к поверхности или большему предмету, например, это цепь, прикреплённая к стене, его скорость равна 0. Он обладает <detail-tooltip type=\"screen\"><a href=\"/screens/blindsight\">слепым зрением</a></detail-tooltip> в радиусе 30 футов и ничего не воспринимает за этими пределами. Когда хиты оживлённого предмета опускаются до <span class=\"dice_text\">0</span>, он возвращает себе свой обычный облик, а излишний урон переносится на оригинальный облик.</p><p>Если вы приказываете предмету атаковать, он может совершить одну <em>рукопашную атаку</em> по существу в пределах 5 футов от него. Он совершает <strong>размашистую атаку</strong> с бонусом атаки и дробящим уроном, зависящим от его размера. Мастер может постановить, что этот предмет причиняет рубящий или колющий урон.</p>",
+    "upper": "Если вы накладываете это заклинание, используя ячейку 6 уровня или выше, вы можете оживить два дополнительных предмета за каждый уровень ячейки выше пятого."
+}

@@ -1,0 +1,39 @@
+{
+    "name": {
+        "rus": "Полное исцеление",
+        "eng": "Heal"
+    },
+    "level": 6,
+    "school": "воплощение",
+    "components": {
+        "v": true,
+        "s": true
+    },
+    "url": "/spells/heal",
+    "source": {
+        "shortName": "PHB",
+        "name": "Книга игрока",
+        "group": {
+            "name": "Официальные источники",
+            "shortName": "Basic"
+        }
+    },
+    "id": 236,
+    "range": "60 футов",
+    "duration": "Мгновенная",
+    "time": "1 действие",
+    "classes": [
+        {
+            "name": "Друид",
+            "url": "/classes/druid",
+            "icon": "class/druid"
+        },
+        {
+            "name": "Жрец",
+            "url": "/classes/cleric",
+            "icon": "class/cleric"
+        }
+    ],
+    "description": "<p>Выберите существо, видимое в пределах дистанции. Поток положительной энергии омывает его, восстанавливая <span class=\"dice_text\">70</span> хитов. Это заклинание также отменяет <detail-tooltip type=\"screen\"><a href=\"/screens/blinded\">слепоту</a></detail-tooltip>, <detail-tooltip type=\"screen\"><a href=\"/screens/deafened\">глухоту</a></detail-tooltip> и все болезни, действующие на цель. Это заклинание не оказывает эффекта на конструктов и нежить.</p>",
+    "upper": "Если вы накладываете это заклинание, используя ячейку 7 уровня или выше, количество восстанавливаемых хитов увеличивается на <span class=\"dice_text\">10</span> за каждый уровень ячейки выше шестого."
+}

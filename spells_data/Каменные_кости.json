@@ -1,0 +1,27 @@
+{
+    "name": {
+        "rus": "Каменные кости",
+        "eng": "Stone Bones"
+    },
+    "level": 2,
+    "school": "преобразование",
+    "components": {
+        "v": true,
+        "s": true
+    },
+    "url": "/spells/stone_bones",
+    "source": {
+        "shortName": "VSoS",
+        "name": "Шпиль тайн Вальды",
+        "group": {
+            "name": "Контент от третьих лиц",
+            "shortName": "3rd"
+        }
+    },
+    "id": 1006,
+    "range": "30 футов",
+    "duration": "1 раунд",
+    "time": "1 бонусное действие",
+    "classes": [],
+    "description": "<p>Вы магически усиливаете существо, которое видите в пределах досягаемости. Существо получает <detail-tooltip type=\"screen\"><a href=\"/screens/resistance\">сопротивление</a></detail-tooltip> к дробящему, колющему и рубящему урону от не магических атак до конца вашего следующего хода.</p>"
+}

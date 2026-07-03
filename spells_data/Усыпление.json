@@ -1,0 +1,112 @@
+{
+    "name": {
+        "rus": "Усыпление",
+        "eng": "Sleep"
+    },
+    "level": 1,
+    "school": "очарование",
+    "components": {
+        "v": true,
+        "s": true,
+        "m": "щепотка мелкого песка, лепестки розы или сверчок"
+    },
+    "url": "/spells/sleep",
+    "source": {
+        "shortName": "PHB",
+        "name": "Книга игрока",
+        "group": {
+            "name": "Официальные источники",
+            "shortName": "Basic"
+        }
+    },
+    "id": 354,
+    "range": "90 футов",
+    "duration": "1 минута",
+    "time": "1 действие",
+    "classes": [
+        {
+            "name": "Бард",
+            "url": "/classes/bard",
+            "icon": "class/bard"
+        },
+        {
+            "name": "Волшебник",
+            "url": "/classes/wizard",
+            "icon": "class/wizard"
+        },
+        {
+            "name": "Чародей",
+            "url": "/classes/sorcerer",
+            "icon": "class/sorcerer"
+        },
+        {
+            "name": "Шаман",
+            "url": "/classes/shaman",
+            "icon": "class/shaman"
+        },
+        {
+            "name": "Магус",
+            "url": "/classes/magus",
+            "icon": "class/magus"
+        }
+    ],
+    "subclasses": [
+        {
+            "name": "Архифея",
+            "url": "/classes/warlock/archfey",
+            "class": "Колдун"
+        },
+        {
+            "name": "Клятва Искупления",
+            "url": "/classes/paladin/redemption",
+            "class": "Паладин"
+        },
+        {
+            "name": "Домен Сумрака",
+            "url": "/classes/cleric/twilight",
+            "class": "Жрец"
+        },
+        {
+            "name": "Домен Крови",
+            "url": "/classes/cleric/blood",
+            "class": "Жрец"
+        },
+        {
+            "name": "Домен Часовых Механизмов",
+            "url": "/classes/cleric/clockwork",
+            "class": "Жрец"
+        },
+        {
+            "name": "Домен Тьмы",
+            "url": "/classes/cleric/darkness",
+            "class": "Жрец"
+        },
+        {
+            "name": "Домен Ужаса",
+            "url": "/classes/cleric/eldritch",
+            "class": "Жрец"
+        },
+        {
+            "name": "Тенеплёт",
+            "url": "/classes/rogue/shadowlet",
+            "class": "Плут"
+        },
+        {
+            "name": "Орден Полумрака",
+            "url": "/classes/magus/shades",
+            "class": "Магус"
+        }
+    ],
+    "races": [
+        {
+            "name": "Эльф (бледный)",
+            "url": "/races/pallid"
+        },
+        {
+            "name": "Полурослик (метка гостеприимства)",
+            "url": "/races/mark_of_hospitality"
+        }
+    ],
+    "description": "<p>Это заклинание посылает существ в магический сон.</p><p>Бросьте <dice-roller formula=\"5к8\">5к8</dice-roller> этот результат будет количеством хитов существ, на которых это заклинание может подействовать.</p><p>Существа в пределах 20 футов от точки, выбранной вами в пределах дистанции, попадают под действие в порядке увеличения их текущих хитов (игнорируя тех, что находятся <detail-tooltip type=\"screen\"><a href=\"/screens/unconscious\">без сознания</a></detail-tooltip>). Начиная с существа с наименьшим количеством текущих хитов все существа, попадающие под действие этого заклинания, <detail-tooltip type=\"screen\"><a href=\"/screens/unconscious\">теряют сознание</a></detail-tooltip> до окончания действия заклинания, пока не получат урон, или пока кто-нибудь другой не разбудит их, потратив <em>Действие</em> на тряску или пощёчину. Вычитайте хиты каждого существа из общей суммы, после чего переходите к следующему существу с наименьшим числом хитов.</p><p>Для того чтобы существо попало под действие заклинания, нужно чтобы количество её текущих хитов не превышало оставшуюся сумму. Нежить и существа, обладающие <strong>иммунитетом</strong> к <detail-tooltip type=\"screen\"><a href=\"/screens/charmed\">очарованию</a></detail-tooltip>, не попадают под действие этого заклинания.</p>",
+    "upper": "Если вы накладываете это заклинание, используя ячейку 2 уровня или выше, бросайте дополнительно <dice-roller formula=\"2к8\">2к8</dice-roller> за каждый уровень ячейки выше первого."
+}

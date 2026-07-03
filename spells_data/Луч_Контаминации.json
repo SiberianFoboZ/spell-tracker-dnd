@@ -1,0 +1,52 @@
+{
+    "name": {
+        "rus": "Луч Контаминации",
+        "eng": "Ray of Contamination"
+    },
+    "level": 6,
+    "school": "некромантия",
+    "additionalType": "Контаминация",
+    "components": {
+        "v": true,
+        "s": true,
+        "m": "фрагмент делериума стоимостью 100 зм, который расходуется заклинанием"
+    },
+    "url": "/spells/ray_of_contamination",
+    "source": {
+        "shortName": "DoDk",
+        "name": "Подземелья Драккенхайма",
+        "group": {
+            "name": "Контент от третьих лиц",
+            "shortName": "3rd"
+        },
+        "page": 229
+    },
+    "id": 990,
+    "range": "60 футов",
+    "duration": "Мгновенная",
+    "time": "1 действие",
+    "classes": [
+        {
+            "name": "Волшебник",
+            "url": "/classes/wizard",
+            "icon": "class/wizard"
+        },
+        {
+            "name": "Друид",
+            "url": "/classes/druid",
+            "icon": "class/druid"
+        },
+        {
+            "name": "Паладин",
+            "url": "/classes/paladin",
+            "icon": "class/paladin"
+        },
+        {
+            "name": "Чародей",
+            "url": "/classes/sorcerer",
+            "icon": "class/sorcerer"
+        }
+    ],
+    "description": "<p>Когда вы накладываете это заклинание, вы получаете один уровень <detail-tooltip type=\"screen\"><a href=\"/screens/contamination\">Контаминации</a></detail-tooltip>.</p><p>Октариновый луч вылетает из вашего указательного пальца в существо, которое вы видите в пределах досягаемости. Цель должна преуспеть в спасброске <span class=\"saving_throw\">Телосложения</span>. При провале существо получает <dice-roller formula=\"16к6\">16к6</dice-roller> урона некротической энергией и получает&nbsp;<dice-roller formula=\"1к4\">1к4</dice-roller> уровня <detail-tooltip type=\"screen\"><a href=\"/screens/contamination\">Контаминации</a></detail-tooltip>. При успешном спасброске цель получает вдвое меньше урона и не получает никаких уровней <detail-tooltip type=\"screen\"><a href=\"/screens/contamination\">Контаминации</a></detail-tooltip>.</p>",
+    "upper": "Когда вы накладываете это заклинание, используя ячейку заклинания 7-го уровня или выше, вы можете выбрать целью одно дополнительное существо для каждого уровня ячейки выше 6-го. Существа должны находиться в пределах 30 футов друг от друга, когда вы нацеливаетесь на них."
+}

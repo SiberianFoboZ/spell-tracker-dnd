@@ -1,0 +1,53 @@
+{
+    "name": {
+        "rus": "Тень",
+        "eng": "Shade"
+    },
+    "level": 2,
+    "school": "ограждение",
+    "additionalType": "Магия драконов",
+    "components": {
+        "v": true,
+        "s": true
+    },
+    "concentration": true,
+    "url": "/spells/shade",
+    "source": {
+        "shortName": "MHH",
+        "name": "Мидгард Справочник героя",
+        "group": {
+            "name": "Контент от третьих лиц",
+            "shortName": "3rd"
+        }
+    },
+    "id": 734,
+    "range": "На себя",
+    "duration": "Концентрация, вплоть до 10 минут",
+    "time": "1 действие",
+    "classes": [
+        {
+            "name": "Бард",
+            "url": "/classes/bard",
+            "icon": "class/bard"
+        },
+        {
+            "name": "Волшебник",
+            "url": "/classes/wizard",
+            "icon": "class/wizard"
+        },
+        {
+            "name": "Жрец",
+            "url": "/classes/cleric",
+            "icon": "class/cleric"
+        }
+    ],
+    "subclasses": [
+        {
+            "name": "Драконьи Маски",
+            "url": "/classes/wizard/dragon_masks",
+            "class": "Волшебник"
+        }
+    ],
+    "description": "<p>Вы создаёте магический заслон поперек ваших глаз. Пока заслон существует, вы неуязвимы к <detail-tooltip type=\"screen\"><a href=\"/screens/blinded\">слепоте</a></detail-tooltip> вызванной видимыми эффектами, воздействующими на зрение, такими как <detail-tooltip type=\"spell\"><a href=\"/spells/prismatic_spray\">цветные брызги [prismatic spray]</a></detail-tooltip>.</p><p>Заклинание не отменяет <detail-tooltip type=\"screen\"><a href=\"/screens/blinded\">слепоту</a></detail-tooltip>, которая уже была на вас наложена. Если вы обычно получаете штрафы на атаки или проверки характеристик пока вы на солнечном свету (такие как вызванные светочувствительностью), эти штрафы не применяются, пока вы находитесь под действием заклинания.</p>",
+    "upper": "Если вы накладываете это заклинание ячейкой 3 уровня или выше, длительность заклинания увеличивается на 10 минут за каждый уровень ячейки выше 2."
+}

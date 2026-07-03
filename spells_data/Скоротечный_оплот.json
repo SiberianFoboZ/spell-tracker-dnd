@@ -1,0 +1,29 @@
+{
+    "name": {
+        "rus": "Скоротечный оплот",
+        "eng": "Transient Bulwark"
+    },
+    "level": 1,
+    "school": "ограждение",
+    "components": {
+        "v": true,
+        "s": true,
+        "m": "жемчужина стоимостью 10 зм, которая расходуется заклинанием"
+    },
+    "ritual": true,
+    "url": "/spells/transient_bulwark",
+    "source": {
+        "shortName": "VSoS",
+        "name": "Шпиль тайн Вальды",
+        "group": {
+            "name": "Контент от третьих лиц",
+            "shortName": "3rd"
+        }
+    },
+    "id": 1000,
+    "range": "На себя",
+    "duration": "8 часов",
+    "time": "1 действие",
+    "classes": [],
+    "description": "<p>Следующая атака, предпринятая против вас в течение времени действия этого заклинания, будет иметь штраф <strong>-10</strong> к попаданию.</p>"
+}

@@ -1,0 +1,36 @@
+{
+    "name": {
+        "rus": "Поток",
+        "eng": "Torrent"
+    },
+    "level": 1,
+    "school": "вызов",
+    "components": {
+        "v": true,
+        "s": true,
+        "m": "зеркало"
+    },
+    "url": "/spells/torrent",
+    "source": {
+        "shortName": "LH",
+        "name": "Лазерлама",
+        "group": {
+            "name": "Хомбрю ",
+            "shortName": "HB"
+        },
+        "homebrew": true
+    },
+    "id": 965,
+    "range": "На себя (30-футовая линия)",
+    "duration": "Мгновенная",
+    "time": "1 действие",
+    "classes": [
+        {
+            "name": "Магус",
+            "url": "/classes/magus",
+            "icon": "class/magus"
+        }
+    ],
+    "description": "<p>Струя стихийной воды вырывается из вас линией длиной 30 футов и шириной 5&nbsp;футов в выбранном вами направлении, заставляя каждое существо в этой области совершить спасбросок <span class=\"saving_throw\">Силы</span>. При провале существо получает <dice-roller formula=\"1к12\">1к12</dice-roller> урона холодом, отбрасывается на 10 футов по прямой и <detail-tooltip type=\"screen\"><a href=\"/screens/condition_prone\">падает ничком</a></detail-tooltip>.&nbsp;<span>При успешном спасброске цель получает половину урона</span><span>, не отталкивается и не <detail-tooltip type=\"screen\"><a href=\"/screens/condition_prone\">падает ничком</a></detail-tooltip></span><span>.</span></p><p>Любое&nbsp;существо&nbsp;<em>Огромного</em>&nbsp;размера или больше, совершает этот спасбросок с <span class=\"advantage\">преимуществом</span>.</p>",
+    "upper": "Когда вы накладываете это заклинание, используя ячейку 2-го уровня или выше, урон увеличивается на <dice-roller formula=\"1к12\">1к12</dice-roller>, и оно отбрасывает существ на дополнительные 10 футов за каждый уровень ячейки выше 1-го."
+}

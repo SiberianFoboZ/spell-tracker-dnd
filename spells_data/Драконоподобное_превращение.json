@@ -1,0 +1,46 @@
+{
+    "name": {
+        "rus": "Драконоподобное превращение",
+        "eng": "Draconic Transformation"
+    },
+    "level": 7,
+    "school": "преобразование",
+    "components": {
+        "v": true,
+        "s": true,
+        "m": "статуэтка дракона стоимостью не менее 500 зм"
+    },
+    "concentration": true,
+    "url": "/spells/draconic_transformation",
+    "source": {
+        "shortName": "FTD",
+        "name": "Сокровищница драконов Фицбана",
+        "group": {
+            "name": "Официальные источники",
+            "shortName": "Basic"
+        },
+        "page": 16
+    },
+    "id": 846,
+    "range": "На себя",
+    "duration": "Концентрация, до 1 минуты",
+    "time": "1 бонусное действие",
+    "classes": [
+        {
+            "name": "Волшебник",
+            "url": "/classes/wizard",
+            "icon": "class/wizard"
+        },
+        {
+            "name": "Друид",
+            "url": "/classes/druid",
+            "icon": "class/druid"
+        },
+        {
+            "name": "Чародей",
+            "url": "/classes/sorcerer",
+            "icon": "class/sorcerer"
+        }
+    ],
+    "description": "<p>С ревом вы черпаете магию драконов, чтобы трансформировать себя, приобретая драконьи черты.</p><p>Вы получаете следующие преимущества, пока заклинание не закончится:</p><ul><li><strong>Слепое зрение.</strong> У вас есть <detail-tooltip type=\"screen\"><a href=\"/screens/blindsight\">слепое зрение</a></detail-tooltip> с дальностью 30 футов. В пределах этого диапазона вы можете эффективно видеть все, что не находится за <detail-tooltip type=\"screen\"><a href=\"/screens/full_cover\">полным укрытием</a></detail-tooltip>, даже если вы <detail-tooltip type=\"screen\"><a href=\"/screens/blinded\">ослеплены</a></detail-tooltip> или находитесь в темноте. Более того, вы можете видеть <detail-tooltip type=\"screen\"><a href=\"/screens/invisible\">невидимых</a></detail-tooltip> существ, если они успешно не скроются от вас.</li><li><strong>Дыхательное оружие.</strong> После того как вы накладываете это заклинание, <em>бонусным действием</em> в последующих ходах во время действия заклинания, вы можете выдыхать мерцающую энергию 60-футовым конусом. Каждое существо в этой области должно совершить спасбросок <span class=\"saving_throw\">Ловкости</span>, при провале получив&nbsp;<dice-roller formula=\"6к8\">6к8</dice-roller> урона силовым полем, или половину при успехе.</li><li><strong>Крылья.</strong> Бестелесные крылья вырастают из вашей спины, обеспечивая вам скорость полета 60 футов.</li></ul>"
+}

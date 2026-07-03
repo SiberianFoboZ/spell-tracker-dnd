@@ -1,0 +1,46 @@
+{
+    "name": {
+        "rus": "Призрачный скакун",
+        "eng": "Phantom Steed"
+    },
+    "level": 3,
+    "school": "иллюзия",
+    "components": {
+        "v": true,
+        "s": true
+    },
+    "ritual": true,
+    "url": "/spells/phantom_steed",
+    "source": {
+        "shortName": "PHB",
+        "name": "Книга игрока",
+        "group": {
+            "name": "Официальные источники",
+            "shortName": "Basic"
+        }
+    },
+    "id": 265,
+    "range": "30 футов",
+    "duration": "1 час",
+    "time": "1 минута",
+    "classes": [
+        {
+            "name": "Волшебник",
+            "url": "/classes/wizard",
+            "icon": "class/wizard"
+        }
+    ],
+    "subclasses": [
+        {
+            "name": "Нежить",
+            "url": "/classes/warlock/undead",
+            "class": "Колдун"
+        },
+        {
+            "name": "Тенеплёт",
+            "url": "/classes/rogue/shadowlet",
+            "class": "Плут"
+        }
+    ],
+    "description": "<p>На полу в свободном пространстве на ваш выбор в пределах дистанции появляется Большое полуреальное похожее на лошадь существо. Вы сами определяете его внешность, но у него есть седло, удила и уздечка.</p><p>Всё снаряжение, созданное этим заклинанием, исчезает в клубах дыма, если его отнести на 10 футов от скакуна.</p><p>Пока заклинание активно, вы или выбранное вами существо можете ехать на скакуне верхом. Используются характеристики <detail-tooltip type=\"creature\"><a href=\"/bestiary/riding_horse\">ездовой лошади [riding horse]</a></detail-tooltip>, за исключением того, что скорость существа 100 футов, и оно может проскакать 10 миль за час или 13 миль в <detail-tooltip type=\"screen\"><a href=\"/screens/pace_of_movement\">быстром темпе</a></detail-tooltip>.</p><p>Когда заклинание заканчивается, скакун медленно исчезает, давая ездоку 1 минуту на <detail-tooltip type=\"screen\"><a href=\"/screens/mounting_and_dismounting\">спешивание</a></detail-tooltip>.</p><p>Заклинание оканчивается, если вы окончите его <em>Действием</em> или если скакун получит какой-либо урон.</p>"
+}

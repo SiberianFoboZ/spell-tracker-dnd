@@ -1,0 +1,27 @@
+{
+    "name": {
+        "rus": "Изучение врага",
+        "eng": "Scrutinize Foe"
+    },
+    "level": 5,
+    "school": "прорицание",
+    "components": {
+        "v": true,
+        "s": true
+    },
+    "url": "/spells/scrutinize_foe",
+    "source": {
+        "shortName": "VSoS",
+        "name": "Шпиль тайн Вальды",
+        "group": {
+            "name": "Контент от третьих лиц",
+            "shortName": "3rd"
+        }
+    },
+    "id": 1017,
+    "range": "60 футов",
+    "duration": "Мгновенная",
+    "time": "1 действие",
+    "classes": [],
+    "description": "<p>Вы различаете мельчайшие детали, касающиеся одного существа, которое видите в пределах досягаемости.</p><p>Вы узнаете две из следующих частей информации о цели по вашему выбору: ее КД, текущие хиты, <detail-tooltip type=\"screen\"><a href=\"/screens/condition_immunities\">иммунитеты</a></detail-tooltip> к состояниям, <detail-tooltip type=\"screen\"><a href=\"/screens/immunity\">иммунитеты</a></detail-tooltip> к урону, <detail-tooltip type=\"screen\"><a href=\"/screens/resistance\">сопротивления</a></detail-tooltip> к урону, <detail-tooltip type=\"screen\"><a href=\"/screens/vulnerability\">уязвимости</a></detail-tooltip> к урону и чары (которые показывают все заклинания, которые в данный момент воздействуют на нее). Мастер должен предоставить вам запрашиваемую информацию.</p>"
+}

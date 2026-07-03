@@ -1,0 +1,41 @@
+{
+    "name": {
+        "rus": "Снаряд хаоса",
+        "eng": "Chaos Bolt"
+    },
+    "level": 1,
+    "school": "воплощение",
+    "components": {
+        "v": true,
+        "s": true
+    },
+    "url": "/spells/chaos_bolt",
+    "source": {
+        "shortName": "XGE",
+        "name": "Руководство Занатара обо всем",
+        "group": {
+            "name": "Официальные источники",
+            "shortName": "Basic"
+        }
+    },
+    "id": 453,
+    "range": "120 футов",
+    "duration": "Мгновенная",
+    "time": "1 действие",
+    "classes": [
+        {
+            "name": "Чародей",
+            "url": "/classes/sorcerer",
+            "icon": "class/sorcerer"
+        }
+    ],
+    "subclasses": [
+        {
+            "name": "Хаос",
+            "url": "/classes/warlock/chaos",
+            "class": "Колдун"
+        }
+    ],
+    "description": "<p>Вы бросаете волнистую, трепещущую массу хаотической энергии в одно существо в радиусе действия.</p><p>Совершите <em>дальнобойную атаку заклинанием</em> по существу. При попадании цель получает <dice-roller formula=\"2к8 + 1к6\">2к8 + 1к6</dice-roller> урона. Выберите одно из <dice-roller formula=\"к8\">к8</dice-roller>. Выпавшее число определяет тип урона атаки, как показано ниже.</p><div claass=\"table-responsive\"><table><thead><tr><th><dice-roller formula=\"к8\" label=\"Тип урона\">к8</dice-roller></th><th style=\"width: 160px; text-align: left;\">Тип урона</th></tr></thead><tbody><tr><td style=\"width: 23px; text-align: center;\">1</td><td>Кислота</td></tr><tr><td style=\"width: 23px; text-align: center;\">2</td><td>Холод</td></tr><tr><td style=\"width: 23px; text-align: center;\">3</td><td>Огонь</td></tr><tr><td style=\"width: 23px; text-align: center;\">4</td><td>Силовое поле</td></tr><tr><td style=\"width: 23px; text-align: center;\">5</td><td>Электричество</td></tr><tr><td style=\"width: 23px; text-align: center;\">6</td><td>Яд</td></tr><tr><td style=\"width: 23px; text-align: center;\">7</td><td>Психическая энергия</td></tr><tr><td style=\"width: 23px; text-align: center;\">8</td><td>Звук</td></tr></tbody></table></div><p>Если вы выбрасываете одинаковое значение на обоих <dice-roller formula=\"к8\">к8</dice-roller>, хаотическая энергия прыгает с цели на другое существо по вашему выбору в пределах 30 футов от него. Совершите новую атаку против новой цели и сделайте новый бросок урона, который может привести к тому, что хаотическая энергия снова перескочит.</p><p>Существо может быть целью только один раз за каждое произношение этого заклинания.</p>",
+    "upper": "Если вы сотворяете это заклинание, используя ячейку 2 уровня или выше, каждая цель получает дополнительно <dice-roller formula=\"1к6\">1к6</dice-roller> урона за каждый уровень ячейки выше 1. "
+}

@@ -1,0 +1,42 @@
+{
+    "name": {
+        "rus": "Чёрный колодец",
+        "eng": "Black Well"
+    },
+    "level": 6,
+    "school": "некромантия",
+    "additionalType": "Иллюминация",
+    "components": {
+        "v": true,
+        "s": true
+    },
+    "concentration": true,
+    "url": "/spells/black_well",
+    "source": {
+        "shortName": "MHH",
+        "name": "Мидгард Справочник героя",
+        "group": {
+            "name": "Контент от третьих лиц",
+            "shortName": "3rd"
+        }
+    },
+    "id": 763,
+    "range": "300 футов",
+    "duration": "Концентрация, вплоть до 1 минуты",
+    "time": "1 действие",
+    "classes": [
+        {
+            "name": "Волшебник",
+            "url": "/classes/wizard",
+            "icon": "class/wizard"
+        }
+    ],
+    "subclasses": [
+        {
+            "name": "Иллюминация",
+            "url": "/classes/wizard/illumination",
+            "class": "Волшебник"
+        }
+    ],
+    "description": "<p>Вы призываете клокочущую сферу тёмной энергии диаметром в 5 футов, которая притягивает к себе существ, пожирая их жизненную энергию. Каждое существо, кроме вас, начинающее свой ход в пределах 90 футов от Чёрного Колодца, должно сделать успешный спасбросок <span class=\"saving_throw\">Силы</span> или быть потянуто на 50 футов ближе к колодцу.</p><p>Существо, затянутое в колодец, должно совершить спасбросок <span class=\"saving_throw\">Телосложения</span>. При провале оно получает <dice-roller formula=\"8к6\">8к6</dice-roller> некротического урона и становится <detail-tooltip type=\"screen\"><a href=\"/screens/Stunned\">ошеломлённым</a></detail-tooltip>, при успехе урон снижается вдвое, а состояние заменяется на <detail-tooltip type=\"screen\"><a href=\"/screens/Incapacitated\">недееспособный</a></detail-tooltip>.</p><p>Существа, начинающие свой ход внутри колодца, также должны совершать спасбросок <span class=\"saving_throw\">Телосложения</span>, при успехе оно становятся <detail-tooltip type=\"screen\"><a href=\"/screens/Incapacitated\">недееспособными</a></detail-tooltip>, а при провале <detail-tooltip type=\"screen\"><a href=\"/screens/Stunned\">ошеломлённым</a></detail-tooltip>. <detail-tooltip type=\"screen\"><a href=\"/screens/Incapacitated\">Недееспособное</a></detail-tooltip> существо, покидающее колодец, моментально освобождается от своего состояния и способно совершать в свой ход <em>Действия</em> и <em>Реакцию</em>. Существа получают урон только тогда, когда затягиваются в колодец - оставаясь там никакого урона не наносится. Однако, если существо выйдет и снова войдёт в него - оно снова получит весь положенный по заклинанию урон.</p><p>В колодце одновременно может находиться не более 9 <em>Средних</em> существ, 3 <em>Больших</em> или 1 <em>Огромного</em>. Как только действие заклинания заканчивается, все существа, находящиеся в нём, вываливаются наружу и <detail-tooltip type=\"screen\"><a href=\"/screens/Condition_Prone\">падают ничком</a></detail-tooltip>.</p>"
+}

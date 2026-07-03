@@ -1,0 +1,47 @@
+{
+    "name": {
+        "rus": "Квинтэссенция",
+        "eng": "Quintessence"
+    },
+    "level": 9,
+    "school": "преобразование",
+    "additionalType": "Ангельская магия",
+    "components": {
+        "v": true,
+        "s": true
+    },
+    "concentration": true,
+    "url": "/spells/quintessence",
+    "source": {
+        "shortName": "MHH",
+        "name": "Мидгард Справочник героя",
+        "group": {
+            "name": "Контент от третьих лиц",
+            "shortName": "3rd"
+        }
+    },
+    "id": 573,
+    "range": "На себя (сфера радиусом 120 футов)",
+    "duration": "Концентрация, вплоть до 1 минуты",
+    "time": "1 действие",
+    "classes": [
+        {
+            "name": "Волшебник",
+            "url": "/classes/wizard",
+            "icon": "class/wizard"
+        },
+        {
+            "name": "Жрец",
+            "url": "/classes/cleric",
+            "icon": "class/cleric"
+        }
+    ],
+    "subclasses": [
+        {
+            "name": "Ангельский Писарь",
+            "url": "/classes/wizard/angelic_scribe",
+            "class": "Волшебник"
+        }
+    ],
+    "description": "<p>Вы призываете на себя силу архангела, наполняясь его небесной сущностью и принимаете ангельские черты (золотая кожа, светящиеся глаза и эфирные крылья). Пока вы сконцентрированы на заклинании, ваше КД не может быть меньше 20 и вы получаете <strong>иммунитет</strong> к состоянию <detail-tooltip type=\"screen\"><a href=\"/screens/frightened\">испуганный</a></detail-tooltip> и к некротическому урону.</p><p>Кроме этого, каждое враждебное существо, начинающее свой ход в пределах 120 футов от вас, или входящих в эту область первый раз за раунд, должно совершить успешный спасбросок <span class=\"saving_throw\">Мудрости</span>, или стать <detail-tooltip type=\"screen\"><a href=\"/screens/frightened\">испуганным</a></detail-tooltip> на 1 минуту. <detail-tooltip type=\"screen\"><a href=\"/screens/frightened\">Испуганное</a></detail-tooltip> существо считается ещё и <detail-tooltip type=\"screen\"><a href=\"/screens/restrained\">опутанным</a></detail-tooltip>. Оно может повторять спасбросок в конце своего каждого хода, и при успехе окончить эффект состояния. Если существо прошло спасбросок, или эффект закончился, то оно становится невосприимчивым к эффекту <detail-tooltip type=\"screen\"><a href=\"/screens/frightened\">испуганный</a></detail-tooltip> до того момента, пока вы не сотворите Квинтэссенцию снова.</p>"
+}

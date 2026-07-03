@@ -1,0 +1,39 @@
+{
+    "name": {
+        "rus": "Смертный ужас",
+        "eng": "Weird"
+    },
+    "level": 9,
+    "school": "иллюзия",
+    "components": {
+        "v": true,
+        "s": true
+    },
+    "concentration": true,
+    "url": "/spells/weird",
+    "source": {
+        "shortName": "PHB",
+        "name": "Книга игрока",
+        "group": {
+            "name": "Официальные источники",
+            "shortName": "Basic"
+        }
+    },
+    "id": 311,
+    "range": "120 футов",
+    "duration": "Концентрация, до 1 минуты",
+    "time": "1 действие",
+    "classes": [
+        {
+            "name": "Волшебник",
+            "url": "/classes/wizard",
+            "icon": "class/wizard"
+        },
+        {
+            "name": "Колдун",
+            "url": "/classes/warlock",
+            "icon": "class/warlock"
+        }
+    ],
+    "description": "<p>Воззвав к сильнейшим страхам группы существ, вы создаёте иллюзорных существ в их сознаниях, видимых только для них.</p><p>Все существа в сфере с радиусом 30 футов с центром на выбранной точке в пределах дистанции, должны совершить спасбросок <span class=\"saving_throw\">Мудрости</span>. При провале существо становится <detail-tooltip type=\"screen\"><a href=\"/screens/frightened\">испуганным</a></detail-tooltip> на время длительности заклинания.</p><p>Иллюзия взывает к самым потаённым страхам, проявляясь в виде худших кошмаров и неумолимой угрозы.</p><p>В конце каждого своего хода <detail-tooltip type=\"screen\"><a href=\"/screens/frightened\">испуганное</a></detail-tooltip> существо должно преуспевать в спасброске <span class=\"saving_throw\">Мудрости</span>, иначе оно получает&nbsp;<dice-roller formula=\"4к10\">4к10</dice-roller> урона психической энергией. При успехе для этого существа заклинание оканчивается.</p>"
+}

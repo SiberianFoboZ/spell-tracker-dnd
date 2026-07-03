@@ -1,0 +1,47 @@
+{
+    "name": {
+        "rus": "Множественная починка металла",
+        "eng": "Mass Repair Metal"
+    },
+    "level": 5,
+    "school": "преобразование",
+    "additionalType": "Механомагия",
+    "components": {
+        "v": true,
+        "s": true
+    },
+    "url": "/spells/mass_repair_metal",
+    "source": {
+        "shortName": "MHH",
+        "name": "Мидгард Справочник героя",
+        "group": {
+            "name": "Контент от третьих лиц",
+            "shortName": "3rd"
+        }
+    },
+    "id": 614,
+    "range": "На себя (радиус 60 футов)",
+    "duration": "Мгновенная",
+    "time": "1 действие",
+    "classes": [
+        {
+            "name": "Волшебник",
+            "url": "/classes/wizard",
+            "icon": "class/wizard"
+        },
+        {
+            "name": "Жрец",
+            "url": "/classes/cleric",
+            "icon": "class/cleric"
+        }
+    ],
+    "subclasses": [
+        {
+            "name": "Школа Часовых Механизмов",
+            "url": "/classes/wizard/clockwork",
+            "class": "Волшебник"
+        }
+    ],
+    "description": "<p>Заклинание действует аналогично <detail-tooltip type=\"spell\"><a href=\"/spells/Repair_metal\">починке металла [repair metal]</a></detail-tooltip>, однако вы можете воздействовать на весь металл в области действия заклинания. Вы восстанавливаете <dice-roller formula=\"1к8 + 5\">1к8 + 5</dice-roller> хитов металлическому объекту или конструкту, устраняя трещины и выгибая металл так, как он должен быть.</p>",
+    "upper": "Если вы накладываете это заклинание, используя ячейку 6 уровня, вы восстанавливаете <dice-roller formula=\"2к8\">2к8</dice-roller> + 10 хитов"
+}

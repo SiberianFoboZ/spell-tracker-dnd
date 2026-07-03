@@ -1,0 +1,42 @@
+{
+    "name": {
+        "rus": "Звукосотрясение",
+        "eng": "Reverberate"
+    },
+    "level": 2,
+    "school": "воплощение",
+    "additionalType": "Магия Колец",
+    "components": {
+        "v": true,
+        "s": true
+    },
+    "url": "/spells/reverberate",
+    "source": {
+        "shortName": "MHH",
+        "name": "Мидгард Справочник героя",
+        "group": {
+            "name": "Контент от третьих лиц",
+            "shortName": "3rd"
+        }
+    },
+    "id": 563,
+    "range": "На себя (15-футовый конус)",
+    "duration": "Мгновенная",
+    "time": "1 действие",
+    "classes": [
+        {
+            "name": "Волшебник",
+            "url": "/classes/wizard",
+            "icon": "class/wizard"
+        }
+    ],
+    "subclasses": [
+        {
+            "name": "Хранитель Кольца",
+            "url": "/classes/wizard/ring_warden",
+            "class": "Волшебник"
+        }
+    ],
+    "description": "<p>Вы ударяете по земле металлическим кольцом, сотрясая землю впереди вас. Существа и объекты, которые никто не нести не носит, касающиеся земли в 15-футовом конусе, исходящем от вас, получают <dice-roller formula=\"4к6\">4к6</dice-roller> урона звуком и&nbsp;<detail-tooltip type=\"screen\"><a href=\"/screens/Condition_Prone\">падают ничком</a></detail-tooltip>; при успешном спасброске <span class=\"saving_throw\">Ловкости</span> существо получает половину урона и не падает ничком.</p>",
+    "upper": "При накладывании заклинания, используя ячейку 3 уровня или выше, урон увеличивается на <dice-roller formula=\"1к6\">1к6</dice-roller> за каждый уровень ячейки выше 2."
+}

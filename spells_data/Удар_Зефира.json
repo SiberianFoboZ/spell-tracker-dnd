@@ -1,0 +1,50 @@
+{
+    "name": {
+        "rus": "Удар Зефира",
+        "eng": "Zephyr Strike"
+    },
+    "level": 1,
+    "school": "преобразование",
+    "components": {
+        "v": true
+    },
+    "concentration": true,
+    "url": "/spells/zephyr_strike",
+    "source": {
+        "shortName": "XGE",
+        "name": "Руководство Занатара обо всем",
+        "group": {
+            "name": "Официальные источники",
+            "shortName": "Basic"
+        }
+    },
+    "id": 462,
+    "range": "На себя",
+    "duration": "Концентрация, вплоть до 1 минуты",
+    "time": "1 бонусное действие",
+    "classes": [
+        {
+            "name": "Следопыт",
+            "url": "/classes/ranger",
+            "icon": "class/ranger"
+        },
+        {
+            "name": "Магус",
+            "url": "/classes/magus",
+            "icon": "class/magus"
+        },
+        {
+            "name": "Альтернативный следопыт",
+            "url": "/classes/alternate_ranger",
+            "icon": "class/alternate-ranger"
+        }
+    ],
+    "subclasses": [
+        {
+            "name": "Орден Танцоров Клинка",
+            "url": "/classes/magus/blade_dancers",
+            "class": "Магус"
+        }
+    ],
+    "description": "<p>Вы движетесь подобно ветру. Пока действует заклинание, ваше движение не вызывает <detail-tooltip type=\"screen\"><a href=\"/screens/Opportunity_Attack\">провоцированных атак</a></detail-tooltip>.</p><p>Единожды до окончания действия заклинания вы можете получить <span class=\"advantage\">преимущество</span> к одной атаке оружием в свой ход. Эта атака наносит дополнительные <dice-roller formula=\"1d8\">1к8</dice-roller> урона силовым полем при попадании. Вне зависимости от того, попали вы или промахнулись, ваша пешая скорость передвижения увеличивается на 30 футов до конца этого хода.</p>"
+}

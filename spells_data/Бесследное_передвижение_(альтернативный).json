@@ -1,0 +1,30 @@
+{
+    "name": {
+        "rus": "Бесследное передвижение (альтернативный)",
+        "eng": "Pass Without Trace (Alternate)"
+    },
+    "level": 2,
+    "school": "ограждение",
+    "components": {
+        "v": true,
+        "s": true,
+        "m": "пепел сожжённого листа омелы"
+    },
+    "concentration": true,
+    "url": "/spells/pass_without_trace_(alternate)",
+    "source": {
+        "shortName": "LH",
+        "name": "Лазерлама",
+        "group": {
+            "name": "Хомбрю ",
+            "shortName": "HB"
+        },
+        "homebrew": true
+    },
+    "id": 1022,
+    "range": "На себя",
+    "duration": "Концентрация, вплоть до 1 часа",
+    "time": "1 действие",
+    "classes": [],
+    "description": "<p>Покров теней и тишины исходит от вас, скрывая вас и ваших спутников от обнаружения. На время действия вы и выбранные вами существа в пределах <span class=\"dice_text\">30</span> футов считаются&nbsp;<detail-tooltip type=\"screen\"><a href=\"/screens/lightly_obscured\">слегка заслонёнными</a></detail-tooltip> и получаете бонус ко всем проверкам <em>Ловкости (Скрытность)</em>, равный вашему модификатору характеристики заклинаний.</p><p>Существа под действием этого заклинания не оставляют следов и иных признаков своего присутствия.</p>"
+}

@@ -1,0 +1,34 @@
+{
+    "name": {
+        "rus": "Линия разлома",
+        "eng": "Fault Line"
+    },
+    "level": 6,
+    "school": "вызов",
+    "additionalType": "Боевая магия",
+    "components": {
+        "v": true,
+        "s": true
+    },
+    "url": "/spells/fault_line",
+    "source": {
+        "shortName": "MHH",
+        "name": "Мидгард Справочник героя",
+        "group": {
+            "name": "Контент от третьих лиц",
+            "shortName": "3rd"
+        }
+    },
+    "id": 601,
+    "range": "На себя",
+    "duration": "Постоянная",
+    "time": "1 реакция",
+    "classes": [
+        {
+            "name": "Друид",
+            "url": "/classes/druid",
+            "icon": "class/druid"
+        }
+    ],
+    "description": "<p>Это заклинание резко вздымает землю в 60-тифутовой линии в указанном вами направлении. Все пространство, затронутое заклинанием, становится <detail-tooltip type=\"screen\"><a href=\"/screens/difficult_terrain_move\">труднопроходимой местностью</a></detail-tooltip>.</p><p>Кроме того, все существа в зоне заклинания <detail-tooltip type=\"screen\"><a href=\"/screens/condition_prone\">сбиваются с ног</a></detail-tooltip> и получают <dice-roller formula=\"8к6\">8к6</dice-roller> дробящего урона. Существа, совершившие успешный спасбросок <span class=\"saving_throw\">Ловкости</span>, получают половину урона и не падают.</p><p>Это заклинание не повреждает постоянные строения.</p>"
+}

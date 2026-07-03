@@ -1,0 +1,40 @@
+{
+    "name": {
+        "rus": "Хаотичная живучесть",
+        "eng": "Chaotic Vitality"
+    },
+    "level": 2,
+    "school": "воплощение",
+    "additionalType": "Магия хаоса",
+    "components": {
+        "v": true,
+        "s": true
+    },
+    "url": "/spells/chaotic_vitality",
+    "source": {
+        "shortName": "MHH",
+        "name": "Мидгард Справочник героя",
+        "group": {
+            "name": "Контент от третьих лиц",
+            "shortName": "3rd"
+        }
+    },
+    "id": 752,
+    "range": "Касание",
+    "duration": "Мгновенная",
+    "time": "1 действие",
+    "classes": [
+        {
+            "name": "Бард",
+            "url": "/classes/bard",
+            "icon": "class/bard"
+        },
+        {
+            "name": "Волшебник",
+            "url": "/classes/wizard",
+            "icon": "class/wizard"
+        }
+    ],
+    "description": "<p>Совершите <em>рукопашную атаку заклинанием</em> по существу, с количеством костей хитов не большим, чем ваш уровень и, по крайней мере, <span class=\"dice_text\">1</span> хитом. При попадании вы призываете пульсирующие волны хаотической энергии внутри существа и себя. Через мгновение, кажущееся вечностью, сумма ваших хитов и хитов существа меняется.</p><p>Бросьте <dice-roller formula=\"к100\">к100</dice-roller> и увеличьте или уменьшите результат на любое число от нуля до вашего уровня заклинателя, затем найдите результат в таблице &laquo;Изменение Хитов&raquo;. Измените свои хиты и хиты цели в соответствии с таблицей. Все хиты, превышающие максимум хитов для каждого существа, становятся временными хитами и исчезают через количество раундов равное вашему уровню.</p><blockquote><p>Например, пусть заклинательница третьего уровня, у которой сейчас <span class=\"dice_text\">17</span> из максимума <span class=\"dice_text\">30</span> хитов, накладывает Хаотическую живучесть на существо с <span class=\"dice_text\">54</span> хитами и бросает 75 по таблице &laquo;Изменение Хитов&raquo;. В сумме у обоих 17 + 54 = <span class=\"dice_text\">71</span> хит. Результат броска 75 означает, что оба существа получат по 50% суммы, так что и у заклинательницы, и у существа становится по <span class=\"dice_text\">35</span> хитов. В случае заклинательницы <span class=\"dice_text\">5</span> из них - временные и продержатся 3 раунда.</p></blockquote><p style=\"text-align: center;\"><strong> Изменение хитов</strong><tbodu></tbodu></p><div class=\"table-responsive\"><table class=\"dnd5_table\"><thead><tr><th>Изменение</th><th>Хиты</th></tr></thead><tbody><tr><td style=\"text-align: center;\">01-09</td><td style=\"text-align: center;\">0</td></tr><tr><td style=\"text-align: center;\">10-39</td><td style=\"text-align: center;\">1</td></tr><tr><td style=\"text-align: center;\">40-69</td><td style=\"text-align: center;\">25% суммы</td></tr><tr><td style=\"text-align: center;\">70-84</td><td style=\"text-align: center;\">50% суммы</td></tr><tr><td style=\"text-align: center;\">85-94</td><td style=\"text-align: center;\">75% суммы</td></tr><tr><td style=\"text-align: center;\">95-99</td><td style=\"text-align: center;\">100% суммы</td></tr><tr><td style=\"text-align: center;\">100</td><td style=\"text-align: center;\">200% суммы и каждое существо получает эффект заклинания ускорение длительностью 1 раунд за уровень заклинания</td></tr></tbody></table></div>",
+    "upper": "Когда вы накладываете это заклинание, используя ячейку 3 уровня или больше, допустимый максимум костей хитов цели увеличивается на 2 за каждый уровень ячейки выше второго."
+}

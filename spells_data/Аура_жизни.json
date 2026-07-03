@@ -1,0 +1,71 @@
+{
+    "name": {
+        "rus": "Аура жизни",
+        "eng": "Aura of Life"
+    },
+    "level": 4,
+    "school": "ограждение",
+    "components": {
+        "v": true
+    },
+    "concentration": true,
+    "url": "/spells/aura_of_life",
+    "source": {
+        "shortName": "PHB",
+        "name": "Книга игрока",
+        "group": {
+            "name": "Официальные источники",
+            "shortName": "Basic"
+        },
+        "page": 212
+    },
+    "id": 15,
+    "range": "На себя (30-футовый радиус)",
+    "duration": "Концентрация, до 10 минут",
+    "time": "1 действие",
+    "classes": [
+        {
+            "name": "Жрец",
+            "url": "/classes/cleric",
+            "icon": "class/cleric"
+        },
+        {
+            "name": "Паладин",
+            "url": "/classes/paladin",
+            "icon": "class/paladin"
+        }
+    ],
+    "subclasses": [
+        {
+            "name": "Бессмертный",
+            "url": "/classes/warlock/undying",
+            "class": "Колдун"
+        },
+        {
+            "name": "Домен Сумрака",
+            "url": "/classes/cleric/twilight",
+            "class": "Жрец"
+        },
+        {
+            "name": "Круг Дикого Огня",
+            "url": "/classes/druid/wildfire",
+            "class": "Друид"
+        },
+        {
+            "name": "Клятва Сияния",
+            "url": "/classes/paladin/oath_of_radiance",
+            "class": "Паладин"
+        },
+        {
+            "name": "Окетра: Домен Сплочённости",
+            "url": "/classes/cleric/oketra_solidarity",
+            "class": "Жрец"
+        },
+        {
+            "name": "Знахарь",
+            "url": "/classes/shaman/witch_doctor",
+            "class": "Шаман"
+        }
+    ],
+    "description": "<p>От вас исходит защищающая жизнь аура с радиусом 30 футов. Пока заклинание активно, аура перемещается вместе с вами, оставаясь с центром на вас.</p><p>Все невраждебные существа в ауре (включая вас) обладают <strong>сопротивлением</strong> к урону некротической энергией, и максимум их хитов не может уменьшаться.</p><p>Кроме того, невраждебные живые существа восстанавливают <span class=\"dice_text\">1</span> хит, когда начинают ход в этой ауре с <span class=\"dice_text\">0</span> хитов.</p>"
+}

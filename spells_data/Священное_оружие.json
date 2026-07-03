@@ -1,0 +1,39 @@
+{
+    "name": {
+        "rus": "Священное оружие",
+        "eng": "Holy Weapon"
+    },
+    "level": 5,
+    "school": "воплощение",
+    "components": {
+        "v": true,
+        "s": true
+    },
+    "concentration": true,
+    "url": "/spells/holy_weapon",
+    "source": {
+        "shortName": "XGE",
+        "name": "Руководство Занатара обо всем",
+        "group": {
+            "name": "Официальные источники",
+            "shortName": "Basic"
+        }
+    },
+    "id": 447,
+    "range": "Касание",
+    "duration": "Концентрация, вплоть до 1 часа",
+    "time": "1 бонусное действие",
+    "classes": [
+        {
+            "name": "Жрец",
+            "url": "/classes/cleric",
+            "icon": "class/cleric"
+        },
+        {
+            "name": "Паладин",
+            "url": "/classes/paladin",
+            "icon": "class/paladin"
+        }
+    ],
+    "description": "<p>Вы наполняете оружие, которого касаетесь, святой силой. Пока заклинание активно, оружие излучает <detail-tooltip type=\"screen\"><a href=\"/screens/bright_light\">яркий свет</a></detail-tooltip> в радиусе 30 футов и <detail-tooltip type=\"screen\"><a href=\"/screens/dim_light\">тусклый свет</a></detail-tooltip> в пределах еще 30 футов.</p><p>Кроме того, атаки, совершенные этим оружием, наносят дополнительно&nbsp;<dice-roller formula=\"2к8\">2к8</dice-roller> урона излучением при попадании.</p><p>Если оружие ещё не является волшебным, оно становится таковым на время действия заклинания.</p><p><em>Бонусным действием</em> вы можете отменить это заклинание и создать вспышку света, исходящую из оружия. Каждое существо по вашему выбору, которое вы видите в пределах 30 футов от оружия, должно совершить спасбросок <span class=\"saving_throw\">Телосложения</span>. При неудачном спасброске существо получает <dice-roller formula=\"4к8\">4к8</dice-roller> урона излучением, и оно <detail-tooltip type=\"screen\"><a href=\"/screens/blinded\">ослеплено</a></detail-tooltip> на 1 минуту. При успешном спасброске существо получает половину урона и не <detail-tooltip type=\"screen\"><a href=\"/screens/blinded\">ослеплено</a></detail-tooltip>. В конце каждого своего хода <detail-tooltip type=\"screen\"><a href=\"/screens/blinded\">ослеплённое</a></detail-tooltip> существо может повторить спасбросок <span class=\"saving_throw\">Телосложения</span>. В случае успеха заклинание оканчивается.</p>"
+}

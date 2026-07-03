@@ -1,0 +1,55 @@
+{
+    "name": {
+        "rus": "Вдохновляющая речь",
+        "eng": "Inspiring Speech"
+    },
+    "level": 4,
+    "school": "очарование",
+    "additionalType": "Боевая магия",
+    "components": {
+        "v": true
+    },
+    "url": "/spells/inspiring_speech",
+    "source": {
+        "shortName": "MHH",
+        "name": "Мидгард Справочник героя",
+        "group": {
+            "name": "Контент от третьих лиц",
+            "shortName": "3rd"
+        }
+    },
+    "id": 510,
+    "range": "60 футов",
+    "duration": "1 час",
+    "time": "10 минут",
+    "classes": [
+        {
+            "name": "Бард",
+            "url": "/classes/bard",
+            "icon": "class/bard"
+        },
+        {
+            "name": "Жрец",
+            "url": "/classes/cleric",
+            "icon": "class/cleric"
+        },
+        {
+            "name": "Колдун",
+            "url": "/classes/warlock",
+            "icon": "class/warlock"
+        },
+        {
+            "name": "Паладин",
+            "url": "/classes/paladin",
+            "icon": "class/paladin"
+        }
+    ],
+    "subclasses": [
+        {
+            "name": "Домен Правосудия",
+            "url": "/classes/cleric/justice",
+            "class": "Жрец"
+        }
+    ],
+    "description": "<p>Вербальный компонент этого заклинания - ваша десятиминутная воодушевляющая речь. В конце речи все ваши союзники в области действия заклинания, которые слышали речь, получают <strong>бонус +1</strong> к броскам атаки и преимущество на спасброски против <detail-tooltip type=\"screen\"><a href=\"/screens/charmed\">очарования</a></detail-tooltip> и <detail-tooltip type=\"screen\"><a href=\"/screens/frightened\">испуга</a></detail-tooltip>, сроком на 1 час.</p><p>Кроме того, каждый союзник получает <detail-tooltip type=\"screen\"><a href=\"/screens/temporary_hit_points\">временные хиты</a></detail-tooltip> в количестве, равном модификатору вашей базовой характеристики. Если вы уходите дальше, чем на 1 милю (1.6 км) от своих союзников, или умираете, заклинание оканчивается.</p><p>Каждое существо может быть подвержено только одной вдохновляющей речи одновременно; повторное накладывание, когда ещё не кончились эффекты предыдущей речи, не даёт дополнительных эффектов и не увеличивает продолжительность заклинания.</p>"
+}

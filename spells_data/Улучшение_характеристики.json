@@ -1,0 +1,93 @@
+{
+    "name": {
+        "rus": "Улучшение характеристики",
+        "eng": "Enhance Ability"
+    },
+    "level": 2,
+    "school": "преобразование",
+    "components": {
+        "v": true,
+        "s": true,
+        "m": "мех или перо зверя"
+    },
+    "concentration": true,
+    "url": "/spells/enhance_ability",
+    "source": {
+        "shortName": "PHB",
+        "name": "Книга игрока",
+        "group": {
+            "name": "Официальные источники",
+            "shortName": "Basic"
+        }
+    },
+    "id": 351,
+    "range": "Касание",
+    "duration": "Концентрация, до 1 часа",
+    "time": "1 действие",
+    "classes": [
+        {
+            "name": "Бард",
+            "url": "/classes/bard",
+            "icon": "class/bard"
+        },
+        {
+            "name": "Волшебник",
+            "url": "/classes/wizard",
+            "icon": "class/wizard"
+        },
+        {
+            "name": "Друид",
+            "url": "/classes/druid",
+            "icon": "class/druid"
+        },
+        {
+            "name": "Жрец",
+            "url": "/classes/cleric",
+            "icon": "class/cleric"
+        },
+        {
+            "name": "Следопыт",
+            "url": "/classes/ranger",
+            "icon": "class/ranger"
+        },
+        {
+            "name": "Чародей",
+            "url": "/classes/sorcerer",
+            "icon": "class/sorcerer"
+        },
+        {
+            "name": "Изобретатель",
+            "url": "/classes/artificer",
+            "icon": "class/artificer"
+        },
+        {
+            "name": "Шаман",
+            "url": "/classes/shaman",
+            "icon": "class/shaman"
+        },
+        {
+            "name": "Альтернативный следопыт",
+            "url": "/classes/alternate_ranger",
+            "icon": "class/alternate-ranger"
+        }
+    ],
+    "subclasses": [
+        {
+            "name": "Клятва Славы",
+            "url": "/classes/paladin/glory",
+            "class": "Паладин"
+        },
+        {
+            "name": "Домен Горы",
+            "url": "/classes/cleric/mountain",
+            "class": "Жрец"
+        },
+        {
+            "name": "Ронас: Домен Силы",
+            "url": "/classes/cleric/rhonas_strength",
+            "class": "Жрец"
+        }
+    ],
+    "description": "<p>Вы касаетесь существа и улучшаете его при помощи магии. Выберите один из следующих эффектов; цель получает этот эффект, пока заклинание активно:</p><ul><li><strong>Бычья сила. </strong>Цель совершает с <span class=\"advantage\">преимуществом</span> проверки <strong>Силы</strong>, а грузоподъёмность удваивается.</li><li><strong>Кошачья ловкость. </strong>Цель совершает с <span class=\"advantage\">преимуществом</span> проверки <strong>Ловкости</strong>. Кроме того, она не получает урон за падение с высоты 20 футов или меньше, если она дееспособна.</li><li><strong>Лисья хитрость. </strong>Цель совершает с <span class=\"advantage\">преимуществом</span> проверки <strong>Интеллекта</strong>.</li><li><strong>Медвежья выносливость. </strong>Цель совершает с <span class=\"advantage\">преимуществом</span> проверки <strong>Телосложения</strong>. Она также получает <dice-roller formula=\"2к6\" label=\"Временные хиты\">2к6</dice-roller> <detail-tooltip type=\"screen\"><a href=\"/screens/temporary_hit_points\">временных хитов</a></detail-tooltip>, которые исчезают в конце заклинания.</li><li><strong>Орлиное великолепие. </strong>Цель совершает с <span class=\"advantage\">преимуществом</span> проверки <strong>Харизмы</strong>.</li><li><strong>Совиная мудрость.</strong> Цель совершает с <span class=\"advantage\">преимуществом</span> проверки <strong>Мудрости</strong>.</li></ul>",
+    "upper": "Если вы накладываете это заклинание, используя ячейку 3 уровня или выше, вы можете сделать целью одно дополнительное существо за каждый уровень ячейки выше второго."
+}

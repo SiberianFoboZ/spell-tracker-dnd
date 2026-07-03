@@ -1,0 +1,34 @@
+{
+    "name": {
+        "rus": "Множественное полное исцеление",
+        "eng": "Mass Heal"
+    },
+    "level": 9,
+    "school": "воплощение",
+    "components": {
+        "v": true,
+        "s": true
+    },
+    "url": "/spells/mass_heal",
+    "source": {
+        "shortName": "PHB",
+        "name": "Книга игрока",
+        "group": {
+            "name": "Официальные источники",
+            "shortName": "Basic"
+        },
+        "page": 241
+    },
+    "id": 157,
+    "range": "60 футов",
+    "duration": "Мгновенная",
+    "time": "1 действие",
+    "classes": [
+        {
+            "name": "Жрец",
+            "url": "/classes/cleric",
+            "icon": "class/cleric"
+        }
+    ],
+    "description": "<p>Поток целительной энергии перетекает от вас к раненым существам. Вы восстанавливаете до <span class=\"dice_text\">700</span> хитов, разделённых на ваш выбор между любым количеством существ, видимых вами в пределах дистанции.</p><p>Существа, вылеченные этим заклинанием, также исцеляются от всех эффектов, делающих их <detail-tooltip type=\"screen\"><a href=\"/screens/blinded\">ослеплёнными</a></detail-tooltip> или <detail-tooltip type=\"screen\"><a href=\"/screens/deafened\">оглушёнными</a></detail-tooltip>, а также от всех болезней.</p><p>Это заклинание не оказывает никакого эффекта на нежить и конструктов.</p>"
+}

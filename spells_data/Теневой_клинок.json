@@ -1,0 +1,52 @@
+{
+    "name": {
+        "rus": "Теневой клинок",
+        "eng": "Shadow Blade"
+    },
+    "level": 2,
+    "school": "иллюзия",
+    "components": {
+        "v": true,
+        "s": true
+    },
+    "concentration": true,
+    "url": "/spells/shadow_blade",
+    "source": {
+        "shortName": "XGE",
+        "name": "Руководство Занатара обо всем",
+        "group": {
+            "name": "Официальные источники",
+            "shortName": "Basic"
+        }
+    },
+    "id": 460,
+    "range": "На себя",
+    "duration": "Концентрация, вплоть до 1 минуты",
+    "time": "1 бонусное действие",
+    "classes": [
+        {
+            "name": "Волшебник",
+            "url": "/classes/wizard",
+            "icon": "class/wizard"
+        },
+        {
+            "name": "Колдун",
+            "url": "/classes/warlock",
+            "icon": "class/warlock"
+        },
+        {
+            "name": "Чародей",
+            "url": "/classes/sorcerer",
+            "icon": "class/sorcerer"
+        }
+    ],
+    "subclasses": [
+        {
+            "name": "Орден Полумрака",
+            "url": "/classes/magus/shades",
+            "class": "Магус"
+        }
+    ],
+    "description": "<p>Вы сплетаете воедино нити тени, чтобы создать в ваших руках меч затвердевшего мрака. Этот волшебный меч существует до тех пор, пока заклинание активно. Он считается простым оружием ближнего боя, которым вы владеете.</p><p>Он наносит&nbsp;<dice-roller formula=\"2к8\" label=\" Урон психической энергией\">2к8</dice-roller> урон психической энергией при попадании и обладает свойствами <detail-tooltip type=\"screen\"><a href=\"/screens/finesse\">Фехтовальное</a></detail-tooltip>, <detail-tooltip type=\"screen\"><a href=\"/screens/light\">Лёгкое</a></detail-tooltip> и <detail-tooltip type=\"screen\"><a href=\"/screens/thrown\">Метательное</a></detail-tooltip> (дистанция 20/60).</p><p>Кроме того, когда вы используете меч для атаки цели, которая находится в <detail-tooltip type=\"screen\"><a href=\"/screens/dim_light\">тусклом свете</a></detail-tooltip> или <detail-tooltip type=\"screen\"><a href=\"/screens/darkness\">темноте</a></detail-tooltip>, вы совершаете бросок атаки с <span class=\"advantage\">преимуществом</span>.</p><p>Если вы роняете оружие или метаете его, оно рассеивается в конце хода. После этого, пока заклинание активно, вы можете использовать <em>бонусное действие</em>, чтобы снова вызвать меч в вашу руку.</p>",
+    "upper": "Когда вы сотворяете это заклинание, используя ячейку заклинания 3 или 4 уровня, урон увеличивается до <dice-roller formula=\"3d8\">3к8</dice-roller>. Когда вы сотворяете его с помощью ячейки заклинания 5 или 6 уровня, урон увеличивается до <dice-roller formula=\"4d8\">4к8</dice-roller>. Когда вы сотворяете его с помощью ячейки заклинания 7 уровня или выше, урон увеличивается до <dice-roller formula=\"5d8\">5к8</dice-roller>. "
+}

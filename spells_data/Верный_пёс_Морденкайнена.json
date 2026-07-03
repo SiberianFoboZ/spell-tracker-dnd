@@ -1,0 +1,68 @@
+{
+    "name": {
+        "rus": "Верный пёс Морденкайнена",
+        "eng": "Mordenkainen's Faithful Hound"
+    },
+    "level": 4,
+    "school": "вызов",
+    "components": {
+        "v": true,
+        "s": true,
+        "m": "крошечный серебряный свисток, кусочек кости и нитка"
+    },
+    "url": "/spells/mordenkainen's_faithful_hound",
+    "source": {
+        "shortName": "PHB",
+        "name": "Книга игрока",
+        "group": {
+            "name": "Официальные источники",
+            "shortName": "Basic"
+        },
+        "page": 214
+    },
+    "id": 28,
+    "range": "30 футов",
+    "duration": "8 часов",
+    "time": "1 действие",
+    "classes": [
+        {
+            "name": "Волшебник",
+            "url": "/classes/wizard",
+            "icon": "class/wizard"
+        },
+        {
+            "name": "Изобретатель",
+            "url": "/classes/artificer",
+            "icon": "class/artificer"
+        },
+        {
+            "name": "Шаман",
+            "url": "/classes/shaman",
+            "icon": "class/shaman"
+        }
+    ],
+    "subclasses": [
+        {
+            "name": "Домен Охоты",
+            "url": "/classes/cleric/hunting",
+            "class": "Жрец"
+        },
+        {
+            "name": "Домен Правосудия",
+            "url": "/classes/cleric/justice",
+            "class": "Жрец"
+        },
+        {
+            "name": "Орден Стражей",
+            "url": "/classes/magus/sentinels",
+            "class": "Магус"
+        }
+    ],
+    "races": [
+        {
+            "name": "Дварф (метка опеки)",
+            "url": "/races/mark_of_warding"
+        }
+    ],
+    "description": "<p>Вы создаёте призрачного сторожевого пса в свободном пространстве, видимом в пределах дистанции, где он и остаётся на время длительности заклинания, пока вы не отпустите его <em>Действием</em>, или пока вы не отойдёте от него более чем на 100&nbsp;футов. Пёс невидим для всех существо кроме вас, и ему нельзя причинить вред.</p><p>Если в пределах 30&nbsp;футов от него оказывается существо с размером <em>Маленькое</em> или больше, не произнося при этом пароль, указанный вами при накладывании этого заклинания, пёс начинает громко лаять.</p><p>Пёс видит <detail-tooltip type=\"screen\"><a href=\"/screens/invisible\">невидимых</a></detail-tooltip> существ и его зрение простирается на <detail-tooltip type=\"screen\"><a href=\"/screens/border_ethereal\">Эфирный План</a></detail-tooltip>. Он игнорирует иллюзии. В начале каждого вашего хода пёс пытается укусить одно существо в пределах 5&nbsp;футов от себя, враждебное вам. Бонус атаки пса равен вашему модификатору базовой характеристики + ваш бонус мастерства. При попадании он причиняет&nbsp;<dice-roller formula=\"4к8\">4к8</dice-roller> колющего урона.</p>"
+}

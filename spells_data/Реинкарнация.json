@@ -1,0 +1,39 @@
+{
+    "name": {
+        "rus": "Реинкарнация",
+        "eng": "Reincarnate"
+    },
+    "level": 5,
+    "school": "преобразование",
+    "components": {
+        "v": true,
+        "s": true,
+        "m": "редкие масла и мази, стоящие как минимум 1 000 зм, расходуемые заклинанием"
+    },
+    "url": "/spells/reincarnate",
+    "source": {
+        "shortName": "PHB",
+        "name": "Книга игрока",
+        "group": {
+            "name": "Официальные источники",
+            "shortName": "Basic"
+        }
+    },
+    "id": 289,
+    "range": "Касание",
+    "duration": "Мгновенная",
+    "time": "1 час",
+    "classes": [
+        {
+            "name": "Друид",
+            "url": "/classes/druid",
+            "icon": "class/druid"
+        },
+        {
+            "name": "Шаман",
+            "url": "/classes/shaman",
+            "icon": "class/shaman"
+        }
+    ],
+    "description": "<p>Вы касаетесь мёртвого гуманоида или части мёртвого гуманоида. Если это существо мертво не более 10 дней, заклинание формирует для него новое взрослое тело и зовёт душу занять его.</p><p>Если душа цели не свободна или не хочет новое тело, заклинание проваливается. Новое тело для существа создаёт магия, и раса существа может измениться.</p><p>Мастер бросает <dice-roller formula=\"к100\">к100</dice-roller> и сверяется с таблицей, чтобы определить, в каком теле будет жить существо, либо же выбирает тело самостоятельно.</p><div claass=\"table-responsive\"><table><thead><tr><th><dice-roller formula=\"к100\" label=\"Раса для реинкорнации\">к100</dice-roller></th><th style=\"text-align: left; width: 185px;\">Раса</th></tr></thead><tbody><tr><td style=\"width: 48.9844px; text-align: center;\">01&ndash;04</td><td><a href=\"/races/gnome/forest\"></a><a href=\"/races/dragonborn\">Драконорождённый</a></td></tr><tr><td style=\"width: 48.9844px; text-align: center;\">05&ndash;13</td><td><a href=\"/races/dwarf/hil\">Дварф, холмовой</a></td></tr><tr><td style=\"width: 48.9844px; text-align: center;\">14&ndash;21</td><td><a href=\"/races/dwarf/mountain\">Дварф, горный</a></td></tr><tr><td style=\"width: 48.9844px; text-align: center;\">22&ndash;25</td><td><a href=\"/races/elf/drow\">Эльф, тёмный</a></td></tr><tr><td style=\"width: 48.9844px; text-align: center;\">26&ndash;34</td><td><a href=\"/races/elf/high\">Эльф, высший</a></td></tr><tr><td style=\"width: 48.9844px; text-align: center;\">35&ndash;42</td><td><a href=\"/races/elf/wood\">Эльф, лесной</a></td></tr><tr><td style=\"width: 48.9844px; text-align: center;\">43&ndash;46</td><td><a href=\"/races/gnome/forest\">Гном, лесной</a></td></tr><tr><td style=\"width: 48.9844px; text-align: center;\">47&ndash;52</td><td><a href=\"/races/gnome/rock\">Гном, скальный</a></td></tr><tr><td style=\"width: 48.9844px; text-align: center;\">53&ndash;56</td><td><a href=\"/races/half-elf\">Полуэльф</a></td></tr><tr><td style=\"width: 48.9844px; text-align: center;\">57&ndash;60</td><td><a href=\"/races/half-Orc\">Полуорк</a></td></tr><tr><td style=\"width: 48.9844px; text-align: center;\">61&ndash;68</td><td><a href=\"/races/halfling/lightfoot\">Полурослик, легконогий</a></td></tr><tr><td style=\"width: 48.9844px; text-align: center;\">69&ndash;76</td><td><a href=\"/races/halfling/stout\">Полурослик, коренастый</a></td></tr><tr><td style=\"width: 48.9844px; text-align: center;\">77&ndash;96</td><td><a href=\"/races/human\">Человек</a></td></tr><tr><td style=\"width: 48.9844px; text-align: center;\">97&ndash;00</td><td><a href=\"/races/tiefling\">Тифлинг</a></td></tr></tbody></table></div><p>Реинкарнировавшее существо помнит свою прошлую жизнь и переживания. Оно сохраняет все способности, бывшие в прежнем теле, но раса меняется на новую, изменяя расовые особенности.</p>"
+}

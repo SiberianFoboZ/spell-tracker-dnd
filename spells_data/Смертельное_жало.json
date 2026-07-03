@@ -1,0 +1,43 @@
+{
+    "name": {
+        "rus": "Смертельное жало",
+        "eng": "Deadly Sting"
+    },
+    "level": 8,
+    "school": "преобразование",
+    "additionalType": "Магия драконов",
+    "components": {
+        "v": true,
+        "s": true,
+        "m": "шип"
+    },
+    "concentration": true,
+    "url": "/spells/deadly_sting",
+    "source": {
+        "shortName": "MHH",
+        "name": "Мидгард Справочник героя",
+        "group": {
+            "name": "Контент от третьих лиц",
+            "shortName": "3rd"
+        }
+    },
+    "id": 714,
+    "range": "На себя",
+    "duration": "Концентрация, вплоть до 1 минуты",
+    "time": "1 действие",
+    "classes": [
+        {
+            "name": "Волшебник",
+            "url": "/classes/wizard",
+            "icon": "class/wizard"
+        }
+    ],
+    "subclasses": [
+        {
+            "name": "Драконьи Маски",
+            "url": "/classes/wizard/dragon_masks",
+            "class": "Волшебник"
+        }
+    ],
+    "description": "<p>Вы отращиваете хвост длиной 10 футов, гибкий как кнут и с ужасным жалом. Во время действия заклинания вы можете использовать жало для рукопашной атаки заклинанием с досягаемостью 10 футов. При попадании цель получает <dice-roller formula=\"1к4\">1к4</dice-roller> колющего урона и <dice-roller formula=\"4к10\">4к10</dice-roller> урона ядом, и должна совершить спасбросок <span class=\"saving_throw\">Телосложения</span>, при провале становясь <detail-tooltip type=\"screen\"><a href=\"/screens/Poisoned\">отравленной</a></detail-tooltip> на всё время действия заклинания.</p>"
+}

@@ -1,0 +1,38 @@
+{
+    "name": {
+        "rus": "Сокрытие разума",
+        "eng": "Mind Blank"
+    },
+    "level": 8,
+    "school": "ограждение",
+    "components": {
+        "v": true,
+        "s": true
+    },
+    "url": "/spells/mind_blank",
+    "source": {
+        "shortName": "PHB",
+        "name": "Книга игрока",
+        "group": {
+            "name": "Официальные источники",
+            "shortName": "Basic"
+        }
+    },
+    "id": 315,
+    "range": "Касание",
+    "duration": "24 часа",
+    "time": "1 действие",
+    "classes": [
+        {
+            "name": "Бард",
+            "url": "/classes/bard",
+            "icon": "class/bard"
+        },
+        {
+            "name": "Волшебник",
+            "url": "/classes/wizard",
+            "icon": "class/wizard"
+        }
+    ],
+    "description": "<p>Пока заклинание активно, одно согласное существо, которого вы касаетесь, получает иммунитет к урону психической энергией, и всем эффектам, которые должны чувствовать его эмоции или читать мысли, заклинаниям школы <detail-tooltip type=\"screen\"><a href=\"/screens/divination\">Прорицания</a></detail-tooltip> и состоянию <detail-tooltip type=\"screen\"><a href=\"/screens/charmed\">очарованности</a></detail-tooltip>.</p><p>Это заклинание даже помогает от заклинания <detail-tooltip type=\"spell\"><a href=\"/spells/wish\">исполнение желаний [wish]</a></detail-tooltip>, а также от заклинаний и эффектов аналогичной силы, использованных для воздействия на сознание цели или получение от неё информации.</p>"
+}

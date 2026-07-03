@@ -1,0 +1,49 @@
+{
+    "name": {
+        "rus": "Скольжение",
+        "eng": "Grease"
+    },
+    "level": 1,
+    "school": "вызов",
+    "components": {
+        "v": true,
+        "s": true,
+        "m": "кусок масла или свиного сала"
+    },
+    "url": "/spells/grease",
+    "source": {
+        "shortName": "PHB",
+        "name": "Книга игрока",
+        "group": {
+            "name": "Официальные источники",
+            "shortName": "Basic"
+        }
+    },
+    "id": 302,
+    "range": "60 футов",
+    "duration": "1 минута",
+    "time": "1 действие",
+    "classes": [
+        {
+            "name": "Волшебник",
+            "url": "/classes/wizard",
+            "icon": "class/wizard"
+        },
+        {
+            "name": "Чародей",
+            "url": "/classes/sorcerer",
+            "icon": "class/sorcerer"
+        },
+        {
+            "name": "Изобретатель",
+            "url": "/classes/artificer",
+            "icon": "class/artificer"
+        },
+        {
+            "name": "Магус",
+            "url": "/classes/magus",
+            "icon": "class/magus"
+        }
+    ],
+    "description": "<p>Скользкий жир покрывает пол в квадрате с длиной стороны 10 футов с центром на точке в пределах дистанции, делая эту местность труднопроходимой, пока заклинание активно.</p><p>Когда жир появляется, все существа, стоящие в этой области, должны преуспеть в спасброске <span class=\"saving_throw\">Ловкости</span>, иначе они <detail-tooltip type=\"screen\"><a href=\"/screens/Condition_Prone\">падают ничком</a></detail-tooltip>.</p><p>Существа, входящие в эту область или оканчивающие там ход, тоже должны преуспеть в спасброске <span class=\"saving_throw\">Ловкости</span>, чтобы не упасть.</p>"
+}

@@ -1,0 +1,40 @@
+{
+    "name": {
+        "rus": "Дар Хёда",
+        "eng": "Hod's Gift"
+    },
+    "level": 5,
+    "school": "преобразование",
+    "additionalType": "Рунная магия",
+    "components": {
+        "v": true,
+        "s": true
+    },
+    "url": "/spells/hod's_gift",
+    "source": {
+        "shortName": "MHH",
+        "name": "Мидгард Справочник героя",
+        "group": {
+            "name": "Контент от третьих лиц",
+            "shortName": "3rd"
+        }
+    },
+    "id": 537,
+    "range": "Касание",
+    "duration": "1 час",
+    "time": "1 ход",
+    "classes": [
+        {
+            "name": "Волшебник",
+            "url": "/classes/wizard",
+            "icon": "class/wizard"
+        },
+        {
+            "name": "Жрец",
+            "url": "/classes/cleric",
+            "icon": "class/cleric"
+        }
+    ],
+    "description": "<p>Цель получает <em>слепое зрение</em> в пределах 60 футов. </p>",
+    "upper": "Если вы накладываете это заклинание, используя ячейку 6 уровня или выше, длительность увеличивается на 1 час за каждый уровень ячейки выше пятого."
+}

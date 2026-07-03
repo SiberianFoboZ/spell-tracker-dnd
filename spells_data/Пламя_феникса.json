@@ -1,0 +1,44 @@
+{
+    "name": {
+        "rus": "Пламя феникса",
+        "eng": "Phoenix Flames"
+    },
+    "level": 9,
+    "school": "воплощение",
+    "components": {
+        "v": true,
+        "s": true
+    },
+    "url": "/spells/phoenix_flames",
+    "source": {
+        "shortName": "GHtPG",
+        "name": "Руководство игрока в Мрачной лощине",
+        "group": {
+            "name": "Контент от третьих лиц",
+            "shortName": "3rd"
+        },
+        "page": 9
+    },
+    "id": 903,
+    "range": "На себя",
+    "duration": "Мгновенная",
+    "time": "1 действие",
+    "classes": [
+        {
+            "name": "Друид",
+            "url": "/classes/druid",
+            "icon": "class/druid"
+        },
+        {
+            "name": "Жрец",
+            "url": "/classes/cleric",
+            "icon": "class/cleric"
+        },
+        {
+            "name": "Чародей",
+            "url": "/classes/sorcerer",
+            "icon": "class/sorcerer"
+        }
+    ],
+    "description": "<p>Вы поджигаете себя, испепеляя своё тело во вспышке святого пламени. Все существа в пределах 20 футов от вас должны совершить спасбросок <span class=\"saving_throw\">Телосложения</span> или получить <dice-roller formula=\"30d6\">30к6</dice-roller> урона излучением и одну <detail-tooltip type=\"screen\"><a href=\"/screens/Exhaustion\">степень истощения</a></detail-tooltip>.</p><p>Существа получают лишь половину урона и не получают <detail-tooltip type=\"screen\"><a href=\"/screens/Exhaustion\">степень истощения</a></detail-tooltip> при успехе. Если существо погибло вследствие получения урона от этого заклинания его тело сгорает дотла.</p><p>Через 10 минут, вы восстаёте из пепла в тот месте, где наложили это заклинание. Вы возвращаетесь к жизни так, словно стали целью заклинания <detail-tooltip type=\"spell\"><a href=\"/spells/True_resurrection\">истинное воскрешение [true resurrection]</a></detail-tooltip>.</p>"
+}

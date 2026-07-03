@@ -1,0 +1,41 @@
+{
+    "name": {
+        "rus": "Снежный булыжник",
+        "eng": "Snow Boulder"
+    },
+    "level": 4,
+    "school": "преобразование",
+    "additionalType": "Рунная магия",
+    "components": {
+        "v": true,
+        "s": true,
+        "m": "горсть снега"
+    },
+    "concentration": true,
+    "url": "/spells/snow_boulder",
+    "source": {
+        "shortName": "MHH",
+        "name": "Мидгард Справочник героя",
+        "group": {
+            "name": "Контент от третьих лиц",
+            "shortName": "3rd"
+        }
+    },
+    "id": 718,
+    "range": "90 футов",
+    "duration": "Концентрация, до 4 раундов",
+    "time": "1 действие",
+    "classes": [
+        {
+            "name": "Друид",
+            "url": "/classes/druid",
+            "icon": "class/druid"
+        },
+        {
+            "name": "Следопыт",
+            "url": "/classes/ranger",
+            "icon": "class/ranger"
+        }
+    ],
+    "description": "<p>Шар снега образуется в 5 футах от вас и начинает катиться в указанном направлении, становясь больше по мере движения.</p><p><em>Бонусным действие</em>м вы можете передвинуть шар на 30 футов. Если вы катите булыжник на существо, то оно должно совершить спасбросок <span class=\"saving_throw\">Ловкости</span> или <detail-tooltip type=\"screen\"><a href=\"/screens/condition_prone\">упасть ничком</a></detail-tooltip> и получить урон, как описано ниже. В каждом раунде булыжник увеличивается в размере и эффективности. Попадание в существо не останавливает шар и не препятствует его увеличению.</p><div claass=\"table-responsive\"><table class=\"dnd5_table\"><thead><tr><th>Раунд</th><th style=\"text-align: left;\">Размер</th><th style=\"text-align: left;\">Урон</th></tr></thead><tbody><tr><td style=\"text-align: center;\">1</td><td>Маленький</td><td><dice-roller formula=\"1к6\">1к6</dice-roller> дробящий</td></tr><tr><td style=\"text-align: center;\">2</td><td>Средний</td><td><dice-roller formula=\"2к6\">2к6</dice-roller> дробящий</td></tr><tr><td style=\"text-align: center;\">3</td><td>Большой</td><td><dice-roller formula=\"3к6\">3к6</dice-roller> дробящий</td></tr><tr><td style=\"text-align: center;\">4</td><td>Огромный</td><td><dice-roller formula=\"4к6\">4к6</dice-roller> дробящий</td></tr></tbody></table></div>"
+}

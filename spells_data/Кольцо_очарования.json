@@ -1,0 +1,51 @@
+{
+    "name": {
+        "rus": "Кольцо очарования",
+        "eng": "Enchant Ring"
+    },
+    "level": 6,
+    "school": "очарование",
+    "additionalType": "Магия Колец",
+    "components": {
+        "v": true,
+        "s": true
+    },
+    "url": "/spells/enchant_ring",
+    "source": {
+        "shortName": "MHH",
+        "name": "Мидгард Справочник героя",
+        "group": {
+            "name": "Контент от третьих лиц",
+            "shortName": "3rd"
+        }
+    },
+    "id": 585,
+    "range": "Касание",
+    "duration": "Пока не рассеется",
+    "time": "1 действие",
+    "classes": [
+        {
+            "name": "Волшебник",
+            "url": "/classes/wizard",
+            "icon": "class/wizard"
+        },
+        {
+            "name": "Колдун",
+            "url": "/classes/warlock",
+            "icon": "class/warlock"
+        },
+        {
+            "name": "Чародей",
+            "url": "/classes/sorcerer",
+            "icon": "class/sorcerer"
+        }
+    ],
+    "subclasses": [
+        {
+            "name": "Хранитель Кольца",
+            "url": "/classes/wizard/ring_warden",
+            "class": "Волшебник"
+        }
+    ],
+    "description": "<p>Вы зачаровываете кольцо, которое никто не несёт и не носит. Следующее существо, которое наденет его, <detail-tooltip type=\"screen\"><a href=\"/screens/charmed\">очаровывается</a></detail-tooltip> вами на 1 неделю или до тех пор, пока вы или ваш союзник не навредите ему.</p><p>Если существо надевает кольцо, в то время как вам или вашему союзнику угрожают, заклинание не срабатывает. <detail-tooltip type=\"screen\"><a href=\"/screens/charmed\">Очарованное</a></detail-tooltip> существо считает вас другом. Когда заклинание заканчивается, оно не знает, что оно было <detail-tooltip type=\"screen\"><a href=\"/screens/charmed\">очаровано</a></detail-tooltip> вами, но оно осознает, что его чувство к вам изменилось (потенциально &ndash; весьма значительно) за короткое время. То, как существо отреагирует на это и будет относиться к вам в будущем, зависит от Мастера.</p>"
+}

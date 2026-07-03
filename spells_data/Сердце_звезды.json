@@ -1,0 +1,41 @@
+{
+    "name": {
+        "rus": "Сердце звезды",
+        "eng": "Star's Heart"
+    },
+    "level": 9,
+    "school": "преобразование",
+    "components": {
+        "v": true,
+        "s": true,
+        "m": "камень Йоун соответствующей стоимости"
+    },
+    "url": "/spells/star's_heart",
+    "source": {
+        "shortName": "MHH",
+        "name": "Мидгард Справочник героя",
+        "group": {
+            "name": "Контент от третьих лиц",
+            "shortName": "3rd"
+        }
+    },
+    "id": 704,
+    "range": "50 футов",
+    "duration": "1 минута",
+    "time": "1 действие",
+    "classes": [
+        {
+            "name": "Волшебник",
+            "url": "/classes/wizard",
+            "icon": "class/wizard"
+        }
+    ],
+    "subclasses": [
+        {
+            "name": "Иллюминация",
+            "url": "/classes/wizard/illumination",
+            "class": "Волшебник"
+        }
+    ],
+    "description": "<p>Это заклинание увеличивает гравитацию в пределах 50 футов от вас в десять раз.</p><p>Все существа, кроме вас, попавшие в эту область, роняют то, что держат в руках, <detail-tooltip type=\"screen\"><a href=\"/screens/condition_prone\">падают ничком</a></detail-tooltip>, становятся <detail-tooltip type=\"screen\"><a href=\"/screens/Incapacitated\">недееспособными</a></detail-tooltip> и не могут двигаться. Если какое-то из этих существ летало или левитировало и при падении встретилось с твёрдым объектом (например, с землёй), то оно получает тройной урон от этого падения.</p><p>Любое существо не считая вас, входящее в область заклинания или начинающее в ней свой ход, должно совершить успешный спасбросок <span class=\"saving_throw\">Силы</span>, или попасть под все эффекты заклинания.</p><p>Существа уже попавшие под эффекты должны также совершить спасбросок <span class=\"saving_throw\">Силы</span>, в случае провала оно получает <dice-roller formula=\"8к6\">8к6</dice-roller> дробящего урона, а в случае успеха - <dice-roller formula=\"4к6\">4к6</dice-roller> дробящего урона, а также перестаёт быть <detail-tooltip type=\"screen\"><a href=\"/screens/Incapacitated\">недееспособным</a></detail-tooltip> и может двигаться на половину от своей скорости.</p><p>Все <em>дальнобойный атаки</em> в зоне действия заклинания имеют обычную и максимальную дальность в 5 и 10 футов соответственно. Это правило относится и к заклинаниям, что создают снаряды с какой-либо массой (например, <detail-tooltip type=\"spell\"><a href=\"/spells/Flaming_sphere\">пылающий шар [flaming sphere]</a></detail-tooltip>).</p><p>Существа, находящиеся под эффектами заклинаний и магии схожих по описанию с заклинанием <detail-tooltip type=\"spell\"><a href=\"/spells/Freedom_of_movement\">свобода перемещения [freedom of movement]</a></detail-tooltip>, получают <span class=\"advantage\">преимущество</span> на спасброски <span class=\"saving_throw\">Силы</span>, их скорость остаётся прежней, и они не попадают под состояние <detail-tooltip type=\"screen\"><a href=\"/screens/Incapacitated\">недееспособности</a></detail-tooltip>.</p>"
+}

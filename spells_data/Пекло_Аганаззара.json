@@ -1,0 +1,40 @@
+{
+    "name": {
+        "rus": "Пекло Аганаззара",
+        "eng": "Aganazzar's Scorcher"
+    },
+    "level": 2,
+    "school": "воплощение",
+    "components": {
+        "v": true,
+        "s": true,
+        "m": "чешуя красного дракона"
+    },
+    "url": "/spells/aganazzar's_scorcher",
+    "source": {
+        "shortName": "XGE",
+        "name": "Руководство Занатара обо всем",
+        "group": {
+            "name": "Официальные источники",
+            "shortName": "Basic"
+        }
+    },
+    "id": 423,
+    "range": "30 футов",
+    "duration": "Мгновенная",
+    "time": "1 действие",
+    "classes": [
+        {
+            "name": "Волшебник",
+            "url": "/classes/wizard",
+            "icon": "class/wizard"
+        },
+        {
+            "name": "Чародей",
+            "url": "/classes/sorcerer",
+            "icon": "class/sorcerer"
+        }
+    ],
+    "description": "<p>Вы выпускаете линию ревущего пламени длиной 30 футов и шириной 5 футов в выбранном направлении.</p><p>Все существа в области действия должны совершить спасбросок <span class=\"saving_throw\">Ловкости</span>. В случае провала существо получает&nbsp;<dice-roller formula=\"3к8\" label=\"урон огнём\">3к8</dice-roller> урона огнём, а в случае успеха &ndash; половину этого урона.</p>",
+    "upper": "Если вы сотворяете это заклинание, используя ячейку 3 уровня или выше, то урон увеличивается на <dice-roller formula=\"1к8\">1к8</dice-roller> за каждый уровень ячейки выше 2. "
+}

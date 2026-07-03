@@ -1,0 +1,35 @@
+{
+    "name": {
+        "rus": "Крик баньши",
+        "eng": "Banshee Wail"
+    },
+    "level": 6,
+    "school": "некромантия",
+    "additionalType": "Магия Тени",
+    "components": {
+        "v": true,
+        "s": true,
+        "m": "лоскут савана мертвеца"
+    },
+    "url": "/spells/banshee_wail",
+    "source": {
+        "shortName": "MHH",
+        "name": "Мидгард Справочник героя",
+        "group": {
+            "name": "Контент от третьих лиц",
+            "shortName": "3rd"
+        }
+    },
+    "id": 590,
+    "range": "На себя (30-футовый конус)",
+    "duration": "Мгновенная",
+    "time": "1 действие",
+    "classes": [
+        {
+            "name": "Волшебник",
+            "url": "/classes/wizard",
+            "icon": "class/wizard"
+        }
+    ],
+    "description": "<p>Вы издаёте пробирающий до самой души крик. Все существа в 30-футовом конусе, которые слышат его, должны совершить спасбросок <span class=\"saving_throw\">Мудрости</span>. Провалившие его теряют половину имеющихся у них хитов и становятся <detail-tooltip type=\"screen\"><a href=\"/screens/frightened\">испуганы</a></detail-tooltip> вами; <detail-tooltip type=\"screen\"><a href=\"/screens/frightened\">испуганное</a></detail-tooltip> существо может повторять спасброски в конце каждого своего хода, заканчивая эффект при успехе. Преуспевшие в спасброске получают <dice-roller formula=\"3к10\">3к10</dice-roller> психического урона и не <detail-tooltip type=\"screen\"><a href=\"/screens/frightened\">напуганы</a></detail-tooltip>.</p><p>Это заклинание не оказывает эффекта на конструктов и нежить.</p>"
+}

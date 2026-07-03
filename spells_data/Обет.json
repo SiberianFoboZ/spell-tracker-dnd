@@ -1,0 +1,71 @@
+{
+    "name": {
+        "rus": "Обет",
+        "eng": "Geas"
+    },
+    "level": 5,
+    "school": "очарование",
+    "components": {
+        "v": true
+    },
+    "url": "/spells/geas",
+    "source": {
+        "shortName": "PHB",
+        "name": "Книга игрока",
+        "group": {
+            "name": "Официальные источники",
+            "shortName": "Basic"
+        },
+        "page": 244
+    },
+    "id": 174,
+    "range": "60 футов",
+    "duration": "30 дней",
+    "time": "1 минута",
+    "classes": [
+        {
+            "name": "Бард",
+            "url": "/classes/bard",
+            "icon": "class/bard"
+        },
+        {
+            "name": "Волшебник",
+            "url": "/classes/wizard",
+            "icon": "class/wizard"
+        },
+        {
+            "name": "Друид",
+            "url": "/classes/druid",
+            "icon": "class/druid"
+        },
+        {
+            "name": "Жрец",
+            "url": "/classes/cleric",
+            "icon": "class/cleric"
+        },
+        {
+            "name": "Паладин",
+            "url": "/classes/paladin",
+            "icon": "class/paladin"
+        }
+    ],
+    "subclasses": [
+        {
+            "name": "Клятва Короны",
+            "url": "/classes/paladin/crown",
+            "class": "Паладин"
+        },
+        {
+            "name": "Мойры",
+            "url": "/classes/warlock/moira",
+            "class": "Колдун"
+        },
+        {
+            "name": "Связанный С Драконом",
+            "url": "/classes/shaman/wyrmbound",
+            "class": "Шаман"
+        }
+    ],
+    "description": "<p>Вы отдаёте магическую команду существу, видимому в пределах дистанции, заставляя его оказать некую услугу или наоборот, не совершать чего-либо.</p><p>Если существо может вас понять, оно должно преуспеть в спасброске <span class=\"saving_throw\">Мудрости</span>, иначе оно станет <detail-tooltip type=\"screen\"><a href=\"/screens/charmed\">очарованным</a></detail-tooltip> вами на время действия заклинания.</p><p>Пока существо очаровано вами, оно получает&nbsp;<dice-roller formula=\"5к10\">5к10</dice-roller> урона психической энергией каждый раз, когда действует, противореча вашим инструкциям, но не чаще одного раза за день.</p><p>Существо, не способное вас понять, не попадает под действие этого заклинания. Вы можете отдать любую команду, кроме той, что однозначно будет самоубийственной.</p><p>Если вы отдадите такую команду, заклинание оканчивается. Вы можете окончить заклинание преждевременно, потратив на это <em>Действие.</em>.</p><p>Заклинания <detail-tooltip type=\"spell\"><a href=\"/spells/remove_curse\">снятие проклятья [remove curse]</a></detail-tooltip>, <detail-tooltip type=\"spell\"><a href=\"/spells/greater_restoration\">высшее восстановление [greater restoration]</a></detail-tooltip> и <detail-tooltip type=\"spell\"><a href=\"/spells/wish\">исполнение желаний [wish]</a></detail-tooltip> тоже оканчивают его.</p>",
+    "upper": "Если вы накладываете это заклинание, используя ячейку 7 или 8 уровня, длительность равна 1 году. Если вы накладываете это заклинание, используя ячейку 9 уровня, заклинание длится, пока не будет окончено одним из упомянутых выше заклинаний."
+}

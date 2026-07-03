@@ -1,0 +1,92 @@
+{
+    "name": {
+        "rus": "Высшее восстановление",
+        "eng": "Greater Restoration"
+    },
+    "level": 5,
+    "school": "ограждение",
+    "components": {
+        "v": true,
+        "s": true,
+        "m": "бриллиантовая пыль, стоящая как минимум 100 зм, расходуемая заклинанием"
+    },
+    "url": "/spells/greater_restoration",
+    "source": {
+        "shortName": "PHB",
+        "name": "Книга игрока",
+        "group": {
+            "name": "Официальные источники",
+            "shortName": "Basic"
+        },
+        "page": 219
+    },
+    "id": 51,
+    "range": "Касание",
+    "duration": "Мгновенная",
+    "time": "1 действие",
+    "classes": [
+        {
+            "name": "Бард",
+            "url": "/classes/bard",
+            "icon": "class/bard"
+        },
+        {
+            "name": "Друид",
+            "url": "/classes/druid",
+            "icon": "class/druid"
+        },
+        {
+            "name": "Жрец",
+            "url": "/classes/cleric",
+            "icon": "class/cleric"
+        },
+        {
+            "name": "Следопыт",
+            "url": "/classes/ranger",
+            "icon": "class/ranger"
+        },
+        {
+            "name": "Изобретатель",
+            "url": "/classes/artificer",
+            "icon": "class/artificer"
+        },
+        {
+            "name": "Альтернативный следопыт",
+            "url": "/classes/alternate_ranger",
+            "icon": "class/alternate-ranger"
+        }
+    ],
+    "subclasses": [
+        {
+            "name": "Небожитель",
+            "url": "/classes/warlock/celestial",
+            "class": "Колдун"
+        },
+        {
+            "name": "Домен Мира",
+            "url": "/classes/cleric/peace",
+            "class": "Жрец"
+        },
+        {
+            "name": "Заводная Душа",
+            "url": "/classes/sorcerer/clockwork_soul",
+            "class": "Чародей"
+        },
+        {
+            "name": "Дитя Рун",
+            "url": "/classes/sorcerer/runechild",
+            "class": "Чародей"
+        },
+        {
+            "name": "Клятва Сияния",
+            "url": "/classes/paladin/oath_of_radiance",
+            "class": "Паладин"
+        },
+        {
+            "name": "Знахарь",
+            "url": "/classes/shaman/witch_doctor",
+            "class": "Шаман"
+        }
+    ],
+    "description": "<p>Вы наделяете существо, которого касаетесь, позитивной энергией, отменяющей ослабляющие эффекты.</p><p>Вы можете уменьшить <detail-tooltip type=\"screen\"><a href=\"/screens/exhaustion\">уровень истощения</a></detail-tooltip> цели на 1, или окончить на ней один из следующих эффектов:</p><ul><li>Один эффект, делающий цель <detail-tooltip type=\"screen\"><a href=\"/screens/charmed\">очарованной</a></detail-tooltip> или <detail-tooltip type=\"screen\"><a href=\"/screens/Petrified\">окаменевшей</a></detail-tooltip>.</li><li>Одно проклятье, включая настройку на проклятый магический предмет</li><li>Любое уменьшение одной из характеристик цели</li><li>Один эффект, уменьшающий максимум хитов цели</li></ul>"
+}

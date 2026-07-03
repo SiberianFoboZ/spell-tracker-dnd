@@ -1,0 +1,53 @@
+{
+    "name": {
+        "rus": "Горящий клинок",
+        "eng": "Flame Blade"
+    },
+    "level": 2,
+    "school": "воплощение",
+    "components": {
+        "v": true,
+        "s": true,
+        "m": "лист сумаха"
+    },
+    "concentration": true,
+    "url": "/spells/flame_blade",
+    "source": {
+        "shortName": "PHB",
+        "name": "Книга игрока",
+        "group": {
+            "name": "Официальные источники",
+            "shortName": "Basic"
+        },
+        "page": 221
+    },
+    "id": 60,
+    "range": "На себя",
+    "duration": "Концентрация, до 10 минут",
+    "time": "1 бонусное действие",
+    "classes": [
+        {
+            "name": "Друид",
+            "url": "/classes/druid",
+            "icon": "class/druid"
+        },
+        {
+            "name": "Чародей",
+            "url": "/classes/sorcerer",
+            "icon": "class/sorcerer"
+        },
+        {
+            "name": "Шаман",
+            "url": "/classes/shaman",
+            "icon": "class/shaman"
+        }
+    ],
+    "races": [
+        {
+            "name": "Тифлинг (мефистофель)",
+            "url": "/races/mephistopheles"
+        }
+    ],
+    "description": "<p>Вы создаёте горящий клинок в свободной руке. Этот клинок похож размерами и формой на скимитар, и он существует, пока заклинание активно.</p><p>Если вы выпустите клинок из рук, он исчезает, но вы можете вернуть его в руку <em>бонусным действием</em>.</p><p>Вы можете <em>Действием</em> совершить <em>рукопашную атаку заклинанием</em>. При попадании цель получает&nbsp;<dice-roller formula=\"3d6\">3к6</dice-roller> урона огнём.</p><p>Горящий клинок испускает <detail-tooltip type=\"screen\"><a href=\"/screens/bright_light\">яркий свет</a></detail-tooltip> в пределах 10 футов и <detail-tooltip type=\"screen\"><a href=\"/screens/dim_light\">тусклый свет</a></detail-tooltip> в пределах ещё 10&nbsp;футов.</p>",
+    "upper": "Если вы накладываете это заклинание, используя ячейку 4 уровня или выше, урон увеличивается на <dice-roller formula=\"1к6\">1к6</dice-roller> за каждые два уровня ячейки выше 2."
+}

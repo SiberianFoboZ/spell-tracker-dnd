@@ -1,0 +1,48 @@
+{
+    "name": {
+        "rus": "Страж природы",
+        "eng": "Guardian of Nature"
+    },
+    "level": 4,
+    "school": "преобразование",
+    "components": {
+        "v": true
+    },
+    "concentration": true,
+    "url": "/spells/guardian_of_nature",
+    "source": {
+        "shortName": "XGE",
+        "name": "Руководство Занатара обо всем",
+        "group": {
+            "name": "Официальные источники",
+            "shortName": "Basic"
+        }
+    },
+    "id": 458,
+    "range": "На себя",
+    "duration": "Концентрация, вплоть до 1 минуты",
+    "time": "1 бонусное действие",
+    "classes": [
+        {
+            "name": "Друид",
+            "url": "/classes/druid",
+            "icon": "class/druid"
+        },
+        {
+            "name": "Следопыт",
+            "url": "/classes/ranger",
+            "icon": "class/ranger"
+        },
+        {
+            "name": "Шаман",
+            "url": "/classes/shaman",
+            "icon": "class/shaman"
+        },
+        {
+            "name": "Альтернативный следопыт",
+            "url": "/classes/alternate_ranger",
+            "icon": "class/alternate-ranger"
+        }
+    ],
+    "description": "<p>Дух природы отвечает на ваш призыв и превращает вас в могущественного стража. Превращение длится до тех пор, пока заклинание не закончится. Вы выбираете одну из следующих форм: Первобытный зверь или Великое древо.</p><p><strong>Первобытный зверь.</strong> Мягкий мех покрывает ваше тело, ваши черты лица становятся дикими, и вы получаете следующие преимущества:</p><ul><li>Скорость ходьбы увеличивается на 10 футов.</li><li>Вы получаете темновидение в радиусе 120 футов.</li><li>Вы совершаете броски атаки, основанные на <strong>Силе</strong>, с <span class=\"advantage\">преимуществом</span>.</li><li><em>Рукопашные атаки оружием</em> наносят дополнительно&nbsp;<dice-roller formula=\"1к6\" label=\"Урон силовым полем\">1к6</dice-roller> урона силовым полем.</li></ul><p><strong>Великое древо.</strong> Ваша кожа покрывается корой, листья прорастают из ваших волос, и вы получаете следующие преимущества:</p><ul><li>Вы получаете <span class=\"dice_text\">10</span> <detail-tooltip type=\"screen\"><a href=\"/screens/temporary_hit_points\">временных хитов</a></detail-tooltip>.</li><li>Вы совершаете с <span class=\"advantage\">преимуществом</span> спасброски <span class=\"saving_throw\">Телосложения</span>.</li><li>Вы совершаете броски атаки, основанные на <strong>Ловкости</strong> и <strong>Мудрости</strong>, с <span class=\"advantage\">преимуществом</span>.</li><li>Когда вы находитесь на земле, земля в радиусе 15 футов от вас становится <detail-tooltip type=\"screen\"><a href=\"/screens/difficult_terrain_move\">труднопроходимой местностью</a></detail-tooltip> для врагов.</li></ul>"
+}

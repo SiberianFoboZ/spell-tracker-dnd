@@ -1,0 +1,48 @@
+{
+    "name": {
+        "rus": "Связывание судеб",
+        "eng": "Linking Destinies"
+    },
+    "level": 3,
+    "school": "некромантия",
+    "components": {
+        "v": true
+    },
+    "url": "/spells/linking_destinies",
+    "source": {
+        "shortName": "ODL",
+        "name": "Одиссея Повелителей драконов",
+        "group": {
+            "name": "Контент от третьих лиц",
+            "shortName": "3rd"
+        },
+        "page": 61
+    },
+    "id": 831,
+    "range": "30 футов",
+    "duration": "1 час",
+    "time": "1 действие",
+    "classes": [
+        {
+            "name": "Бард",
+            "url": "/classes/bard",
+            "icon": "class/bard"
+        },
+        {
+            "name": "Волшебник",
+            "url": "/classes/wizard",
+            "icon": "class/wizard"
+        },
+        {
+            "name": "Жрец",
+            "url": "/classes/cleric",
+            "icon": "class/cleric"
+        },
+        {
+            "name": "Колдун",
+            "url": "/classes/warlock",
+            "icon": "class/warlock"
+        }
+    ],
+    "description": "<p>Выберите двух существ, которых можете увидеть. Оба существа должны совершить спасброски <span class=\"saving_throw\">Харизмы</span>, и они делают это с преимуществом, если враждебны к вам. Если существо <detail-tooltip type=\"screen\"><a href=\"/screens/charmed\">очаровано</a></detail-tooltip> вами, оно делает спасбросок с <span class=\"disadvantage\">помехой</span>. Если оба существа проваливают спасброски, их судьбы теперь связаны друг с другом.</p><ul><li>Каждый раз, когда одно из существ получает урон, другое получает точно такой же, если только оба существа не получили урон от одного и того же источника, например, заклинания <detail-tooltip type=\"spell\"><a href=\"/spells/Fireball\">огненный шар [fireball]</a></detail-tooltip>.</li><li>Каждый раз, когда одно из существ восстанавливает хиты, другое восстанавливает столько же, если только восстановление не происходило от одного и того же источника, например, заклинания <detail-tooltip type=\"spell\"><a href=\"/spells/Mass_cure_wounds\">множественное лечение ран [mass cure wounds]</a></detail-tooltip>.</li></ul><p>Оба существа-цели остаются связанными судьбой в течение всего периода действия заклинания, даже если находятся на разных планах существования.</p>"
+}

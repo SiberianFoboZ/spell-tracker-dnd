@@ -1,0 +1,78 @@
+{
+    "name": {
+        "rus": "Дребезги",
+        "eng": "Shatter"
+    },
+    "level": 2,
+    "school": "воплощение",
+    "components": {
+        "v": true,
+        "s": true,
+        "m": "кусочек слюды"
+    },
+    "url": "/spells/shatter",
+    "source": {
+        "shortName": "PHB",
+        "name": "Книга игрока",
+        "group": {
+            "name": "Официальные источники",
+            "shortName": "Basic"
+        },
+        "page": 224
+    },
+    "id": 73,
+    "range": "60 футов",
+    "duration": "Мгновенная",
+    "time": "1 действие",
+    "classes": [
+        {
+            "name": "Бард",
+            "url": "/classes/bard",
+            "icon": "class/bard"
+        },
+        {
+            "name": "Волшебник",
+            "url": "/classes/wizard",
+            "icon": "class/wizard"
+        },
+        {
+            "name": "Колдун",
+            "url": "/classes/warlock",
+            "icon": "class/warlock"
+        },
+        {
+            "name": "Чародей",
+            "url": "/classes/sorcerer",
+            "icon": "class/sorcerer"
+        },
+        {
+            "name": "Магус",
+            "url": "/classes/magus",
+            "icon": "class/magus"
+        }
+    ],
+    "subclasses": [
+        {
+            "name": "Домен Бури",
+            "url": "/classes/cleric/tempest",
+            "class": "Жрец"
+        },
+        {
+            "name": "Артиллерист",
+            "url": "/classes/artificer/artillerist",
+            "class": "Изобретатель"
+        },
+        {
+            "name": "Бронник",
+            "url": "/classes/artificer/armorer",
+            "class": "Изобретатель"
+        },
+        {
+            "name": "Хазорет: Домен Рвения",
+            "url": "/classes/cleric/hazoret_zeal",
+            "class": "Жрец"
+        }
+    ],
+    "description": "<p>Громкий звонкий звук исходит из выбранной вами точки в пределах дистанции. Все существа в сфере с радиусом 10 футов с центром на этой точке должны совершить спасбросок <span class=\"saving_throw\">Телосложения</span>. При провале существо получает&nbsp;<dice-roller formula=\"3к8\">3к8</dice-roller> урона звуком, или половину этого урона при успехе.</p><p>Существа, изготовленные из неорганической материи, такой как камень, кристалл или металл, совершают этот спасбросок с <span class=\"disadvantage\">помехой</span>.</p><p>Немагические предметы, которые не несут и не носят, тоже получают урон, если находятся в области заклинания.</p>",
+    "upper": "Если вы накладываете это заклинание, используя ячейку 3 уровня или выше, урон увеличивается на <dice-roller formula=\"1к8\">1к8</dice-roller> за каждый уровень ячейки выше второго."
+}

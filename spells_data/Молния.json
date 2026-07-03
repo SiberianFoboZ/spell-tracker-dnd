@@ -1,0 +1,58 @@
+{
+    "name": {
+        "rus": "Молния",
+        "eng": "Lightning Bolt"
+    },
+    "level": 3,
+    "school": "воплощение",
+    "components": {
+        "v": true,
+        "s": true,
+        "m": "кусочек меха и жезл из янтаря, кристалла или стекла"
+    },
+    "url": "/spells/lightning_bolt",
+    "source": {
+        "shortName": "PHB",
+        "name": "Книга игрока",
+        "group": {
+            "name": "Официальные источники",
+            "shortName": "Basic"
+        },
+        "page": 242
+    },
+    "id": 160,
+    "range": "На себя (100-футовая линия)",
+    "duration": "Мгновенная",
+    "time": "1 действие",
+    "classes": [
+        {
+            "name": "Волшебник",
+            "url": "/classes/wizard",
+            "icon": "class/wizard"
+        },
+        {
+            "name": "Чародей",
+            "url": "/classes/sorcerer",
+            "icon": "class/sorcerer"
+        },
+        {
+            "name": "Магус",
+            "url": "/classes/magus",
+            "icon": "class/magus"
+        }
+    ],
+    "subclasses": [
+        {
+            "name": "Бронник",
+            "url": "/classes/artificer/armorer",
+            "class": "Изобретатель"
+        },
+        {
+            "name": "Бездонный",
+            "url": "/classes/warlock/fathomless",
+            "class": "Колдун"
+        }
+    ],
+    "description": "<p>Разряд молнии формирует линию длиной 100 футов и шириной 5 футов, вылетающую в выбранном вами направлении.</p><p>Все существа в линии должны совершить спасбросок <span class=\"saving_throw\">Ловкости</span>. При провале существо получает <dice-roller formula=\"8к6\" label=\"Урон электричеством\">8к6</dice-roller> урона электричеством, или половину урона при успехе.</p><p>Молния поджигает горючие предметы в поражаемой области, которые никто не несёт и не носит.</p>",
+    "upper": "Если вы накладываете это заклинание, используя ячейку 4 уровня или выше, урон увеличивается на <dice-roller formula=\"1к6\">1к6</dice-roller> за каждый уровень ячейки выше третьего."
+}

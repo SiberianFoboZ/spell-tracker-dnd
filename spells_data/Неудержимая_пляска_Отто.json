@@ -1,0 +1,39 @@
+{
+    "name": {
+        "rus": "Неудержимая пляска Отто",
+        "eng": "Otto's Irresistible Dance"
+    },
+    "level": 6,
+    "school": "очарование",
+    "components": {
+        "v": true
+    },
+    "concentration": true,
+    "url": "/spells/otto's_irresistible_dance",
+    "source": {
+        "shortName": "PHB",
+        "name": "Книга игрока",
+        "group": {
+            "name": "Официальные источники",
+            "shortName": "Basic"
+        },
+        "page": 244
+    },
+    "id": 172,
+    "range": "30 футов",
+    "duration": "Концентрация, вплоть до 1 минуты",
+    "time": "1 действие",
+    "classes": [
+        {
+            "name": "Бард",
+            "url": "/classes/bard",
+            "icon": "class/bard"
+        },
+        {
+            "name": "Волшебник",
+            "url": "/classes/wizard",
+            "icon": "class/wizard"
+        }
+    ],
+    "description": "<p>Выберите одно существо, видимое в пределах дистанции. Цель начинает смешно танцевать на месте, шаркая ногами, притоптывая и подпрыгивая. Существа, которые не могут быть <detail-tooltip type=\"screen\"><a href=\"/screens/charmed\">очарованы</a></detail-tooltip>, обладают <strong>иммунитетом</strong> к этому заклинанию. Танцующее существо должно использовать всё своё перемещение на танец, не покидая своё пространство и получая <span class=\"disadvantage\">помеху</span> к спасброскам <span class=\"saving_throw\">Ловкости</span> и броскам атаки.</p><p>Пока цель находится под действием этого заклинания, другие существа совершают с <span class=\"advantage\">преимуществом</span> броски атаки по нему.</p><p>Танцующее существо может <em>Действием</em> совершить спасбросок <span class=\"saving_throw\">Мудрости</span>, чтобы вернуть контроль над телом. При успехе заклинание заканчивается.</p>"
+}

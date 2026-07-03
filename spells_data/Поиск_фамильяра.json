@@ -1,0 +1,57 @@
+{
+    "name": {
+        "rus": "Поиск фамильяра",
+        "eng": "Find Familiar"
+    },
+    "level": 1,
+    "school": "вызов",
+    "components": {
+        "v": true,
+        "s": true,
+        "m": "стоящие 10 зм уголь, благовония и травы, сжигаемые в огне латунной жаровни"
+    },
+    "ritual": true,
+    "url": "/spells/find_familiar",
+    "source": {
+        "shortName": "PHB",
+        "name": "Книга игрока",
+        "group": {
+            "name": "Официальные источники",
+            "shortName": "Basic"
+        }
+    },
+    "id": 234,
+    "range": "10 футов",
+    "duration": "Мгновенная",
+    "time": "1 час",
+    "classes": [
+        {
+            "name": "Волшебник",
+            "url": "/classes/wizard",
+            "icon": "class/wizard"
+        },
+        {
+            "name": "Шаман",
+            "url": "/classes/shaman",
+            "icon": "class/shaman"
+        }
+    ],
+    "subclasses": [
+        {
+            "name": "Присяга Повелителя Драконов",
+            "url": "/classes/paladin/dragonlords_oath",
+            "class": "Паладин"
+        },
+        {
+            "name": "Домен Кошки",
+            "url": "/classes/cleric/cat",
+            "class": "Жрец"
+        },
+        {
+            "name": "Орден Демиургов",
+            "url": "/classes/magus/arcanists",
+            "class": "Магус"
+        }
+    ],
+    "description": "<p>Вы получаете в услужение фамильяра &mdash; духа, принимающего облик выбранного вами животного: <detail-tooltip type=\"creature\"><a href=\"/bestiary/Raven\">ворона [raven]</a></detail-tooltip>, <detail-tooltip type=\"creature\"><a href=\"/bestiary/Cat\">кошки [cat]</a></detail-tooltip>, <detail-tooltip type=\"creature\"><a href=\"/bestiary/Crab\">краба [crab]</a></detail-tooltip>, <detail-tooltip type=\"creature\"><a href=\"/bestiary/Rat\">крысы [rat]</a></detail-tooltip>, <detail-tooltip type=\"creature\"><a href=\"/bestiary/Bat\">летучей мыши [bat]</a></detail-tooltip>, <detail-tooltip type=\"creature\"><a href=\"/bestiary/Frog\">лягушки (жабы) [frog]</a></detail-tooltip>, <detail-tooltip type=\"creature\"><a href=\"/bestiary/Sea_horse\">морского конька [sea horse]</a></detail-tooltip>, <detail-tooltip type=\"creature\"><a href=\"/bestiary/Octopus\">осьминога [octopus]</a></detail-tooltip>, <detail-tooltip type=\"creature\"><a href=\"/bestiary/Spider\">паука [spider]</a></detail-tooltip>, <detail-tooltip type=\"creature\"><a href=\"/bestiary/Quipper\">рыбы (пиранья) [quipper]</a></detail-tooltip>, <detail-tooltip type=\"creature\"><a href=\"/bestiary/Owl\">совы [owl]</a></detail-tooltip>, <detail-tooltip type=\"creature\"><a href=\"/bestiary/Weasel\">хорька/куницы/ласки [weasel]</a></detail-tooltip>, <detail-tooltip type=\"creature\"><a href=\"/bestiary/Poisonous_snake\">ядовитой змеи [poisonous snake]</a></detail-tooltip>, <detail-tooltip type=\"creature\"><a href=\"/bestiary/Hawk\">ястреба [hawk]</a></detail-tooltip> или <detail-tooltip type=\"creature\"><a href=\"/bestiary/Lizard\">ящерицы [lizard]</a></detail-tooltip>.</p><p>Появившись в свободном пространстве в пределах дистанции, фамильяр приобретает характеристики выбранной формы, хотя он не зверь, а небожитель, фея или исчадие (на ваш выбор).</p><p>Ваш фамильяр действует независимо от вас, но всегда повинуется вашим командам. В сражении оно определяет свою инициативу и действует в свой ход. Фамильяр не может атаковать, но может совершать другие действия как обычно.</p><p>Когда хиты фамильяра опускаются до <span class=\"dice_text\">0</span>, он исчезает, не оставляя физического тела. Он возвращается, когда вы используете это заклинание ещё раз.</p><p>Пока фамильяр находится в пределах 100 футов, вы можете общаться с ним телепатически. Кроме того, вы можете действием начать смотреть глазами фамильяра и слушать его ушами до начала своего следующего хода, получая преимущество от особых чувств, которыми может обладать фамильяр. В это время для своих собственных чувств вы <detail-tooltip type=\"screen\"><a href=\"/screens/blinded\">слепы</a></detail-tooltip> и <detail-tooltip type=\"screen\"><a href=\"/screens/deafened\">глухи</a></detail-tooltip>.</p><p>Вы можете <em>Действием</em> временно отпустить своего фамильяра. Тот исчезает в карманном измерении, где будет ждать, пока вы его не призовёте. Если фамильяр несет какие-то вещи, то они остаются на месте исчезновения, после его ухода в карманное измерение. Пока фамильяр временно отпущен, вы можете действием вернуть его в свободное пространство в пределах 30 футов от себя.</p><p>В качестве альтернативы, вы можете отпустить его насовсем.</p><p>У вас не может быть больше одного фамильяра одновременно. Если вы накладываете это заклинание, уже имея фамильяра, вы заставляете принять его новый облик. Выберите один из описанных выше обликов. Ваш фамильяр становится этим существом.</p><p>Если вы накладываете заклинание с дистанцией &laquo;Касание&raquo;, его может передать фамильяр, как если бы это он его накладывал.</p><p>Ваш фамильяр должен при этом находиться в пределах 100 футов от вас, и он использует свою <em>Реакцию</em>, когда вы накладываете его.</p><p>Если заклинание требует броска атаки, вы используете свой модификатор атаки.</p>"
+}

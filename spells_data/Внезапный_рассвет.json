@@ -1,0 +1,46 @@
+{
+    "name": {
+        "rus": "Внезапный рассвет",
+        "eng": "Sudden Dawn"
+    },
+    "level": 3,
+    "school": "вызов",
+    "additionalType": "Боевая магия",
+    "components": {
+        "v": true,
+        "s": true
+    },
+    "ritual": true,
+    "concentration": true,
+    "url": "/spells/sudden_dawn",
+    "source": {
+        "shortName": "MHH",
+        "name": "Мидгард Справочник героя",
+        "group": {
+            "name": "Контент от третьих лиц",
+            "shortName": "3rd"
+        }
+    },
+    "id": 514,
+    "range": "100 футов",
+    "duration": "Концентрация, вплоть до 10 минут",
+    "time": "1 действие",
+    "classes": [
+        {
+            "name": "Волшебник",
+            "url": "/classes/wizard",
+            "icon": "class/wizard"
+        },
+        {
+            "name": "Друид",
+            "url": "/classes/druid",
+            "icon": "class/druid"
+        },
+        {
+            "name": "Жрец",
+            "url": "/classes/cleric",
+            "icon": "class/cleric"
+        }
+    ],
+    "description": "<p>Вы велите утру наступить раньше времени. Отточенным словом вы создаете 60-тифутовый цилиндр света с центром в точке в пределах дистанции. Область внутри цилиндра хорошо освещена. Свет простирается в небо на 100 футов или пока не сталкивается с препятствием, например, с потолком.</p>"
+}

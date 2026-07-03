@@ -1,0 +1,40 @@
+{
+    "name": {
+        "rus": "Колеблющееся мировоззрение",
+        "eng": "Fluctuating Alignment"
+    },
+    "level": 4,
+    "school": "очарование",
+    "additionalType": "Магия хаоса",
+    "components": {
+        "v": true,
+        "s": true
+    },
+    "concentration": true,
+    "url": "/spells/fluctuating_alignment",
+    "source": {
+        "shortName": "MHH",
+        "name": "Мидгард Справочник героя",
+        "group": {
+            "name": "Контент от третьих лиц",
+            "shortName": "3rd"
+        }
+    },
+    "id": 582,
+    "range": "120 футов",
+    "duration": "Концентрация, вплоть до 10 минут",
+    "time": "1 действие",
+    "classes": [
+        {
+            "name": "Бард",
+            "url": "/classes/bard",
+            "icon": "class/bard"
+        },
+        {
+            "name": "Волшебник",
+            "url": "/classes/wizard",
+            "icon": "class/wizard"
+        }
+    ],
+    "description": "<p>Вы призываете силу хаоса заразить сознание вашей цели.</p><p>Если цель проваливает спасбросок <span class=\"saving_throw\">Мудрости</span>, то она должна бросить <dice-roller formula=\"к20\">к20</dice-roller> и свериться с таблицей &laquo;Колебания мировоззрения&raquo;, чтобы определить своё новое мировоззрение, цель должна совершать бросок заново каждую минуту, пока длится заклинание. Мировоззрение цели перестаёт колебаться и возвращается к прежнему, когда заклинание оканчивается. Колебания мировоззрения не могут заставить цель стать дружественной или враждебной заклинателю, но могут быть причиной непредсказуемого поведения цели.</p><p><strong>Колебания мировоззрения</strong></p><div class=\"table-responsive\"><table><thead><tr><th><dice-roller formula=\"к20\" label=\"Мировоззрение\">к20</dice-roller></th><th style=\"text-align: left; width: 171px;\">Мировоззрение</th></tr></thead><tbody><tr><td style=\"width: 46px; text-align: center;\">1-2</td><td>Хаотично-доброе</td></tr><tr><td style=\"width: 46px; text-align: center;\">2-4</td><td>Хаотично-нейтральное</td></tr><tr><td style=\"width: 46px; text-align: center;\">5-7</td><td>Хаотично-злое</td></tr><tr><td style=\"width: 46px; text-align: center;\">8-9</td><td>Нейтрально-злое</td></tr><tr><td style=\"width: 46px; text-align: center;\">10-11</td><td>Законно-злое</td></tr><tr><td style=\"width: 46px; text-align: center;\">12-14</td><td>Законно-доброе</td></tr><tr><td style=\"width: 46px; text-align: center;\">15-16</td><td>Законно-нейтральное</td></tr><tr><td style=\"width: 46px; text-align: center;\">17-18</td><td>Нейтрально-доброе</td></tr><tr><td style=\"width: 46px; text-align: center;\">19-20</td><td>Нейтральное</td></tr></tbody></table></div>"
+}

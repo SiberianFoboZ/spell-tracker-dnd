@@ -1,0 +1,102 @@
+{
+    "name": {
+        "rus": "Огненный щит",
+        "eng": "Fire Shield"
+    },
+    "level": 4,
+    "school": "воплощение",
+    "components": {
+        "v": true,
+        "s": true,
+        "m": "кусочек фосфора или светлячок"
+    },
+    "url": "/spells/fire_shield",
+    "source": {
+        "shortName": "PHB",
+        "name": "Книга игрока",
+        "group": {
+            "name": "Официальные источники",
+            "shortName": "Basic"
+        },
+        "page": 249
+    },
+    "id": 191,
+    "range": "На себя",
+    "duration": "10 минут",
+    "time": "1 действие",
+    "classes": [
+        {
+            "name": "Волшебник",
+            "url": "/classes/wizard",
+            "icon": "class/wizard"
+        },
+        {
+            "name": "Друид",
+            "url": "/classes/druid",
+            "icon": "class/druid"
+        },
+        {
+            "name": "Чародей",
+            "url": "/classes/sorcerer",
+            "icon": "class/sorcerer"
+        },
+        {
+            "name": "Шаман",
+            "url": "/classes/shaman",
+            "icon": "class/shaman"
+        },
+        {
+            "name": "Магус",
+            "url": "/classes/magus",
+            "icon": "class/magus"
+        }
+    ],
+    "subclasses": [
+        {
+            "name": "Исчадие",
+            "url": "/classes/warlock/fiend",
+            "class": "Колдун"
+        },
+        {
+            "name": "Боевой Кузнец",
+            "url": "/classes/artificer/battle_smith",
+            "class": "Изобретатель"
+        },
+        {
+            "name": "Бронник",
+            "url": "/classes/artificer/armorer",
+            "class": "Изобретатель"
+        },
+        {
+            "name": "Круг Дикого Огня",
+            "url": "/classes/druid/wildfire",
+            "class": "Друид"
+        },
+        {
+            "name": "Мастер Кузнечного Дела",
+            "url": "/classes/artificer/forming",
+            "class": "Изобретатель"
+        },
+        {
+            "name": "Клятва Сияния",
+            "url": "/classes/paladin/oath_of_radiance",
+            "class": "Паладин"
+        },
+        {
+            "name": "Владыка Гениев",
+            "url": "/classes/warlock/genie_lord",
+            "class": "Колдун"
+        },
+        {
+            "name": "Хазорет: Домен Рвения",
+            "url": "/classes/cleric/hazoret_zeal",
+            "class": "Жрец"
+        },
+        {
+            "name": "Орден Танцоров Клинка",
+            "url": "/classes/magus/blade_dancers",
+            "class": "Магус"
+        }
+    ],
+    "description": "<p>На время длительности заклинания ваше тело покрывается тонким слоем пламени, испускающим яркий свет в пределах 10-футового радиуса и тусклый свет в пределах ещё 10 футов. Вы можете досрочно окончить это заклинание <em>Действием</em>.</p><p>Это пламя предоставляет вам либо тёплый щит, либо прохладный щит, на ваш выбор.</p><p>Тёплый щит даёт вам <strong>сопротивление</strong> к урону холодом, а прохладный щит даёт <strong>сопротивление</strong> к урону огнём.</p><p>Кроме того, каждый раз, когда существо, находящееся в пределах 5 футов от вас, попадает по вам рукопашной атакой, щит испускает пламя. Атакующий получает <dice-roller formula=\"2к8\">2к8</dice-roller> урона огнём в случае тёплого щита или <dice-roller formula=\"2к8\">2к8</dice-roller> урона холодом в случае прохладного щита.</p>"
+}

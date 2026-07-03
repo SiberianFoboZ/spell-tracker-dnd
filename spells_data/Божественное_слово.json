@@ -1,0 +1,33 @@
+{
+    "name": {
+        "rus": "Божественное слово",
+        "eng": "Divine Word"
+    },
+    "level": 7,
+    "school": "воплощение",
+    "components": {
+        "v": true
+    },
+    "url": "/spells/divine_word",
+    "source": {
+        "shortName": "PHB",
+        "name": "Книга игрока",
+        "group": {
+            "name": "Официальные источники",
+            "shortName": "Basic"
+        },
+        "page": 213
+    },
+    "id": 23,
+    "range": "30 футов",
+    "duration": "Мгновенная",
+    "time": "1 бонусное действие",
+    "classes": [
+        {
+            "name": "Жрец",
+            "url": "/classes/cleric",
+            "icon": "class/cleric"
+        }
+    ],
+    "description": "<p>Вы произносите божественное слово, наделённое силой, сформировавшей мир на заре творения. Выберите любое количество существ, которых вы видите в пределах дистанции.</p><p>Все эти существа, слышащие вас, должны совершить спасбросок <span class=\"saving_throw\">Харизмы</span>. При провале существо попадает под действие эффекта, основанного на текущем количестве хитов:</p><ul><li><span class=\"dice_text\">50</span> хитов или меньше: <detail-tooltip type=\"screen\"><a href=\"/screens/deafened\">глухота</a></detail-tooltip> на 1 минуту</li><li><span class=\"dice_text\">40</span> хитов или меньше: <detail-tooltip type=\"screen\"><a href=\"/screens/deafened\">глухота</a></detail-tooltip> и <detail-tooltip type=\"screen\"><a href=\"/screens/blinded\">слепота</a></detail-tooltip> на 10 минут</li><li><span class=\"dice_text\">30</span> хитов или меньше: <detail-tooltip type=\"screen\"><a href=\"/screens/blinded\">слепота</a></detail-tooltip>, <detail-tooltip type=\"screen\"><a href=\"/screens/deafened\">глухота</a></detail-tooltip> и <detail-tooltip type=\"screen\"><a href=\"/screens/Stunned\">ошеломление</a></detail-tooltip> на 1 час</li><li><span class=\"dice_text\">20</span> хитов или меньше: <detail-tooltip type=\"screen\"><a href=\"/screens/instant_death\">моментальная смерть</a></detail-tooltip></li></ul><p>Вне зависимости от текущих хитов, исчадия, небожители, феи и элементали, провалившие спасбросок, изгоняются на свой родной план (если только они уже там не находятся), и не могут вернуться на ваш текущий план в течение 24 часов кроме как посредством заклинания <detail-tooltip type=\"spell\"><a href=\"/spells/wish\">исполнение желаний [wish]</a></detail-tooltip>.</p>"
+}

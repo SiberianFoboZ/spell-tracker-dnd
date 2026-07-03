@@ -1,0 +1,45 @@
+{
+    "name": {
+        "rus": "Наступление ночи",
+        "eng": "Nightfall"
+    },
+    "level": 3,
+    "school": "вызов",
+    "components": {
+        "v": true,
+        "s": true
+    },
+    "ritual": true,
+    "concentration": true,
+    "url": "/spells/nightfall",
+    "source": {
+        "shortName": "MHH",
+        "name": "Мидгард Справочник героя",
+        "group": {
+            "name": "Контент от третьих лиц",
+            "shortName": "3rd"
+        }
+    },
+    "id": 623,
+    "range": "100 футов",
+    "duration": "Концентрация, вплоть до 10 минут",
+    "time": "1 действие",
+    "classes": [
+        {
+            "name": "Волшебник",
+            "url": "/classes/wizard",
+            "icon": "class/wizard"
+        },
+        {
+            "name": "Друид",
+            "url": "/classes/druid",
+            "icon": "class/druid"
+        },
+        {
+            "name": "Жрец",
+            "url": "/classes/cleric",
+            "icon": "class/cleric"
+        }
+    ],
+    "description": "<p>Вы велите ночи наступить раньше времени. Отточенным словом вы создаете 60-тифутовый цилиндр ночи с центром в точке в пределах дистанции. Область внутри цилиндра является обычной <detail-tooltip type=\"screen\"><a href=\"/screens/darkness\">тьмой</a></detail-tooltip>, <detail-tooltip type=\"screen\"><a href=\"/screens/heavily_obscured\">сильно заслоненной местностью</a></detail-tooltip>. Существа внутри затемнённого цилиндра могут видеть освещенные области за пределами цилиндра как обычно. Тьма простирается в небо на 100 футов или пока не сталкивается с препятствием, например, с потолком.</p>"
+}

@@ -1,0 +1,78 @@
+{
+    "name": {
+        "rus": "Метель",
+        "eng": "Sleet Storm"
+    },
+    "level": 3,
+    "school": "вызов",
+    "components": {
+        "v": true,
+        "s": true,
+        "m": "щепотка пыли и несколько капель воды"
+    },
+    "concentration": true,
+    "url": "/spells/sleet_storm",
+    "source": {
+        "shortName": "PHB",
+        "name": "Книга игрока",
+        "group": {
+            "name": "Официальные источники",
+            "shortName": "Basic"
+        },
+        "page": 239
+    },
+    "id": 147,
+    "range": "150 футов",
+    "duration": "Концентрация, вплоть до 1 минуты",
+    "time": "1 действие",
+    "classes": [
+        {
+            "name": "Волшебник",
+            "url": "/classes/wizard",
+            "icon": "class/wizard"
+        },
+        {
+            "name": "Друид",
+            "url": "/classes/druid",
+            "icon": "class/druid"
+        },
+        {
+            "name": "Чародей",
+            "url": "/classes/sorcerer",
+            "icon": "class/sorcerer"
+        },
+        {
+            "name": "Шаман",
+            "url": "/classes/shaman",
+            "icon": "class/shaman"
+        },
+        {
+            "name": "Магус",
+            "url": "/classes/magus",
+            "icon": "class/magus"
+        }
+    ],
+    "subclasses": [
+        {
+            "name": "Домен Бури",
+            "url": "/classes/cleric/tempest",
+            "class": "Жрец"
+        },
+        {
+            "name": "Бездонный",
+            "url": "/classes/warlock/fathomless",
+            "class": "Колдун"
+        },
+        {
+            "name": "Домен Горы",
+            "url": "/classes/cleric/mountain",
+            "class": "Жрец"
+        },
+        {
+            "name": "Владыка Гениев",
+            "url": "/classes/warlock/genie_lord",
+            "class": "Колдун"
+        }
+    ],
+    "description": "<p>Пока заклинание активно, в цилиндре высотой 20 футов и радиусом 40 футов с центром на точке, выбранной вами в пределах дистанции, идёт мокрый снег. Это <detail-tooltip type=\"screen\"><a href=\"/screens/heavily_obscured\">сильно заслонённая местность</a></detail-tooltip>, и открытые источники огня в ней тухнут. Пол в этой местности покрывается скользким льдом, что делает его <detail-tooltip type=\"screen\"><a href=\"/screens/difficult_terrain_move\">труднопроходимой местностью</a></detail-tooltip>.</p><p>Когда существо впервые за ход входит в область заклинания или начинает там ход, оно должно совершить спасбросок <span class=\"saving_throw\">Ловкости</span>. При провале оно <detail-tooltip type=\"screen\"><a href=\"/screens/condition_prone\">падает ничком</a></detail-tooltip>.</p><p><span>Если существо начинает свой ход в области заклинания и концентрируется<sup><a href=\"/rules/Errata_(PHB)\" title=\"изменено Эрратой\">1</a></sup>, оно должно совершить</span>&nbsp;успешный спасбросок <span class=\"saving_throw\">Телосложения</span> против Сл ваших заклинаний, иначе оно потеряет <detail-tooltip type=\"screen\"><a href=\"/screens/concentration\">концентрацию</a></detail-tooltip>.</p>"
+}

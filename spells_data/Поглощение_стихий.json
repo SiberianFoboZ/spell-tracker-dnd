@@ -1,0 +1,75 @@
+{
+    "name": {
+        "rus": "Поглощение стихий",
+        "eng": "Absorb Elements"
+    },
+    "level": 1,
+    "school": "ограждение",
+    "components": {
+        "s": true
+    },
+    "url": "/spells/absorb_elements",
+    "source": {
+        "shortName": "XGE",
+        "name": "Руководство Занатара обо всем",
+        "group": {
+            "name": "Официальные источники",
+            "shortName": "Basic"
+        }
+    },
+    "id": 430,
+    "range": "На себя",
+    "duration": "1 раунд",
+    "time": "1 реакция, при получении урона кислотой, холодом, огнем, электричеством или звуком ",
+    "classes": [
+        {
+            "name": "Волшебник",
+            "url": "/classes/wizard",
+            "icon": "class/wizard"
+        },
+        {
+            "name": "Друид",
+            "url": "/classes/druid",
+            "icon": "class/druid"
+        },
+        {
+            "name": "Следопыт",
+            "url": "/classes/ranger",
+            "icon": "class/ranger"
+        },
+        {
+            "name": "Чародей",
+            "url": "/classes/sorcerer",
+            "icon": "class/sorcerer"
+        },
+        {
+            "name": "Изобретатель",
+            "url": "/classes/artificer",
+            "icon": "class/artificer"
+        },
+        {
+            "name": "Шаман",
+            "url": "/classes/shaman",
+            "icon": "class/shaman"
+        },
+        {
+            "name": "Магус",
+            "url": "/classes/magus",
+            "icon": "class/magus"
+        },
+        {
+            "name": "Альтернативный следопыт",
+            "url": "/classes/alternate_ranger",
+            "icon": "class/alternate-ranger"
+        }
+    ],
+    "subclasses": [
+        {
+            "name": "Орден Чешуи",
+            "url": "/classes/magus/scales",
+            "class": "Магус"
+        }
+    ],
+    "description": "<p>Заклинание поглощает часть энергии, направленной на вас, ослабляя эффект и запасая эту энергию для использования во время следующей <em>рукопашной атаки</em>.</p><p>Вы получаете до начала своего следующего хода <strong>сопротивление </strong>к тому виду урона, который спровоцировал данное заклинание. Кроме того, когда вы впервые попадаете <em>рукопашной атакой</em> в следующем ходу, цель получает дополнительный урон <dice-roller formula=\"1d6\">1к6</dice-roller> этого вида, после чего заклинание заканчивается.</p>",
+    "upper": "Если вы сотворяете это заклинание, используя ячейку 2 уровня или выше, то дополнительный урон увеличивается на <dice-roller formula=\"1к6\">1к6</dice-roller> за каждый уровень ячейки выше 1."
+}

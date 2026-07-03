@@ -1,0 +1,40 @@
+{
+    "name": {
+        "rus": "Гигантское насекомое",
+        "eng": "Giant Insect"
+    },
+    "level": 4,
+    "school": "преобразование",
+    "components": {
+        "v": true,
+        "s": true
+    },
+    "concentration": true,
+    "url": "/spells/giant_insect",
+    "source": {
+        "shortName": "PHB",
+        "name": "Книга игрока",
+        "group": {
+            "name": "Официальные источники",
+            "shortName": "Basic"
+        },
+        "page": 220
+    },
+    "id": 55,
+    "range": "30 футов",
+    "duration": "Концентрация, до 10 минут",
+    "time": "1 действие",
+    "classes": [
+        {
+            "name": "Друид",
+            "url": "/classes/druid",
+            "icon": "class/druid"
+        },
+        {
+            "name": "Шаман",
+            "url": "/classes/shaman",
+            "icon": "class/shaman"
+        }
+    ],
+    "description": "<p>Вы превращаете на время действия заклинания до десяти многоножек, трёх пауков, пяти ос или одного скорпиона, находящихся в пределах дистанции, в гигантские версии своих сородичей.</p><p>Многоножка становится <detail-tooltip type=\"creature\"><a href=\"/bestiary/Giant_centipede\">гигантской многоножкой [giant centipede]</a></detail-tooltip>, паук становится <detail-tooltip type=\"creature\"><a href=\"/bestiary/Giant_spider\">гигантским пауком [giant spider],</a></detail-tooltip> оса становится <detail-tooltip type=\"creature\"><a href=\"/bestiary/Giant_wasp\">гигантской осой [giant wasp]</a></detail-tooltip>, а скорпион становится <detail-tooltip type=\"creature\"><a href=\"/bestiary/Giant_scorpion\">гигантским скорпионом [giant scorpion]</a></detail-tooltip>.</p><p>Все существа повинуются вашим устным командам, и в бою они в каждом раунде действуют в ваш ход. Действия и перемещения контролирует Мастер.</p><p>Существо сохраняет гигантский размер всю длительность заклинания, пока его хиты не опустятся до 0, или пока вы не окончите действием эффект на нём.</p><p>Мастер может позволить вам выбирать другие цели.</p><p>Например, если вы превращаете жука, его гигантская версия может обладать теми же характеристиками, что и гигантская оса.</p>"
+}

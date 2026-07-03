@@ -1,0 +1,38 @@
+{
+    "name": {
+        "rus": "Слово силы: Исцеление",
+        "eng": "Power Word Heal"
+    },
+    "level": 9,
+    "school": "воплощение",
+    "components": {
+        "v": true,
+        "s": true
+    },
+    "url": "/spells/power_word_heal",
+    "source": {
+        "shortName": "PHB",
+        "name": "Книга игрока",
+        "group": {
+            "name": "Официальные источники",
+            "shortName": "Basic"
+        }
+    },
+    "id": 307,
+    "range": "Касание",
+    "duration": "Мгновенная",
+    "time": "1 действие",
+    "classes": [
+        {
+            "name": "Бард",
+            "url": "/classes/bard",
+            "icon": "class/bard"
+        },
+        {
+            "name": "Жрец",
+            "url": "/classes/cleric",
+            "icon": "class/cleric"
+        }
+    ],
+    "description": "<p>Волна целительной энергии окутывает существо, которого вы касаетесь. Цель восстанавливает все свои хиты. Если существо <detail-tooltip type=\"screen\"><a href=\"/screens/frightened\">испугано</a></detail-tooltip>, <detail-tooltip type=\"screen\"><a href=\"/screens/charmed\">очаровано</a></detail-tooltip>, <detail-tooltip type=\"screen\"><a href=\"/screens/Stunned\">ошеломлено</a></detail-tooltip> или <detail-tooltip type=\"screen\"><a href=\"/screens/Paralyzed\">парализовано</a></detail-tooltip>, это состояние оканчивается.</p><p>Если существо лежит <detail-tooltip type=\"screen\"><a href=\"/screens/condition_prone\">ничком</a></detail-tooltip>, оно может <em>реакцией</em> встать. Это заклинание не оказывает никакого эффекта на нежить и конструктов.</p>"
+}

@@ -1,0 +1,44 @@
+{
+    "name": {
+        "rus": "Оживление конструкта",
+        "eng": "Animate Construct"
+    },
+    "level": 1,
+    "school": "преобразование",
+    "additionalType": "Механомагия",
+    "components": {
+        "v": true,
+        "s": true,
+        "m": "тело конструкта соответствующего размера"
+    },
+    "concentration": true,
+    "url": "/spells/animate_construct",
+    "source": {
+        "shortName": "MHH",
+        "name": "Мидгард Справочник героя",
+        "group": {
+            "name": "Контент от третьих лиц",
+            "shortName": "3rd"
+        }
+    },
+    "id": 638,
+    "range": "30 футов",
+    "duration": "Концентрация, вплоть до 10 минут",
+    "time": "1 действие",
+    "classes": [
+        {
+            "name": "Волшебник",
+            "url": "/classes/wizard",
+            "icon": "class/wizard"
+        }
+    ],
+    "subclasses": [
+        {
+            "name": "Школа Часовых Механизмов",
+            "url": "/classes/wizard/clockwork",
+            "class": "Волшебник"
+        }
+    ],
+    "description": "<p>Это заклинание оживляет тщательно подготовленный конструкт <em>Крошечного</em> размера. Объект действует немедленно в ваш ход и может атаковать, насколько это позволяют его способности. Вы можете приказать ему не атаковать, атаковать конкретных врагов или выполнять другие действия. Вы выбираете объект для оживления, и вы можете менять свой выбор каждый раз, когда творите заклинание. Стоимость объекта для оживления равна [его хиты х 10] зм. Объект может быть использован любое количество раз, если не был непоправимо повреждён или уничтожен.</p><p>Если в пределах доступности нет подходящего объекта, то вы вместо этого можете оживить незакреплённую груду металла или камней. До сотворения заклинания объекту необходимо придать подходящую форму (что может занять до минуты времени), и количество хитов конструкта уменьшено вдвое.</p><p>Оживлённый конструкт имеет <strong>Телосложение</strong> 10, <strong>Интеллект</strong> и <strong>Мудрость</strong> 3, и <strong>Харизму</strong> 1.</p><p>Другие характеристики определяются из его размера следующим образом. На больших уровнях:</p><p><strong>Характеристики оживлённых конструктов</strong></p><div claass=\"table-responsive\"><table class=\"dnd5_table\"><thead><tr style=\"height: 18divx;\"><td style=\"text-align: center; height: 18divx;\"><strong>Размер </strong></td><td style=\"text-align: center; height: 18divx;\"><strong>Хиты </strong></td><td style=\"text-align: center; height: 18divx;\"><strong>КД </strong></td><td style=\"text-align: center; height: 18divx;\"><strong>Атака </strong></td><td style=\"text-align: center; height: 18divx;\"><strong>Урон</strong></td><td style=\"text-align: center; height: 18divx;\"><strong>Сил </strong></td><td style=\"text-align: center; height: 18divx;\"><strong>Лов</strong></td><td style=\"text-align: center; height: 18divx;\"><strong>Ячейка з-ний</strong></td></tr></thead><tbody><tr style=\"height: 18divx;\"><td style=\"height: 18divx;\">Крошечный</td><td style=\"height: 18divx; text-align: center;\">15</td><td style=\"height: 18divx; text-align: center;\">12</td><td style=\"height: 18divx; text-align: center;\"><dice-roller formula=\"к20 + 3\">+3</dice-roller></td><td style=\"height: 18divx; text-align: center;\"><dice-roller formula=\"1к4 + 4 \">1к4 + 4</dice-roller></td><td style=\"height: 18divx; text-align: center;\">4</td><td style=\"height: 18divx; text-align: center;\">16</td><td style=\"height: 18divx; text-align: center;\">1</td></tr><tr style=\"height: 18divx;\"><td style=\"height: 18divx;\">Маленький</td><td style=\"height: 18divx; text-align: center;\">25</td><td style=\"height: 18divx; text-align: center;\">13</td><td style=\"height: 18divx; text-align: center;\"><dice-roller formula=\"к20 + 4\">+4</dice-roller></td><td style=\"height: 18divx; text-align: center;\"><dice-roller formula=\"1к8 + 2\">1к8 + 2</dice-roller></td><td style=\"height: 18divx; text-align: center;\">6</td><td style=\"height: 18divx; text-align: center;\">14</td><td style=\"height: 18divx; text-align: center;\">2</td></tr><tr style=\"height: 21divx;\"><td style=\"height: 21divx;\">Средний</td><td style=\"height: 21divx; text-align: center;\">40</td><td style=\"height: 21divx; text-align: center;\">14</td><td style=\"height: 21divx; text-align: center;\"><dice-roller formula=\"к20 + 5\">+5</dice-roller></td><td style=\"height: 21divx; text-align: center;\"><dice-roller formula=\"2к6+2 \">2к6 + 1</dice-roller></td><td style=\"height: 21divx; text-align: center;\">10</td><td style=\"height: 21divx; text-align: center;\">12</td><td style=\"height: 21divx; text-align: center;\">3</td></tr><tr style=\"height: 18divx;\"><td style=\"height: 18divx;\">Большой</td><td style=\"height: 18divx; text-align: center;\">50</td><td style=\"height: 18divx; text-align: center;\">15</td><td style=\"height: 18divx; text-align: center;\"><dice-roller formula=\"к20 + 6\">+6</dice-roller></td><td style=\"height: 18divx; text-align: center;\"><dice-roller formula=\"2к10 + 2\">2к10 + 2</dice-roller></td><td style=\"height: 18divx; text-align: center;\">14</td><td style=\"height: 18divx; text-align: center;\">10</td><td style=\"height: 18divx; text-align: center;\">4</td></tr><tr style=\"height: 18divx;\"><td style=\"height: 18divx;\">Огромный</td><td style=\"height: 18divx; text-align: center;\">80</td><td style=\"height: 18divx; text-align: center;\">16</td><td style=\"height: 18divx; text-align: center;\"><dice-roller formula=\"к20 + 8\">+8</dice-roller></td><td style=\"height: 18divx; text-align: center;\"><dice-roller formula=\"2к12 + 4\">2к12 + 4</dice-roller></td><td style=\"height: 18divx; text-align: center;\">18</td><td style=\"height: 18divx; text-align: center;\">8</td><td style=\"height: 18divx; text-align: center;\">5</td></tr><tr style=\"height: 18divx;\"><td style=\"height: 18divx;\">Громадный</td><td style=\"height: 18divx; text-align: center;\">100</td><td style=\"height: 18divx; text-align: center;\">17</td><td style=\"height: 18divx; text-align: center;\"><dice-roller formula=\"к20 + 10\">+10</dice-roller></td><td style=\"height: 18divx; text-align: center;\"><dice-roller formula=\"4к8 + 6\">4к8 + 6</dice-roller></td><td style=\"height: 18divx; text-align: center;\">20</td><td style=\"height: 18divx; text-align: center;\">6</td><td style=\"height: 18divx; text-align: center;\">6</td></tr></tbody></table></div>",
+    "upper": "Накладывание этого заклинания, используя ячейку более высокого уровня, позволяет вам оживить конструкт большего размера, как показано в таблице."
+}

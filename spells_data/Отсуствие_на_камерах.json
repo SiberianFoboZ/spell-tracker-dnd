@@ -1,0 +1,46 @@
+{
+    "name": {
+        "rus": "Отсуствие на камерах",
+        "eng": "Invisibility to Cameras"
+    },
+    "level": 3,
+    "school": "иллюзия",
+    "additionalType": "техномагия",
+    "components": {
+        "v": true,
+        "s": true,
+        "m": "клочок черной бумаги"
+    },
+    "concentration": true,
+    "url": "/spells/invisibility_to_cameras",
+    "source": {
+        "shortName": "UAMM",
+        "name": "Unearthed Arcana: Современная магия",
+        "group": {
+            "name": "Тестовый материал",
+            "shortName": "UA"
+        }
+    },
+    "id": 943,
+    "range": "10 футов",
+    "duration": "Концентрация, вплоть до 1 минуты",
+    "time": "1 действие",
+    "classes": [
+        {
+            "name": "Волшебник",
+            "url": "/classes/wizard",
+            "icon": "class/wizard"
+        },
+        {
+            "name": "Колдун",
+            "url": "/classes/warlock",
+            "icon": "class/warlock"
+        },
+        {
+            "name": "Чародей",
+            "url": "/classes/sorcerer",
+            "icon": "class/sorcerer"
+        }
+    ],
+    "description": "<p>Четыре существа по вашему выбору в пределах досягаемости становятся <detail-tooltip type=\"screen\"><a href=\"/screens/invisible\">невидимыми</a></detail-tooltip> для электронных датчиков и камер на время действия заклинания.</p><p>Все, что носит или несет цель, также невозможно обнаружить, пока оно находится на теле цели.</p><p>Цели все еще остаются видимыми для зрения.</p>"
+}

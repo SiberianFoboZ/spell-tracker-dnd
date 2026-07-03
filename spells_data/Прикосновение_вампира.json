@@ -1,0 +1,72 @@
+{
+    "name": {
+        "rus": "Прикосновение вампира",
+        "eng": "Vampiric Touch"
+    },
+    "level": 3,
+    "school": "некромантия",
+    "components": {
+        "v": true,
+        "s": true
+    },
+    "concentration": true,
+    "url": "/spells/vampiric_touch",
+    "source": {
+        "shortName": "PHB",
+        "name": "Книга игрока",
+        "group": {
+            "name": "Официальные источники",
+            "shortName": "Basic"
+        }
+    },
+    "id": 263,
+    "range": "На себя",
+    "duration": "Концентрация, вплоть до 1 минуты",
+    "time": "1 действие",
+    "classes": [
+        {
+            "name": "Волшебник",
+            "url": "/classes/wizard",
+            "icon": "class/wizard"
+        },
+        {
+            "name": "Колдун",
+            "url": "/classes/warlock",
+            "icon": "class/warlock"
+        },
+        {
+            "name": "Чародей",
+            "url": "/classes/sorcerer",
+            "icon": "class/sorcerer"
+        }
+    ],
+    "subclasses": [
+        {
+            "name": "Домен Упокоения",
+            "url": "/classes/cleric/grave",
+            "class": "Жрец"
+        },
+        {
+            "name": "Домен Смерти",
+            "url": "/classes/cleric/death",
+            "class": "Жрец"
+        },
+        {
+            "name": "Домен Голода",
+            "url": "/classes/cleric/hunger",
+            "class": "Жрец"
+        },
+        {
+            "name": "Бонту: Домен Амбиций",
+            "url": "/classes/cleric/bontu_ambition",
+            "class": "Жрец"
+        },
+        {
+            "name": "Связующий Проклятия",
+            "url": "/classes/shaman/curse_binder",
+            "class": "Шаман"
+        }
+    ],
+    "description": "<p>Касание вашей окутанной тенями рукой может вытягивать жизненные силы у других, залечивая ваши раны.</p><p>Совершите <em>рукопашную атаку заклинанием</em> по существу в пределах вашей досягаемости. При попадании цель получает <dice-roller formula=\"3к6\" label=\"Урон некротической энергией\">3к6</dice-roller> урона некротической энергией, а вы восстанавливаете количество хитов, равное половине причинённого урона некротической энергией. Пока заклинание активно, вы в каждом ходу можете <em>Действием</em> совершать эту атаку.</p>",
+    "upper": "Если вы накладываете это заклинание, используя ячейку 4 уровня или выше, урон увеличивается на <dice-roller formula=\"1к6\">1к6</dice-roller> за каждый уровень ячейки выше третьего."
+}

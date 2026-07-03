@@ -1,0 +1,57 @@
+{
+    "name": {
+        "rus": "Паутина",
+        "eng": "Web"
+    },
+    "level": 2,
+    "school": "вызов",
+    "components": {
+        "v": true,
+        "s": true,
+        "m": "кусочек паутины"
+    },
+    "concentration": true,
+    "url": "/spells/web",
+    "source": {
+        "shortName": "PHB",
+        "name": "Книга игрока",
+        "group": {
+            "name": "Официальные источники",
+            "shortName": "Basic"
+        }
+    },
+    "id": 213,
+    "range": "60 футов",
+    "duration": "Концентрация, вплоть до 1 часа",
+    "time": "1 действие",
+    "classes": [
+        {
+            "name": "Волшебник",
+            "url": "/classes/wizard",
+            "icon": "class/wizard"
+        },
+        {
+            "name": "Чародей",
+            "url": "/classes/sorcerer",
+            "icon": "class/sorcerer"
+        },
+        {
+            "name": "Изобретатель",
+            "url": "/classes/artificer",
+            "icon": "class/artificer"
+        }
+    ],
+    "subclasses": [
+        {
+            "name": "Роевод",
+            "url": "/classes/ranger/swarmkeeper",
+            "class": "Следопыт"
+        },
+        {
+            "name": "Домен Скорости",
+            "url": "/classes/cleric/speed",
+            "class": "Жрец"
+        }
+    ],
+    "description": "<p>Вы создаёте массу густой и клейкой паутины в точке на ваш выбор в пределах дистанции. Паутина заполняет куб с длиной ребра 20 футов на время длительности заклинания. Паутина является <detail-tooltip type=\"screen\"><a href=\"/screens/Difficult_Terrain_Move\">труднопроходимой</a></detail-tooltip> местностью и <detail-tooltip type=\"screen\"><a href=\"/screens/Lightly_Obscured\">слабо заслоняет</a></detail-tooltip> местность.</p><p>Если паутина не прикована к двум прочным структурам (таким как стены или деревья) и не разложена по полу, стене или потолку, созданная паутина опадает сама, и заклинание оканчивается в начале вашего следующего хода. Паутина, разложенная по плоской поверхности, обладает толщиной 5 футов.</p><p>Все существа, начинающие ход в паутине, или входящие в неё в свой ход, должны совершать спасбросок <span class=\"saving_throw\">Ловкости</span>. При провале существо становится <detail-tooltip type=\"screen\"><a href=\"/screens/restrained\">опутанным</a></detail-tooltip>, пока остаётся в паутине, или пока не вырвется. Существо, опутанное паутиной, может действием совершить проверку <strong>Силы</strong> против Сл ваших заклинаний. В случае успеха оно перестаёт быть <detail-tooltip type=\"screen\"><a href=\"/screens/restrained\">опутанным</a></detail-tooltip>.</p><p><strong>Паутина огнеопасна.</strong> Любой 5-футовый куб паутины, соприкоснувшийся с огнём, сгорает за 1 раунд, причиняя&nbsp;<dice-roller formula=\"2d4\">2к4</dice-roller> урона огнём всем существам, начинающим ход в огне.</p>"
+}

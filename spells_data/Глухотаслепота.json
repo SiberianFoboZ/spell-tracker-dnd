@@ -1,0 +1,106 @@
+{
+    "name": {
+        "rus": "Глухота/слепота",
+        "eng": "Blindness or Deafness"
+    },
+    "level": 2,
+    "school": "некромантия",
+    "components": {
+        "v": true
+    },
+    "url": "/spells/blindness_or_deafness",
+    "source": {
+        "shortName": "PHB",
+        "name": "Книга игрока",
+        "group": {
+            "name": "Официальные источники",
+            "shortName": "Basic"
+        },
+        "page": 220
+    },
+    "id": 57,
+    "range": "30 футов",
+    "duration": "1 минута",
+    "time": "1 действие",
+    "classes": [
+        {
+            "name": "Бард",
+            "url": "/classes/bard",
+            "icon": "class/bard"
+        },
+        {
+            "name": "Волшебник",
+            "url": "/classes/wizard",
+            "icon": "class/wizard"
+        },
+        {
+            "name": "Жрец",
+            "url": "/classes/cleric",
+            "icon": "class/cleric"
+        },
+        {
+            "name": "Чародей",
+            "url": "/classes/sorcerer",
+            "icon": "class/sorcerer"
+        },
+        {
+            "name": "Магус",
+            "url": "/classes/magus",
+            "icon": "class/magus"
+        }
+    ],
+    "subclasses": [
+        {
+            "name": "Исчадие",
+            "url": "/classes/warlock/fiend",
+            "class": "Колдун"
+        },
+        {
+            "name": "Бессмертный",
+            "url": "/classes/warlock/undying",
+            "class": "Колдун"
+        },
+        {
+            "name": "Домен Смерти",
+            "url": "/classes/cleric/death",
+            "class": "Жрец"
+        },
+        {
+            "name": "Хаос",
+            "url": "/classes/warlock/chaos",
+            "class": "Колдун"
+        },
+        {
+            "name": "Круг Спор",
+            "url": "/classes/druid/spores",
+            "class": "Друид"
+        },
+        {
+            "name": "Нежить",
+            "url": "/classes/warlock/undead",
+            "class": "Колдун"
+        },
+        {
+            "name": "Пожиратель Света",
+            "url": "/classes/warlock/the_light_eater",
+            "class": "Колдун"
+        },
+        {
+            "name": "Тенеплёт",
+            "url": "/classes/rogue/shadowlet",
+            "class": "Плут"
+        },
+        {
+            "name": "Связующий Проклятия",
+            "url": "/classes/shaman/curse_binder",
+            "class": "Шаман"
+        },
+        {
+            "name": "Орден Чароборцев",
+            "url": "/classes/magus/spellbreakers",
+            "class": "Магус"
+        }
+    ],
+    "description": "<p>Вы можете ослепить врага или сделать его глухим.</p><p>Выберите одно существо, которое видите в пределах дистанции, которое тут же совершает спасбросок <span class=\"saving_throw\">Телосложения</span>. В случае провала цель становится на время действия заклинания <detail-tooltip type=\"screen\"><a href=\"/screens/blinded\">ослепшей</a></detail-tooltip> или <detail-tooltip type=\"screen\"><a href=\"/screens/deafened\">оглохшей</a></detail-tooltip> (на ваш выбор).</p><p>В конце каждого своего хода цель может совершать спасбросок <span class=\"saving_throw\">Телосложения</span>. В случае успеха заклинание оканчивается.</p>",
+    "upper": "Если вы накладываете это заклинание, используя ячейку 3 уровня или выше, вы можете сделать целью одно дополнительное существо за каждый уровень ячейки выше второго."
+}

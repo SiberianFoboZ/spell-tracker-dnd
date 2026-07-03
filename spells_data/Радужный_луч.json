@@ -1,0 +1,34 @@
+{
+    "name": {
+        "rus": "Радужный луч",
+        "eng": "Prismatic Ray"
+    },
+    "level": 5,
+    "school": "вызов",
+    "additionalType": "Рунная магия",
+    "components": {
+        "v": true,
+        "s": true
+    },
+    "url": "/spells/prismatic_ray",
+    "source": {
+        "shortName": "MHH",
+        "name": "Мидгард Справочник героя",
+        "group": {
+            "name": "Контент от третьих лиц",
+            "shortName": "3rd"
+        }
+    },
+    "id": 689,
+    "range": "100 футов",
+    "duration": "Мгновенная или 5 раундов",
+    "time": "1 действие",
+    "classes": [
+        {
+            "name": "Волшебник",
+            "url": "/classes/wizard",
+            "icon": "class/wizard"
+        }
+    ],
+    "description": "<p>Луч переливающийся всеми цветами радуги вырывается из вашей руки.</p><p>Совершите <em>дальнобойную атаку заклинанием</em> против одной цели. Эффект луча меняется в зависимости от того, какой цвет доминировал в луче, когда тот поразил цель.&nbsp;Совершите бросок <dice-roller formula=\"к8\">к8</dice-roller>.</p><div claass=\"table-responsive\"><table><thead><tr><th><dice-roller formula=\"к8\">к8</dice-roller></th><th style=\"text-align: left;\">Цвет луча</th><th style=\"text-align: left;\">Урон или состояние цели</th><th style=\"text-align: left;\">Спасбросок</th></tr></thead><tbody><tr><td style=\"text-align: center;\">1</td><td>Красный</td><td><dice-roller formula=\"8к10\">8к10</dice-roller> огнём</td><td>Ловкость</td></tr><tr><td style=\"text-align: center;\">2</td><td>Оранжевый</td><td><dice-roller formula=\"8к10\">8к10</dice-roller> ядом</td><td>Ловкость</td></tr><tr><td style=\"text-align: center;\">3</td><td>Жёлтый</td><td><dice-roller formula=\"8к10\">8к10</dice-roller> молнией</td><td>Ловкость</td></tr><tr><td style=\"text-align: center;\">4</td><td>Зелёный</td><td><detail-tooltip type=\"screen\"><a href=\"/screens/poisoned\">Отравленный </a></detail-tooltip></td><td>Телосложение</td></tr><tr><td style=\"text-align: center;\">5</td><td>Синий</td><td><detail-tooltip type=\"screen\"><a href=\"/screens/deafened\">Оглушённый </a></detail-tooltip></td><td>Телосложение</td></tr><tr><td style=\"text-align: center;\">6</td><td>Индиго</td><td><detail-tooltip type=\"screen\"><a href=\"/screens/frightened\">Испуганный </a></detail-tooltip></td><td>Мудрость</td></tr><tr><td style=\"text-align: center;\">7</td><td>Фиолетовый</td><td><detail-tooltip type=\"screen\"><a href=\"/screens/stunned\">Ошеломлённый </a></detail-tooltip></td><td>Телосложение</td></tr><tr><td style=\"text-align: center;\">8</td><td>Переливающийся</td><td><detail-tooltip type=\"screen\"><a href=\"/screens/blinded\">Ослеплённый</a></detail-tooltip></td><td>Телосложение</td></tr></tbody></table></div><p>Успешный спасбросок <span class=\"saving_throw\">Ловкости</span> уменьшает урон наполовину.</p><p>Успешный спасбросок <span class=\"saving_throw\">Телосложения</span> или <span class=\"saving_throw\">Мудрости</span> отменяет эффект заклинания; цель под воздействием заклинания повторяет спасбросок в конце своего хода, оканчивая эффект на себе при успехе.</p><p>При <detail-tooltip type=\"screen\"><a href=\"/screens/critical_hit\">критическом попадании</a></detail-tooltip> заклинание не наносит дополнительного урона, но заклинатель может самостоятельно выбрать тип луча, который поразит цель.</p>"
+}

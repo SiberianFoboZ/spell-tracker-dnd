@@ -1,0 +1,37 @@
+{
+    "name": {
+        "rus": "Кипящее масло",
+        "eng": "Boiling Oil"
+    },
+    "level": 2,
+    "school": "воплощение",
+    "additionalType": "Боевая магия",
+    "components": {
+        "v": true,
+        "s": true,
+        "m": "флакон с маслом"
+    },
+    "concentration": true,
+    "url": "/spells/boiling_oil",
+    "source": {
+        "shortName": "MHH",
+        "name": "Мидгард Справочник героя",
+        "group": {
+            "name": "Контент от третьих лиц",
+            "shortName": "3rd"
+        }
+    },
+    "id": 574,
+    "range": "60 футов",
+    "duration": "Концентрация, вплоть до 1 минуты",
+    "time": "1 действие",
+    "classes": [
+        {
+            "name": "Волшебник",
+            "url": "/classes/wizard",
+            "icon": "class/wizard"
+        }
+    ],
+    "description": "<p>Вы призываете неглубокую лужу кипящего масла радиусом 30 футов с центром в точки в пределах дистанции.</p><p>Лужа является <detail-tooltip type=\"screen\"><a href=\"/screens/Difficult_Terrain_Move\">труднопроходимой местностью</a></detail-tooltip>, и всякое существо, входящее в лужу или начинающее в ней свой ход, получает урон <dice-roller formula=\"3к8\">3к8</dice-roller> огнем и <detail-tooltip type=\"screen\"><a href=\"/screens/Condition_Prone\">падает ничком</a></detail-tooltip>. Существа, совершающие успешный спасбросок <span class=\"saving_throw\">Ловкости</span>, получают только половину урона и не <detail-tooltip type=\"screen\"><a href=\"/screens/Condition_Prone\">падает ничком</a></detail-tooltip>.</p>",
+    "upper": "Если вы накладываете это заклинание, используя ячейку 3 уровня или выше, урон увеличивается на <dice-roller formula=\"1к8\">1к8</dice-roller> за каждый уровень ячейки выше 2."
+}

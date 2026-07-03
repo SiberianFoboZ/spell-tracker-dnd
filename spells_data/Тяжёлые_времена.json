@@ -1,0 +1,38 @@
+{
+    "name": {
+        "rus": "Тяжёлые времена",
+        "eng": "Bad Timing"
+    },
+    "level": 2,
+    "school": "прорицание",
+    "additionalType": "Магия Хаоса",
+    "components": {
+        "v": true
+    },
+    "url": "/spells/bad_timing",
+    "source": {
+        "shortName": "MHH",
+        "name": "Мидгард Справочник героя",
+        "group": {
+            "name": "Контент от третьих лиц",
+            "shortName": "3rd"
+        }
+    },
+    "id": 741,
+    "range": "60 футов",
+    "duration": "Мгновенная",
+    "time": "1 действие",
+    "classes": [
+        {
+            "name": "Бард",
+            "url": "/classes/bard",
+            "icon": "class/bard"
+        },
+        {
+            "name": "Волшебник",
+            "url": "/classes/wizard",
+            "icon": "class/wizard"
+        }
+    ],
+    "description": "<p>Вы указываете на видимое вами существо и закручиваете потоки хаотической энергии вокруг его судьбы. Если цель проваливает спасбросок <span class=\"saving_throw\">Харизмы</span>, следующий бросок атаки или проверка характеристики, которую существо совершает в следующие 10 минут, совершается с <span class=\"disadvantage\">помехой</span>.</p>"
+}

@@ -1,0 +1,49 @@
+{
+    "name": {
+        "rus": "Предвидение",
+        "eng": "Foresight"
+    },
+    "level": 9,
+    "school": "прорицание",
+    "components": {
+        "v": true,
+        "s": true,
+        "m": "перо колибри"
+    },
+    "url": "/spells/foresight",
+    "source": {
+        "shortName": "PHB",
+        "name": "Книга игрока",
+        "group": {
+            "name": "Официальные источники",
+            "shortName": "Basic"
+        }
+    },
+    "id": 250,
+    "range": "Касание",
+    "duration": "8 часов",
+    "time": "1 минута",
+    "classes": [
+        {
+            "name": "Бард",
+            "url": "/classes/bard",
+            "icon": "class/bard"
+        },
+        {
+            "name": "Волшебник",
+            "url": "/classes/wizard",
+            "icon": "class/wizard"
+        },
+        {
+            "name": "Друид",
+            "url": "/classes/druid",
+            "icon": "class/druid"
+        },
+        {
+            "name": "Колдун",
+            "url": "/classes/warlock",
+            "icon": "class/warlock"
+        }
+    ],
+    "description": "<p>Вы касаетесь согласного существа, даруя ограниченную способность предвидеть будущее.</p><p>Пока заклинание активно, цель нельзя <detail-tooltip type=\"screen\"><a href=\"/screens/Surprise\">застать врасплох</a></detail-tooltip>, и она совершает с <span class=\"advantage\">преимуществом</span> броски атаки, проверки характеристик и спасброски.</p><p>Кроме того, пока заклинание активно, другие существа совершают по цели броски атаки с <span class=\"disadvantage\">помехой</span>.</p><p>Это заклинание мгновенно оканчивается, если вы активируете его ещё раз до окончания длительности.</p>"
+}

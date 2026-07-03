@@ -1,0 +1,90 @@
+{
+    "name": {
+        "rus": "Фальшивый двойник",
+        "eng": "Mislead"
+    },
+    "level": 5,
+    "school": "иллюзия",
+    "components": {
+        "s": true
+    },
+    "concentration": true,
+    "url": "/spells/mislead",
+    "source": {
+        "shortName": "PHB",
+        "name": "Книга игрока",
+        "group": {
+            "name": "Официальные источники",
+            "shortName": "Basic"
+        }
+    },
+    "id": 358,
+    "range": "На себя",
+    "duration": "Концентрация, до 1 часа",
+    "time": "1 действие",
+    "classes": [
+        {
+            "name": "Бард",
+            "url": "/classes/bard",
+            "icon": "class/bard"
+        },
+        {
+            "name": "Волшебник",
+            "url": "/classes/wizard",
+            "icon": "class/wizard"
+        },
+        {
+            "name": "Колдун",
+            "url": "/classes/warlock",
+            "icon": "class/warlock"
+        }
+    ],
+    "subclasses": [
+        {
+            "name": "Домен Сумрака",
+            "url": "/classes/cleric/twilight",
+            "class": "Жрец"
+        },
+        {
+            "name": "Фейский Странник",
+            "url": "/classes/ranger/fey_wanderer",
+            "class": "Следопыт"
+        },
+        {
+            "name": "Хаос",
+            "url": "/classes/warlock/chaos",
+            "class": "Колдун"
+        },
+        {
+            "name": "Конклав Амазонок",
+            "url": "/classes/ranger/conclave_of_the_amazons",
+            "class": "Следопыт"
+        },
+        {
+            "name": "Домен Кошки",
+            "url": "/classes/cleric/cat",
+            "class": "Жрец"
+        },
+        {
+            "name": "Домен Часовых Механизмов",
+            "url": "/classes/cleric/clockwork",
+            "class": "Жрец"
+        },
+        {
+            "name": "Домен Тьмы",
+            "url": "/classes/cleric/darkness",
+            "class": "Жрец"
+        },
+        {
+            "name": "Домен Лабиринта",
+            "url": "/classes/cleric/labyrinth",
+            "class": "Жрец"
+        },
+        {
+            "name": "Орден Полумрака",
+            "url": "/classes/magus/shades",
+            "class": "Магус"
+        }
+    ],
+    "description": "<p>Вы становитесь <detail-tooltip type=\"screen\"><a href=\"/screens/invisible\">невидимым</a></detail-tooltip>, и в то же время в том месте, где вы были, появляется ваш иллюзорный двойник. Двойник существует, пока заклинание активно, но <detail-tooltip type=\"screen\"><a href=\"/screens/invisible\">невидимость</a></detail-tooltip> оканчивается, если вы атакуете или накладываете заклинание.</p><p>Вы можете <em>Действием</em> переместить своего иллюзорного двойника на расстояние, вдвое превышающее вашу скорость, и заставить его жестикулировать, говорить и вести себя так, как вам хочется.</p><p>Вы можете видеть его глазами и слышать его ушами, как если бы вы находились там же, где он.</p><p>В каждом своём ходу вы можете <em>бонусным действием</em> переключиться с его чувств на свои, или обратно. Пока вы используете его чувства, вы считаетесь <detail-tooltip type=\"screen\"><a href=\"/screens/blinded\">ослеплённым</a></detail-tooltip> и <detail-tooltip type=\"screen\"><a href=\"/screens/deafened\">глухим</a></detail-tooltip> для своего окружения</p>"
+}

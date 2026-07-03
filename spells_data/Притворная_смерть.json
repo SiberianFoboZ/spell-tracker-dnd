@@ -1,0 +1,67 @@
+{
+    "name": {
+        "rus": "Притворная смерть",
+        "eng": "Feign Death"
+    },
+    "level": 3,
+    "school": "некромантия",
+    "components": {
+        "v": true,
+        "s": true,
+        "m": "щепотка кладбищенской земли"
+    },
+    "ritual": true,
+    "url": "/spells/feign_death",
+    "source": {
+        "shortName": "PHB",
+        "name": "Книга игрока",
+        "group": {
+            "name": "Официальные источники",
+            "shortName": "Basic"
+        }
+    },
+    "id": 266,
+    "range": "Касание",
+    "duration": "1 час",
+    "time": "1 действие",
+    "classes": [
+        {
+            "name": "Бард",
+            "url": "/classes/bard",
+            "icon": "class/bard"
+        },
+        {
+            "name": "Волшебник",
+            "url": "/classes/wizard",
+            "icon": "class/wizard"
+        },
+        {
+            "name": "Друид",
+            "url": "/classes/druid",
+            "icon": "class/druid"
+        },
+        {
+            "name": "Жрец",
+            "url": "/classes/cleric",
+            "icon": "class/cleric"
+        },
+        {
+            "name": "Шаман",
+            "url": "/classes/shaman",
+            "icon": "class/shaman"
+        }
+    ],
+    "subclasses": [
+        {
+            "name": "Бессмертный",
+            "url": "/classes/warlock/undying",
+            "class": "Колдун"
+        },
+        {
+            "name": "Королева Воронов",
+            "url": "/classes/warlock/the_raven_queen",
+            "class": "Колдун"
+        }
+    ],
+    "description": "<p>Вы касаетесь согласного существа и погружаете его в каталептическое состояние, не отличимое от смерти.</p><p>Пока заклинание активно, или пока вы не коснётесь <em>Действием</em> цели, снимая заклинание, цель выглядит мёртвой для любого обследования и заклинаний, определяющих состояние цели.</p><p>Цель <detail-tooltip type=\"screen\"><a href=\"/screens/blinded\">ослеплена</a></detail-tooltip> и <detail-tooltip type=\"screen\"><a href=\"/screens/Incapacitated\">недееспособна</a></detail-tooltip>, а скорость равна 0.</p><p>Цель получает <strong>сопротивление</strong> всем видам урона кроме психической энергии.</p><p>Если цель была больна или <detail-tooltip type=\"screen\"><a href=\"/screens/poisoned\">отравлена</a></detail-tooltip>, когда вы накладываете это заклинание, или становится больной или <detail-tooltip type=\"screen\"><a href=\"/screens/poisoned\">отравленной</a></detail-tooltip>, находясь под его действием, болезни и яды не оказывают никакого эффекта, пока заклинание не окончится.</p>"
+}

@@ -1,0 +1,45 @@
+{
+    "name": {
+        "rus": "Взор ослепительных снегов",
+        "eng": "Snowblind Stare"
+    },
+    "level": 2,
+    "school": "некромантия",
+    "additionalType": "Рунная магия",
+    "components": {
+        "v": true,
+        "s": true
+    },
+    "concentration": true,
+    "url": "/spells/snowblind_stare",
+    "source": {
+        "shortName": "MHH",
+        "name": "Мидгард Справочник героя",
+        "group": {
+            "name": "Контент от третьих лиц",
+            "shortName": "3rd"
+        }
+    },
+    "id": 512,
+    "range": "На себя",
+    "duration": "Концентрация, до 2 раундов",
+    "time": "1 действие",
+    "classes": [
+        {
+            "name": "Волшебник",
+            "url": "/classes/wizard",
+            "icon": "class/wizard"
+        },
+        {
+            "name": "Друид",
+            "url": "/classes/druid",
+            "icon": "class/druid"
+        },
+        {
+            "name": "Жрец",
+            "url": "/classes/cleric",
+            "icon": "class/cleric"
+        }
+    ],
+    "description": "<p>Ваши глаза сияют ярким, холодным светом, который накладывает <detail-tooltip type=\"screen\"><a href=\"/screens/Snow_Blindness\">снежную слепоту [snow blindness]</a></detail-tooltip> на указанное существо в пределах 30 футов от вас.</p><p>Если цель проваливает спасбросок <strong><span class=\"saving_throw\">Телосложения</span></strong>, то получает первую степень снежной слепоты, или вторую степень, если оно уже находится под первой степенью. Цель восстанавливается так, как указано в описании снежной слепоты.</p>"
+}

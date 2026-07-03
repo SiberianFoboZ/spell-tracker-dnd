@@ -1,0 +1,38 @@
+{
+    "name": {
+        "rus": "Находчивость",
+        "eng": "Glibness"
+    },
+    "level": 8,
+    "school": "преобразование",
+    "components": {
+        "v": true
+    },
+    "url": "/spells/glibness",
+    "source": {
+        "shortName": "PHB",
+        "name": "Книга игрока",
+        "group": {
+            "name": "Официальные источники",
+            "shortName": "Basic"
+        },
+        "page": 243
+    },
+    "id": 164,
+    "range": "На себя",
+    "duration": "1 час",
+    "time": "1 действие",
+    "classes": [
+        {
+            "name": "Бард",
+            "url": "/classes/bard",
+            "icon": "class/bard"
+        },
+        {
+            "name": "Колдун",
+            "url": "/classes/warlock",
+            "icon": "class/warlock"
+        }
+    ],
+    "description": "<p>Пока заклинание не окончится, каждый раз, когда вы совершаете проверку <strong>Харизмы</strong>, вы можете заменить выпавший результат числом &laquo;15&raquo;.</p><p>Кроме того, что бы вы ни говорили, магия, проверяющая, говорите ли вы правду, показывает, что вы искренни.</p>"
+}

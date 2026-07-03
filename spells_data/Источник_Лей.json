@@ -1,0 +1,46 @@
+{
+    "name": {
+        "rus": "Источник Лей",
+        "eng": "Ley Surge"
+    },
+    "level": 9,
+    "school": "вызов",
+    "additionalType": "Лей-линии",
+    "components": {
+        "v": true,
+        "s": true
+    },
+    "url": "/spells/ley_surge",
+    "source": {
+        "shortName": "MHH",
+        "name": "Мидгард Справочник героя",
+        "group": {
+            "name": "Контент от третьих лиц",
+            "shortName": "3rd"
+        }
+    },
+    "id": 569,
+    "range": "150 футов",
+    "duration": "Мгновенная",
+    "time": "1 действие",
+    "classes": [
+        {
+            "name": "Волшебник",
+            "url": "/classes/wizard",
+            "icon": "class/wizard"
+        },
+        {
+            "name": "Друид",
+            "url": "/classes/druid",
+            "icon": "class/druid"
+        }
+    ],
+    "subclasses": [
+        {
+            "name": "Геомант",
+            "url": "/classes/wizard/geomancy",
+            "class": "Волшебник"
+        }
+    ],
+    "description": "<p>Вы можете наложить это заклинание, лишь если в радиусе 5 миль (8 км) есть лей-линии, высвобождая их и выпуская искру, которая вспыхивает в 30-футовую сферу с центром в точке в пределах 150 футов от вас.</p><p>Каждое существо в этой сфере получает <dice-roller formula=\"4к6\">4к6</dice-roller> урона силовым полем и становится <detail-tooltip type=\"screen\"><a href=\"/screens/deafened\">оглушённым</a></detail-tooltip> на 1 минуту; с успешным спасброском <span class=\"saving_throw\">Телосложения</span> получает половину урона и не <detail-tooltip type=\"screen\"><a href=\"/screens/deafened\">оглушается</a></detail-tooltip>. <detail-tooltip type=\"screen\"><a href=\"/screens/deafened\">Оглушённое</a></detail-tooltip> существо повторяет спасбросок в конце каждого своего хода, оканчивая эффект при успехе.</p><p><strong>Особенность.</strong> Геомант с лей-линией может накладывать это заклинания на любом расстоянии от лей-линии, пока находится на одном плане с ней.</p>"
+}

@@ -1,0 +1,46 @@
+{
+    "name": {
+        "rus": "Пробуждение жадности",
+        "eng": "Incite Greed"
+    },
+    "level": 3,
+    "school": "очарование",
+    "components": {
+        "v": true,
+        "s": true,
+        "m": "драгоценный камень, стоящий как минимум 50 зм"
+    },
+    "concentration": true,
+    "url": "/spells/incite_greed",
+    "source": {
+        "shortName": "AI",
+        "name": "Корпорация приобретений",
+        "group": {
+            "name": "Официальные источники",
+            "shortName": "Basic"
+        },
+        "page": 76
+    },
+    "id": 841,
+    "range": "30 футов",
+    "duration": "Концентрация, до 1 минуты",
+    "time": "1 действие",
+    "classes": [
+        {
+            "name": "Волшебник",
+            "url": "/classes/wizard",
+            "icon": "class/wizard"
+        },
+        {
+            "name": "Жрец",
+            "url": "/classes/cleric",
+            "icon": "class/cleric"
+        },
+        {
+            "name": "Колдун",
+            "url": "/classes/warlock",
+            "icon": "class/warlock"
+        }
+    ],
+    "description": "<p>Сотворяя это заклинание, Вы демонстрируете драгоценный камень, используемый для материального компонента, и выбираете любое количество видимых Вами существ в пределах дистанции. Каждая цель должна пройти спасбросок <span class=\"saving_throw\">Мудрости</span> или быть <detail-tooltip type=\"screen\"><a href=\"/screens/charmed\">очарованной</a></detail-tooltip> Вами до тех пор, пока заклинание не закончится или пока Вы или Ваши спутники не причине ей вред.</p><p>Будучи <detail-tooltip type=\"screen\"><a href=\"/screens/charmed\">очарованным</a></detail-tooltip> таким образом, существо не может делать ничего, кроме как использовать всё своё передвижение, чтобы приблизиться к Вам по безопасному пути. Пока <detail-tooltip type=\"screen\"><a href=\"/screens/charmed\">очарованное</a></detail-tooltip> существо находится в пределах 5 футах от Вас, оно не может двигаться, а может только жадно смотреть на демонстрируемый Вами камень.</p><p>В конце каждого хода <detail-tooltip type=\"screen\"><a href=\"/screens/charmed\">очарованное</a></detail-tooltip> существо может пройти спасбросок <span class=\"saving_throw\">Мудрости</span>. При успехе эффект на нём заканчивается.</p>"
+}

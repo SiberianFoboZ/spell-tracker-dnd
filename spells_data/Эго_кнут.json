@@ -1,0 +1,48 @@
+{
+    "name": {
+        "rus": "Эго кнут",
+        "eng": "Ego Whip"
+    },
+    "level": 4,
+    "school": "очарование",
+    "components": {
+        "v": true
+    },
+    "concentration": true,
+    "url": "/spells/ego_whip",
+    "source": {
+        "shortName": "UAFRW",
+        "name": "Unearthed Arcana: Воин, Следопыт и Волшебник",
+        "group": {
+            "name": "Тестовый материал",
+            "shortName": "UA"
+        }
+    },
+    "id": 949,
+    "range": "30 футов",
+    "duration": "Концентрация, вплоть до 1 минуты",
+    "time": "1 действие",
+    "classes": [
+        {
+            "name": "Бард",
+            "url": "/classes/bard",
+            "icon": "class/bard"
+        },
+        {
+            "name": "Волшебник",
+            "url": "/classes/wizard",
+            "icon": "class/wizard"
+        },
+        {
+            "name": "Колдун",
+            "url": "/classes/warlock",
+            "icon": "class/warlock"
+        },
+        {
+            "name": "Чародей",
+            "url": "/classes/sorcerer",
+            "icon": "class/sorcerer"
+        }
+    ],
+    "description": "<p>Вы поражаете разум одного существа, что вы видите в пределах дистанции, наполняя его отчаянием.</p><p>Цель должна преуспеть в спасброске <span class=\"saving_throw\">Интеллекта</span>, при провале цель заклинания получает <span class=\"disadvantage\">помеху</span>&nbsp;на атаки, проверки характеристик и спасброски и не может накладывать заклинания.</p><p>В конце каждого своего хода цель может совершать еще один спасбросок <span class=\"saving_throw\">Интеллекта</span>. В случае успеха заклинание оканчивается на цели.</p>"
+}

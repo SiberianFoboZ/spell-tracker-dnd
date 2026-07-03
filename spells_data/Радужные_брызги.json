@@ -1,0 +1,43 @@
+{
+    "name": {
+        "rus": "Радужные брызги",
+        "eng": "Prismatic Spray"
+    },
+    "level": 7,
+    "school": "воплощение",
+    "components": {
+        "v": true,
+        "s": true
+    },
+    "url": "/spells/prismatic_spray",
+    "source": {
+        "shortName": "PHB",
+        "name": "Книга игрока",
+        "group": {
+            "name": "Официальные источники",
+            "shortName": "Basic"
+        }
+    },
+    "id": 277,
+    "range": "На себя (60-футовый конус)",
+    "duration": "Мгновенная",
+    "time": "1 действие",
+    "classes": [
+        {
+            "name": "Бард",
+            "url": "/classes/bard",
+            "icon": "class/bard"
+        },
+        {
+            "name": "Волшебник",
+            "url": "/classes/wizard",
+            "icon": "class/wizard"
+        },
+        {
+            "name": "Чародей",
+            "url": "/classes/sorcerer",
+            "icon": "class/sorcerer"
+        }
+    ],
+    "description": "<p>Восемь разноцветных лучей света вылетают из вашей ладони. Каждый луч своего цвета, и у каждого свои особые свойства.</p><p>Все существа в пределах 60-футового конуса должны совершить спасбросок <span class=\"saving_throw\">Ловкости</span>. Для каждой цели совершите бросок <dice-roller formula=\"к8\">к8</dice-roller>, чтобы определить, луч какого цвета её коснулся.</p><ol><li><span><strong>Красный.</strong></span> Цель получает&nbsp;<dice-roller formula=\"10к6\">10к6</dice-roller> урона огнём при провале или половину этого урона при успехе.</li><li><span><strong>Оранжевый.</strong></span> Цель получает&nbsp;<dice-roller formula=\"10к6\">10к6</dice-roller> урона кислотой при провале или половину этого урона при успехе.</li><li><span><strong>Жёлтый.</strong></span> Цель получает&nbsp;<dice-roller formula=\"10к6\">10к6</dice-roller> урона электричеством при провале или половину этого урона при успехе.</li><li><strong>Зелёный.</strong> Цель получает&nbsp;<dice-roller formula=\"10к6\">10к6</dice-roller> урона ядом при провале или половину этого урона при успехе.</li><li><span><strong>Голубой.</strong></span> Цель получает&nbsp;<dice-roller formula=\"10к6\">10к6</dice-roller> урона холодом при провале или половину этого урона при успехе.</li><li><span><strong>Синий.</strong></span> При провале цель становится <detail-tooltip type=\"screen\"><a href=\"/screens/restrained\">опутанной</a></detail-tooltip>. После этого цель в конце каждого своего хода совершает спасбросок <span class=\"saving_throw\">Телосложения</span>. Если будет совершено три успешных спасброска, заклинание оканчивается. Если накопится три провала, цель навсегда превращается в камень и становится <detail-tooltip type=\"screen\"><a href=\"/screens/Petrified\">окаменевшей</a></detail-tooltip>. Успехи и провалы не обязаны быть последовательными; отслеживайте их отдельно друг от друга, пока не накопится три результата одного вида.</li><li><span><strong>Фиолетовый.</strong></span> При провале цель становится <detail-tooltip type=\"screen\"><a href=\"/screens/blinded\">ослепшей</a></detail-tooltip>. В начале вашего следующего хода она совершает спасбросок <span class=\"saving_throw\">Мудрости</span>. Успех оканчивает <detail-tooltip type=\"screen\"><a href=\"/screens/blinded\">ослепление</a></detail-tooltip>. При провале существо перемещается на другой план существования на выбор Мастера и перестаёт быть ослепшей (обычно существа на неродных планах изгоняются домой, а остальные существа обычно выбрасываются на Астральный или Эфирный планы).</li><li><strong>Особенность.</strong> По цели попадают два луча. Совершите ещё два броска кости, перебрасывая выпавшие &laquo;8&raquo;.</li></ol>"
+}

@@ -1,0 +1,57 @@
+{
+    "name": {
+        "rus": "Эвардовы чёрные щупальца",
+        "eng": "Evard's Black Tentacles"
+    },
+    "level": 4,
+    "school": "вызов",
+    "components": {
+        "v": true,
+        "s": true,
+        "m": "кусочек щупальца гигантского осьминога или гигантского кальмара"
+    },
+    "concentration": true,
+    "url": "/spells/evard's_black_tentacles",
+    "source": {
+        "shortName": "PHB",
+        "name": "Книга игрока",
+        "group": {
+            "name": "Официальные источники",
+            "shortName": "Basic"
+        }
+    },
+    "id": 370,
+    "range": "90 футов",
+    "duration": "Концентрация, до 1 минуты",
+    "time": "1 действие",
+    "classes": [
+        {
+            "name": "Волшебник",
+            "url": "/classes/wizard",
+            "icon": "class/wizard"
+        }
+    ],
+    "subclasses": [
+        {
+            "name": "Великий Древний",
+            "url": "/classes/warlock/great_old_one",
+            "class": "Колдун"
+        },
+        {
+            "name": "Аберрантный Разум",
+            "url": "/classes/sorcerer/aberrant_mind",
+            "class": "Чародей"
+        },
+        {
+            "name": "Домен Океана",
+            "url": "/classes/cleric/ocean",
+            "class": "Жрец"
+        },
+        {
+            "name": "Тенеплёт",
+            "url": "/classes/rogue/shadowlet",
+            "class": "Плут"
+        }
+    ],
+    "description": "<p>Чёрные извивающиеся щупальца заполняют квадрат на полу с длиной стороны 20 футов, который вы видите в пределах дистанции. Пока заклинание активно, эти щупальца делают местность <detail-tooltip type=\"screen\"><a href=\"/screens/Difficult_Terrain_Move\">труднопроходимой</a></detail-tooltip>.</p><p>Когда существо впервые за ход входит в область заклинания или начинает там ход, оно должно преуспеть в спасброске <span class=\"saving_throw\">Ловкости</span>, иначе получит <dice-roller formula=\"3к6\" label=\"Дробящий урон\">3к6</dice-roller> дробящего урона и станет <detail-tooltip type=\"screen\"><a href=\"/screens/restrained\">опутанным</a></detail-tooltip> щупальцами до окончания заклинания.</p><p>Существо, начинающее ход в этой области, уже опутанное щупальцами, получает <dice-roller formula=\"3к6\" label=\"Дробящий урон\">3к6</dice-roller> дробящего урона. <detail-tooltip type=\"screen\"><a href=\"/screens/restrained\"></a></detail-tooltip></p><p><detail-tooltip type=\"screen\"><a href=\"/screens/restrained\">Опутанное</a></detail-tooltip> щупальцами существо может <em>Действием</em> совершить проверку <strong>Силы</strong> или <strong>Ловкости</strong> (на свой выбор) против Сл ваших заклинаний. В случае успеха оно высвобождается.</p>"
+}
