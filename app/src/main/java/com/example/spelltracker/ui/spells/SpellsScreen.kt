@@ -462,9 +462,10 @@ private fun FiltersBottomSheet(
 
         Divider()
 
-        // ─── Подкласс (компактный checkbox-list вместо FlowRow) ───
-        if (state.availableSubclasses.isNotEmpty()) {
-            SectionTitle("Подкласс (${state.availableSubclasses.size})")
+        // ─── Подкласс (показывается только когда выбран хотя бы один класс) ───
+        val displayedSubs = vm.displayedSubclasses
+        if (displayedSubs.isNotEmpty()) {
+            SectionTitle("Подкласс (${displayedSubs.size})")
             // "Все" — отдельной строкой над списком
             CheckListRow(
                 label = "Все подклассы",
@@ -476,7 +477,8 @@ private fun FiltersBottomSheet(
                 },
             )
             HorizontalDivider(color = AppColors.Outline.copy(alpha = 0.3f))
-            for (name in state.availableSubclasses.sorted()) {
+            val sortedSubs = displayedSubs.sorted()
+            for (name in sortedSubs) {
                 CheckListRow(
                     label = name,
                     selected = state.filters.subclassNames.contains(name),

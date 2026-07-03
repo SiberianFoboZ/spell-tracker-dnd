@@ -63,6 +63,7 @@ object SpellParser {
                     url = o.optString("url"),
                     classes = o.optString("classes"),
                     subclasses = o.optString("subclasses"),
+                    subclassParents = o.optString("subclassParents"),
                     races = o.optString("races"),
                     savingThrows = o.optString("savingThrows"),
                 )

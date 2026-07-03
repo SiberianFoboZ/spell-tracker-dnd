@@ -79,10 +79,14 @@ class SpellsViewModel(application: Application) : AndroidViewModel(application) 
     init {
         repo.ensureInitialized()
 
+        // Жёсткая ссылка на снимок allSpells нужна, чтобы lazy-поле
+        // [subclassToParents] могло его использовать без гонки с combine-блоком.
+        // Сохраняем в [allSpellsSnapshot] сразу после получения из БД.
         repo.initialized
             .onEach { ready ->
                 if (!ready || _state.value.allSpells.isNotEmpty()) return@onEach
                 val all = repo.getAll()
+                allSpellsSnapshot = all
                 _state.update {
                     it.copy(
                         isLoading = false,
@@ -123,6 +127,46 @@ class SpellsViewModel(application: Application) : AndroidViewModel(application) 
 
     private fun splitCsv(s: String): List<String> =
         if (s.isBlank()) emptyList() else s.split(',').map(String::trim).filter(String::isNotEmpty)
+
+    /**
+     * Маппинг «имя подкласса → множество parent class English id».
+     * Считается один раз при загрузке данных. Нужен чтобы в UI показывать
+     * только подклассы выбранных классов (или скрывать секцию, если класс
+     * не выбран вовсе).
+     */
+    private val subclassToParents: Map<String, Set<String>> by lazy {
+        val map = mutableMapOf<String, MutableSet<String>>()
+        for (spell in allSpellsSnapshot) {
+            val names = splitCsv(spell.subclasses)
+            val parents = splitCsv(spell.subclassParents)
+            for ((name, parent) in names.zip(parents)) {
+                map.getOrPut(name) { mutableSetOf() }.add(parent)
+            }
+        }
+        map.mapValues { it.value.toSet() }
+    }
+
+    /** Снимок allSpells для инициализации lazy-полей выше. */
+    private var allSpellsSnapshot: List<Spell> = emptyList()
+
+    /**
+     * Подклассы, которые сейчас имеет смысл показывать в фильтре:
+     *   • если [SpellFilterState.classIds] пуст → пустое множество
+     *     (UI прячет секцию «Подкласс» — нечего выбирать без класса);
+     *   • если классы выбраны → только те подклассы, чьи parent
+     *     классы пересекаются с выбранными.
+     *
+     * Считается реактивно из текущего [state.filters.classIds].
+     */
+    val displayedSubclasses: Set<String>
+        get() {
+            val selected = state.value.filters.classIds
+            if (selected.isEmpty()) return emptySet()
+            return subclassToParents.entries
+                .filter { (_, parents) -> parents.any { it in selected } }
+                .map { it.key }
+                .toSet()
+        }
 
     // ─── Мутаторы фильтров ───
 

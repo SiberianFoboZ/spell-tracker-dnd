@@ -8,15 +8,15 @@ import androidx.room.RoomDatabase
 /**
  * Room-база со справочником заклинаний.
  *
- * Версия 4 — расширенная запись заклинания (24 поля) под
- * `assets/spells_normalized.json`, который собирается build-time
- * Gradle-таской `generateSpellsDb` (см. app/build.gradle.kts).
+ * Версия 5 — добавили [Spell.subclassParents] (CSV English id родительских
+ * классов для каждого подкласса). Миграция destructive: данные приходят из
+ * assets/spells_normalized.json (см. generateSpellsDb в app/build.gradle.kts).
  *
  * `fallbackToDestructiveMigration` уничтожит старую БД при изменении
  * схемы; данные перечитаются из assets при следующем старте. Потеря
  * не страшна — это справочник.
  */
-@Database(entities = [Spell::class], version = 4, exportSchema = false)
+@Database(entities = [Spell::class], version = 5, exportSchema = false)
 abstract class SpellDatabase : RoomDatabase() {
 
     abstract fun spellDao(): SpellDao

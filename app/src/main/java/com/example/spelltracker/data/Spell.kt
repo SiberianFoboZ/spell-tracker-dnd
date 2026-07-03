@@ -45,7 +45,14 @@ data class Spell(
     val upperLevel: String,
     val url: String,
     val classes: String,
+    /** Имена подклассов, CSV. Парный список к [subclassParents]. */
     val subclasses: String,
+    /**
+     * English id класса-родителя для каждого подкласса в [subclasses], CSV.
+     * Нужен runtime-фильтру «показать подклассы выбранных классов».
+     * Пример: subclasses="Домен Войны,Клятва Мести", subclassParents="cleric,paladin".
+     */
+    val subclassParents: String,
     val races: String,
     val savingThrows: String,
 )

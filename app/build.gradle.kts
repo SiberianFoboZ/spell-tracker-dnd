@@ -343,14 +343,29 @@ abstract class GenerateSpellsDbTask : DefaultTask() {
 
         @Suppress("UNCHECKED_CAST")
         val rawSubclasses = raw["subclasses"] as? List<Map<String, Any?>> ?: emptyList()
-        val subclassesNames = rawSubclasses.mapNotNull { sub ->
-            val parentClass = sub["class"] as? String ?: return@mapNotNull null
-            if (parentClass in ignoredClasses) {
+        // Собираем подклассы параллельно с parent class English id (для
+        // runtime-фильтрации «покажи подклассы выбранного класса»).
+        // Оба списка синхронизированы по индексу — на i-м месте имя
+        // подкласса и его parent class id.
+        val subclassNames = mutableListOf<String>()
+        val subclassParents = mutableListOf<String>()
+        for (sub in rawSubclasses) {
+            val name = sub["name"] as? String ?: continue
+            val parentRus = sub["class"] as? String ?: continue
+            if (parentRus in ignoredClasses) {
                 strippedSomething = true
-                null
-            } else {
-                sub["name"] as? String
+                continue
             }
+            val parentEng = classNameToId[parentRus]
+            if (parentEng == null) {
+                // Неизвестный parent class (например, класс «Монах»
+                // которого нет в Classes.kt). Тихо пропускаем — не
+                // считаем это stripped'ом, но и не сохраняем, потому
+                // что для фильтра всё равно бесполезен.
+                continue
+            }
+            subclassNames += name
+            subclassParents += parentEng
         }
 
         @Suppress("UNCHECKED_CAST")
@@ -359,7 +374,7 @@ abstract class GenerateSpellsDbTask : DefaultTask() {
 
         // Дропаем спелл, если после фильтрации ничего не осталось — он был
         // исключительно для ignored-классов.
-        if (classesEng.isEmpty() && subclassesNames.isEmpty()) return null
+        if (classesEng.isEmpty() && subclassNames.isEmpty()) return null
 
         val ritual = raw["ritual"] as? Boolean ?: false
         val concentration = raw["concentration"] as? Boolean ?: false
@@ -408,7 +423,8 @@ abstract class GenerateSpellsDbTask : DefaultTask() {
                 "upperLevel" to upper,
                 "url" to (raw["url"] as? String ?: ""),
                 "classes" to classesEng.joinToString(","),
-                "subclasses" to subclassesNames.joinToString(","),
+                "subclasses" to subclassNames.joinToString(","),
+                "subclassParents" to subclassParents.joinToString(","),
                 "races" to racesNames.joinToString(","),
                 "savingThrows" to savingThrows.joinToString(","),
             ),
