@@ -348,7 +348,10 @@ private fun FiltersBottomSheet(
             }
         }
 
-        // ─── Источник ───
+        // ─── Источник (в UI показываем только «Базовые» — официальные
+        // PHB/XGE/TCE/FTD/BMT. Остальные группы из menu_json.txt
+        // (Приключения / Сеттинги / Unearthed Arcana / 3rd party / Homebrew)
+        // пока скрыты — спеллы из них лежат в БД, но фильтр-UI не предлагает.)
         SectionTitle("Источник")
         Column(modifier = Modifier.padding(horizontal = 16.dp)) {
             val allSelected = state.filters.sources.isEmpty()
@@ -359,6 +362,7 @@ private fun FiltersBottomSheet(
             )
             Spacer(Modifier.size(8.dp))
             for (group in SpellMenuConfig.SOURCE_GROUPS) {
+                if (group.key != "OFFICAL") continue
                 Text(
                     text = group.name,
                     color = AppColors.TextGrey,
