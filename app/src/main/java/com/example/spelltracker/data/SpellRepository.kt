@@ -32,11 +32,18 @@ class SpellRepository(context: Context) {
 
     fun ensureInitialized() {
         scope.launch {
-            if (dao.count() == 0) {
-                val allSpells = SpellParser.loadFromAssets(appContext)
-                if (allSpells.isNotEmpty()) {
-                    dao.insertAll(allSpells)
-                }
+            val allSpells = SpellParser.loadFromAssets(appContext)
+            if (allSpells.isEmpty()) return@launch
+            // Пересобираем БД если:
+            //   1. она пустая (первый запуск), ИЛИ
+            //   2. размер не совпадает с assets/spells_normalized.json
+            //      (например, обновили APK с 802 → 952 спеллами, Room
+            //      сохранил старую БД, нормализация просто пройдёт мимо
+            //      `if (dao.count() == 0)` без перезаливки).
+            val currentCount = dao.count()
+            if (currentCount != allSpells.size) {
+                dao.clearAll()
+                dao.insertAll(allSpells)
             }
             // После destructive-миграции (v3→v4 при смене схемы Room)
             // `prepared` в SharedPreferences может ссылаться на старые id,

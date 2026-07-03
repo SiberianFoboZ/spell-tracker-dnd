@@ -19,6 +19,10 @@ interface SpellDao {
     @Query("SELECT id FROM spells")
     fun getAllIds(): List<Long>
 
+    /** Полная очистка таблицы — для случая, когда данные устарели (новый build). */
+    @Query("DELETE FROM spells")
+    fun clearAll()
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertAll(spells: List<Spell>)
 
