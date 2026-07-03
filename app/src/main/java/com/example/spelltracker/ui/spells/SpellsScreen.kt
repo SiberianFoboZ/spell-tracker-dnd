@@ -61,24 +61,26 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.spelltracker.data.ComponentFlag
 import com.example.spelltracker.data.Spell
 import com.example.spelltracker.data.SpellMenuConfig
 import com.example.spelltracker.data.TriState
 import com.example.spelltracker.ui.theme.AppColors
 
 /**
- * Экран списка заклинаний (v2).
+ * Экран списка заклинаний (v2.1 — фильтры переработаны).
  *
- * Top-level элементы:
- *   • [SpellsScreen] — главная composable, читает [SpellsViewModel.state]
- *     и рендерит TopBar + список + выезжающий фильтр-BottomSheet.
- *   • [FiltersBottomSheet] — содержимое шторки: секции Источник/Класс/Уровень/
- *     Школа/Подкласс/Раса/Ритуал/Концентрация/4 Компонента/Спасбросок.
- *   • [SpellRow] — карточка заклинания в списке (без переноса описания).
+ * Что изменилось в v2.1 (после UX-теста):
+ *   • Расы убраны из фильтра (перегружали BottomSheet, не давали
+ *     осмысленного сужения списка).
+ *   • Компоненты теперь ОДИН multi-select row (В / С / М / Расх) —
+ *     4 отдельных TriState-строки слились в один с AND-семантикой.
+ *   • Подклассы — компактный checkbox-list (вместо clunky FlowRow из
+ *     110+ чипов). Каждая строка: чекбокс + название, всё плотно.
  *
- * ВАЖНО: внутри @Composable циклы по коллекциям (`for ... in ...`) — это
- * «прозрачный» scope для compose-compiler. `forEach { }` лямбда — НЕ
- * @Composable, поэтому composable-вызов внутри неё запрещён.
+ * ВАЖНО: внутри @Composable циклы по коллекциям — `for ... in ...`.
+ * `forEach { }` лямбда — НЕ @Composable, вызов Composable внутри неё
+ * вызовет ошибку компиляции.
  */
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
@@ -209,16 +211,12 @@ private fun activeFilterCount(s: SpellsState): Int {
         if (level != null) n++
         if (classIds.isNotEmpty()) n++
         if (subclassNames.isNotEmpty()) n++
-        if (raceNames.isNotEmpty()) n++
         if (sources.isNotEmpty()) n++
         if (schools.isNotEmpty()) n++
         if (savingThrows.isNotEmpty()) n++
         if (ritual != TriState.ANY) n++
         if (concentration != TriState.ANY) n++
-        if (componentV != TriState.ANY) n++
-        if (componentS != TriState.ANY) n++
-        if (componentM != TriState.ANY) n++
-        if (materialConsumed != TriState.ANY) n++
+        if (requiredComponents.isNotEmpty()) n++
     }
     if (s.showPreparedOnly) n++
     return n
@@ -464,74 +462,51 @@ private fun FiltersBottomSheet(
 
         Divider()
 
-        // ─── Подкласс ───
+        // ─── Подкласс (компактный checkbox-list вместо FlowRow) ───
         if (state.availableSubclasses.isNotEmpty()) {
-            SectionTitle("Подкласс")
-            FlowRow(
-                modifier = Modifier.padding(horizontal = 16.dp),
-                horizontalArrangement = Arrangement.spacedBy(6.dp),
-                verticalArrangement = Arrangement.spacedBy(6.dp),
-            ) {
-                FilterChip(
-                    text = "Все",
-                    selected = state.filters.subclassNames.isEmpty(),
-                    onClick = {
-                        if (state.filters.subclassNames.isNotEmpty()) {
-                            for (name in state.filters.subclassNames) vm.toggleSubclass(name)
-                        }
-                    },
+            SectionTitle("Подкласс (${state.availableSubclasses.size})")
+            // "Все" — отдельной строкой над списком
+            CheckListRow(
+                label = "Все подклассы",
+                selected = state.filters.subclassNames.isEmpty(),
+                onToggle = {
+                    if (state.filters.subclassNames.isNotEmpty()) {
+                        for (name in state.filters.subclassNames) vm.toggleSubclass(name)
+                    }
+                },
+            )
+            HorizontalDivider(color = AppColors.Outline.copy(alpha = 0.3f))
+            for (name in state.availableSubclasses.sorted()) {
+                CheckListRow(
+                    label = name,
+                    selected = state.filters.subclassNames.contains(name),
+                    onToggle = { vm.toggleSubclass(name) },
                 )
-                for (name in state.availableSubclasses.sorted()) {
-                    FilterChip(
-                        text = name,
-                        selected = state.filters.subclassNames.contains(name),
-                        onClick = { vm.toggleSubclass(name) },
-                    )
-                }
             }
             Divider()
         }
 
-        // ─── Раса ───
-        if (state.availableRaces.isNotEmpty()) {
-            SectionTitle("Раса")
-            FlowRow(
-                modifier = Modifier.padding(horizontal = 16.dp),
-                horizontalArrangement = Arrangement.spacedBy(6.dp),
-                verticalArrangement = Arrangement.spacedBy(6.dp),
-            ) {
-                FilterChip(
-                    text = "Все",
-                    selected = state.filters.raceNames.isEmpty(),
-                    onClick = {
-                        if (state.filters.raceNames.isNotEmpty()) {
-                            for (name in state.filters.raceNames) vm.toggleRace(name)
-                        }
-                    },
-                )
-                for (name in state.availableRaces.sorted()) {
-                    FilterChip(
-                        text = name,
-                        selected = state.filters.raceNames.contains(name),
-                        onClick = { vm.toggleRace(name) },
-                    )
-                }
-            }
-            Divider()
-        }
-
-        // ─── Tri-state секции ───
+        // ─── Ритуал / Концентрация (3-state) ───
         TriStateRow("Ритуал", state.filters.ritual, vm::setRitual)
         Divider()
         TriStateRow("Концентрация", state.filters.concentration, vm::setConcentration)
         Divider()
-        TriStateRow(SpellMenuConfig.COMPONENT_V_LABEL, state.filters.componentV, vm::setComponentV)
-        Divider()
-        TriStateRow(SpellMenuConfig.COMPONENT_S_LABEL, state.filters.componentS, vm::setComponentS)
-        Divider()
-        TriStateRow(SpellMenuConfig.COMPONENT_M_LABEL, state.filters.componentM, vm::setComponentM)
-        Divider()
-        TriStateRow(SpellMenuConfig.COMPONENT_RC_LABEL, state.filters.materialConsumed, vm::setMaterialConsumed)
+
+        // ─── Компоненты (multi-select, AND-семантика) ───
+        SectionTitle("Компоненты (выбраны — обязательны у спелла)")
+        FlowRow(
+            modifier = Modifier.padding(horizontal = 16.dp),
+            horizontalArrangement = Arrangement.spacedBy(6.dp),
+            verticalArrangement = Arrangement.spacedBy(6.dp),
+        ) {
+            for (flag in ComponentFlag.values()) {
+                FilterChip(
+                    text = flag.label,
+                    selected = state.filters.requiredComponents.contains(flag),
+                    onClick = { vm.toggleComponent(flag) },
+                )
+            }
+        }
         Divider()
 
         // ─── Спасбросок ───
@@ -633,6 +608,39 @@ private fun FilterChip(text: String, selected: Boolean, onClick: () -> Unit) {
         contentAlignment = Alignment.Center,
     ) {
         Text(text, color = fg, fontSize = 12.sp, fontWeight = FontWeight.SemiBold)
+    }
+}
+
+/**
+ * Плотная строка чекбокс + лейбл. Используется для подклассов (110+ имён)
+ * и других длинных вертикальных списков — в разы компактнее FlowRow-чипов.
+ */
+@Composable
+private fun CheckListRow(label: String, selected: Boolean, onToggle: () -> Unit) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable(onClick = onToggle)
+            .padding(horizontal = 16.dp, vertical = 2.dp),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Checkbox(
+            checked = selected,
+            onCheckedChange = { onToggle() },
+            colors = CheckboxDefaults.colors(
+                checkedColor = AppColors.Gold,
+                uncheckedColor = AppColors.Outline,
+                checkmarkColor = AppColors.BgDark,
+            ),
+        )
+        Text(
+            label,
+            color = AppColors.TextWhite,
+            fontSize = 13.sp,
+            modifier = Modifier.weight(1f).padding(start = 4.dp),
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
+        )
     }
 }
 

@@ -5,6 +5,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.spelltracker.data.ClassFilter
 import com.example.spelltracker.data.Classes
+import com.example.spelltracker.data.ComponentFlag
 import com.example.spelltracker.data.Spell
 import com.example.spelltracker.data.SpellFilterState
 import com.example.spelltracker.data.SpellMenuConfig
@@ -24,12 +25,14 @@ import kotlinx.coroutines.flow.update
  *
  * Поля разделены на три зоны:
  *   • «загружено» — то, что пришло из БД / хранилища: allSpells, preparedIds,
- *     available* (уникальные значения для осей фильтра, считаются из data);
+ *     available* (уникальные значения для осей фильтра);
  *   • «выбрано» — filters ([SpellFilterState]);
  *   • «ui» — флаги UI (isLoading, showPreparedOnly, showFiltersSheet).
  *
- * Производные поля (visibleSpells, hasActiveFilters) считаются здесь же —
- * пересчитываются в combine-блоке, чтобы UI не делал фильтрацию на лету.
+ * Производные поля (visibleSpells) считаются в combine-блоке.
+ *
+ * Расы (races) удалены из фильтра — перегружали BottomSheet, и запрос
+ * «раса X» не давал осмысленной фильтрации.
  */
 data class SpellsState(
     // Загружено
@@ -38,7 +41,6 @@ data class SpellsState(
     val classes: List<Classes.Info> = Classes.ALL,
     val availableLevels: Set<Int> = emptySet(),
     val availableSubclasses: Set<String> = emptySet(),
-    val availableRaces: Set<String> = emptySet(),
     val availableSchools: Set<String> = emptySet(),
     val availableSources: Set<String> = emptySet(),
     val availableSavingThrows: Set<String> = emptySet(),
@@ -64,7 +66,7 @@ data class SpellsState(
  *     заполняет `allSpells` и `available*` (только при первом запуске).
  *   • `combine(_state, storage.prepared)` — реактивно пересчитывает
  *     `visibleSpells` при изменении фильтров или `prepared` (вкл/выкл
- *     закладки). На пустом allSpells возвращает пустой список.
+ *     закладки). Statefold-у equality не зацикливается.
  */
 class SpellsViewModel(application: Application) : AndroidViewModel(application) {
 
@@ -77,8 +79,6 @@ class SpellsViewModel(application: Application) : AndroidViewModel(application) 
     init {
         repo.ensureInitialized()
 
-        // Один раз на старте: тянем данные из БД, считаем available*.
-        // Не зависит от фильтров — только от самих данных.
         repo.initialized
             .onEach { ready ->
                 if (!ready || _state.value.allSpells.isNotEmpty()) return@onEach
@@ -89,7 +89,6 @@ class SpellsViewModel(application: Application) : AndroidViewModel(application) 
                         allSpells = all,
                         availableLevels = all.mapTo(HashSet()) { it.level },
                         availableSubclasses = all.flatMapTo(HashSet()) { splitCsv(it.subclasses) },
-                        availableRaces = all.flatMapTo(HashSet()) { splitCsv(it.races) },
                         availableSchools = all.mapTo(HashSet()) { it.school }
                             .filter(String::isNotBlank).toSet(),
                         availableSources = all.mapTo(HashSet()) { it.source }
@@ -100,10 +99,6 @@ class SpellsViewModel(application: Application) : AndroidViewModel(application) 
             }
             .launchIn(viewModelScope)
 
-        // Реактивный пересчёт visible при ЛЮБОМ изменении _state.filters или
-        // storage.prepared. Statefold-у equality не зацикливается: при
-        // одинаковом State-fold новый State объект равен предыдущему —
-        // MutableStateFlow НЕ эмитит дубль.
         combine(_state, storage.prepared) { s, prep ->
             val visible = if (s.allSpells.isEmpty()) emptyList()
                 else applyFilters(s.allSpells, s.filters, s.showPreparedOnly, prep)
@@ -140,9 +135,6 @@ class SpellsViewModel(application: Application) : AndroidViewModel(application) 
     fun toggleSubclass(name: String) =
         mutate { it.copy(filters = it.filters.copy(subclassNames = toggleId(it.filters.subclassNames, name))) }
 
-    fun toggleRace(name: String) =
-        mutate { it.copy(filters = it.filters.copy(raceNames = toggleId(it.filters.raceNames, name))) }
-
     fun toggleSource(key: String) =
         mutate { it.copy(filters = it.filters.copy(sources = toggleId(it.filters.sources, key))) }
 
@@ -161,17 +153,9 @@ class SpellsViewModel(application: Application) : AndroidViewModel(application) 
     fun setConcentration(ts: TriState) =
         mutate { it.copy(filters = it.filters.copy(concentration = ts)) }
 
-    fun setComponentV(ts: TriState) =
-        mutate { it.copy(filters = it.filters.copy(componentV = ts)) }
-
-    fun setComponentS(ts: TriState) =
-        mutate { it.copy(filters = it.filters.copy(componentS = ts)) }
-
-    fun setComponentM(ts: TriState) =
-        mutate { it.copy(filters = it.filters.copy(componentM = ts)) }
-
-    fun setMaterialConsumed(ts: TriState) =
-        mutate { it.copy(filters = it.filters.copy(materialConsumed = ts)) }
+    /** Multi-select компонента: добавляет или убирает [flag] из required set. */
+    fun toggleComponent(flag: ComponentFlag) =
+        mutate { it.copy(filters = it.filters.copy(requiredComponents = toggleId(it.filters.requiredComponents, flag))) }
 
     fun setSearch(q: String) =
         mutate { it.copy(filters = it.filters.copy(search = q)) }
@@ -203,5 +187,8 @@ class SpellsViewModel(application: Application) : AndroidViewModel(application) 
     }
 
     private fun toggleId(set: Set<String>, v: String): Set<String> =
+        if (v in set) set - v else set + v
+
+    private fun toggleId(set: Set<ComponentFlag>, v: ComponentFlag): Set<ComponentFlag> =
         if (v in set) set - v else set + v
 }

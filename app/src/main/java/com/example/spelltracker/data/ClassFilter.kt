@@ -6,17 +6,17 @@ package com.example.spelltracker.data
  * Объект — чистая функция [matches] + [SpellFilterState] снапшот
  * фильтров, отделённый от [SpellsState], чтобы:
  *   • не таскать «загруженные списки» / `availableX` в матчер,
- *   • легко тестировать матчер в unit-тестах без Android-зависимостей
- *     (TODO Этап из QWEN.md §9).
+ *   • легко тестировать матчер в unit-тестах без Android-зависимостей.
  *
  * Семантика:
  *   level, search — точное соответствие;
- *   classIds, sources, schools, savingThrows, subclassNames, raceNames —
+ *   classIds, sources, schools, savingThrows, subclassNames —
  *       «OR»: заклинание проходит, если хотя бы один из выбранных
  *       элементов найден в CSV-поле спелла;
- *   ritual / concentration / componentV / componentS / componentM /
- *   materialConsumed — [TriState]: YES = поле=true, NO = поле=false,
+ *   ritual / concentration — [TriState]: YES = поле=true, NO = поле=false,
  *       ANY = игнор.
+ *   requiredComponents — AND: для каждого выбранного компонента спелл
+ *       обязан его иметь (эмулирует PHB-нотацию «В, С» = оба требуются).
  */
 object ClassFilter {
 
@@ -31,10 +31,6 @@ object ClassFilter {
             f.subclassNames.none { spell.subclasses.contains(it) }
         ) return false
 
-        if (f.raceNames.isNotEmpty() &&
-            f.raceNames.none { spell.races.contains(it) }
-        ) return false
-
         if (f.sources.isNotEmpty() && spell.source !in f.sources) return false
 
         if (f.schools.isNotEmpty() && spell.school !in f.schools) return false
@@ -45,10 +41,13 @@ object ClassFilter {
 
         if (!matchesTriState(spell.ritual, f.ritual)) return false
         if (!matchesTriState(spell.concentration, f.concentration)) return false
-        if (!matchesTriState(spell.componentV, f.componentV)) return false
-        if (!matchesTriState(spell.componentS, f.componentS)) return false
-        if (!matchesTriState(spell.componentM, f.componentM)) return false
-        if (!matchesTriState(spell.materialConsumed, f.materialConsumed)) return false
+
+        // Компоненты — AND: каждый выбранный флаг обязан быть у спелла.
+        if (f.requiredComponents.isNotEmpty()) {
+            for (flag in f.requiredComponents) {
+                if (!ComponentFlag.spellHas(flag, spell)) return false
+            }
+        }
 
         val needle = f.search.trim().lowercase()
         if (needle.isNotEmpty() && !spell.name.lowercase().contains(needle)) return false
@@ -64,36 +63,32 @@ object ClassFilter {
 }
 
 /**
- * Snapshot всех активных фильтров экрана SpellsScreen — без полей про
+ * Snapshot активных фильтров экрана SpellsScreen — без полей про
  * «загружено» и «ui» (это в [SpellsState]).
  *
- * Дефолты из [SpellMenuConfig.DEFAULT_SOURCES] — все источники включены
- * «как из коробки», чтобы при первом запуске пользователь видел полный
- * справочник (соответствует `menu_json.txt` — у всех источников
- * `default: true`).
+ * Расы вынесены из фильтра (в [Spec] их можно показать в детальном,
+ * но как отдельная ось фильтра они перегружали экран).
+ *
+ * Компоненты теперь ОДИН `Set<ComponentFlag>` вместо четырёх
+ * независимых TriState — выбранный набор означает «спелл обязан иметь все».
  */
 data class SpellFilterState(
     val level: Int? = null,
     val classIds: Set<String> = emptySet(),
     val subclassNames: Set<String> = emptySet(),
-    val raceNames: Set<String> = emptySet(),
     val sources: Set<String> = emptySet(),
     val schools: Set<String> = emptySet(),
     val savingThrows: Set<String> = emptySet(),
     val ritual: TriState = TriState.ANY,
     val concentration: TriState = TriState.ANY,
-    val componentV: TriState = TriState.ANY,
-    val componentS: TriState = TriState.ANY,
-    val componentM: TriState = TriState.ANY,
-    val materialConsumed: TriState = TriState.ANY,
+    val requiredComponents: Set<ComponentFlag> = emptySet(),
     val search: String = "",
 ) {
     /** Есть ли активный хоть один фильтр (для UI: подсветка кнопки). */
     val hasAny: Boolean
         get() = level != null ||
-            classIds.isNotEmpty() || subclassNames.isNotEmpty() || raceNames.isNotEmpty() ||
+            classIds.isNotEmpty() || subclassNames.isNotEmpty() ||
             sources.isNotEmpty() || schools.isNotEmpty() || savingThrows.isNotEmpty() ||
             ritual != TriState.ANY || concentration != TriState.ANY ||
-            componentV != TriState.ANY || componentS != TriState.ANY ||
-            componentM != TriState.ANY || materialConsumed != TriState.ANY
+            requiredComponents.isNotEmpty()
 }

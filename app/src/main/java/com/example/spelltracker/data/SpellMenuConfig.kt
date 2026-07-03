@@ -117,3 +117,27 @@ object SpellMenuConfig {
     const val TRI_YES_LABEL = "Да"
     const val TRI_NO_LABEL  = "Нет"
 }
+
+/**
+ * Флаги компонентов заклинания. Используются как multi-select в фильтре:
+ *   • пустой набор — компонент не фильтруется,
+ *   • выбранные флаги означают «спелл обязан иметь все выбранные»
+ *     (PHB-нотация «В, С, М» → выбраны [V, S, M]).
+ *
+ * [spellHas] мапит флаг на конкретное булево поле [Spell].
+ */
+enum class ComponentFlag(val label: String, val isConsumed: Boolean = false) {
+    V("В"),                 // вербальный
+    S("С"),                 // соматический
+    M("М"),                 // материальный
+    RC("Расх", isConsumed = true);  // расходуемый (фильтр «materialConsumed»)
+
+    companion object {
+        fun spellHas(flag: ComponentFlag, spell: Spell): Boolean = when (flag) {
+            V  -> spell.componentV
+            S  -> spell.componentS
+            M  -> spell.componentM
+            RC -> spell.materialConsumed
+        }
+    }
+}
