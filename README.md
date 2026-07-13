@@ -4,7 +4,7 @@
 
 **Android app for tracking D&D 5e spell slots per PHB rules**
 
-[![Release](https://img.shields.io/badge/release-v2.6.1-7c3aed?style=flat-square&logo=github)](https://github.com/SiberianFoboZ/spell-tracker-dnd/releases/tag/v2.6.1)
+[![Release](https://img.shields.io/badge/release-v2.7.0-7c3aed?style=flat-square&logo=github)](https://github.com/SiberianFoboZ/spell-tracker-dnd/releases/tag/v2.7.0)
 [![License](https://img.shields.io/badge/license-MIT-22c55e?style=flat-square)](LICENSE)
 [![Android](https://img.shields.io/badge/Android-7.0--16-3DDC84?style=flat-square&logo=android&logoColor=white)](https://developer.android.com)
 [![Kotlin](https://img.shields.io/badge/Kotlin-2.0.21-7F52FF?style=flat-square&logo=kotlin&logoColor=white)](https://kotlinlang.org)
@@ -20,8 +20,57 @@
 state of spell slots, pact magic, and arcanums on a single screen. No accounts, no
 analytics, no internet — only local data that survives app restarts.
 
-Current version: **v2.6.1** — official sources only, build-time whitelist for
-class/subclass names. Russian + English UI with an in-app language switcher.
+Current version: **v2.7.0** — accurate PHB slot tables for monoclass,
+mode indicator in HomeScreen, 36 unit tests for spell-slot math.
+Russian + English UI with an in-app language switcher.
+
+---
+
+## 🆕 What's new in v2.7.0
+
+### 🎯 Корректный расчёт ячеек для монокласса
+- **Критический баг исправлен**: раньше приложение использовало единую мультиклассовую таблицу для всех случаев. Из-за этого **Паладин 5** показывал `3 L1 / 0 L2` вместо правильных `4 L1 / 2 L2` по PHB. Та же ошибка затрагивала Следопыта, Изобретателя, Eldritch Knight и Arcane Trickster.
+- Новая логика `SlotTables.detectMode()` различает три режима:
+  - **Монокласс** (1 активный кастер) → индивидуальная PHB-таблица класса
+  - **Мультикласс** (2+ кастеров) → общая мультиклассовая таблица по `computeCasterLevel()`
+  - **None** (только Варлок или ничего) → обычные ячейки пустые
+- **Колдун (Warlock)** всегда считается отдельно — пакт-магия через `WARLOCK_SLOTS` не входит в multiclass-формулу (как в PHB).
+- Примеры (PHB-таблицы, взяты из `spells_data/`):
+  - Паладин 5 (монокласс) → **4 L1, 2 L2**
+  - Паладин 3 / Жрец 2 (мультикласс, CL=3) → **4 L1, 2 L2**
+  - Паладин 5 / EK 5 (мультикласс, CL=3) → **4 L1, 2 L2**
+  - Wizard 5 (монокласс) → **4 L1, 3 L2, 2 L3**
+  - EK 3 (монокласс) → **2 L1**
+  - Artificer 5 (монокласс, Tasha) → **4 L1, 2 L2**
+
+### 📐 Смена формулы для 1/3 кастеров
+- **1/3 кастеры** (`fighter_mystic` = Eldritch Knight, `rogue_mystic` = Arcane Trickster) теперь используют **PHB-стандарт ⌊lvl/3⌋** (round down) вместо проектного house rule `(lvl+2)/3` (ceil). Это влияет на итоговый CL в мультиклассе: например, `Paladin 5 + EK 5` даёт CL=3 (а не 4). Все таблицы в `SlotTables` уже используют PHB-floor, так что поведение стало консистентным.
+
+### 🏷️ Индикатор режима в HomeScreen
+- Под большой золотой цифрой «УРОВЕНЬ ЗАКЛИНАТЕЛЯ» теперь показывается подпись:
+  - `Монокласс · Паладин` (или другой класс) — для 1 кастера
+  - `Мультикласс` — для 2+ кастеров
+  - `Нет заклинателя` — для пустого набора или только Варлока
+- **Семантика большой цифры** теперь зависит от режима:
+  - Монокласс: показывает **фактический уровень класса** (Паладин 5 → 5, не 2)
+  - Мультикласс: показывает **CL по формуле** (как раньше)
+  - None: показывает 0
+- Локализация: подпись «Монокласс · {класс}» переведена на английский как `Single class · {class}`.
+
+### 🧪 36 unit-тестов для таблиц ячеек
+- Новый `app/src/test/.../SlotTablesTest.kt` — JUnit-тесты без Robolectric (чистая логика в `SlotTables` не зависит от Android).
+- Покрыты:
+  - Все 5 тест-кейсов из задачи (Паладин 5, П3/Ж2, П5/EK5, Варлок 5, Ж3/В5)
+  - `detectMode` для всех комбинаций (None / Monoclass / Multiclass)
+  - `computeCasterLevel` для full / half / third casters + граничные случаи (clamps 0..20)
+  - `getSlotTotal` для всех ключевых уровней 1, 5, 11, 17, 20
+  - Регрессия 1/3 формулы (floor vs старый ceil)
+  - Граничные случаи: spellLevel 0, spellLevel out of range, unknown classId
+
+### 🔧 Технические детали
+- **`SlotTables.kt`** — новый `internal object` с 5 таблицами (`MULTICLASS_SLOTS`, `FULL_CASTER_SLOTS`, `ARTIFICER_SLOTS`, `HALF_CASTER_SLOTS`, `THIRD_CASTER_SLOTS`) + реестр `MONOCLASS_TABLES` + чистые функции `detectMode` / `computeCasterLevel` / `getSlotTotal`. Замена простыней `intArrayOf(...)` в `SpellStorage.Companion` — таблицы теперь живут рядом с логикой, которая их использует.
+- **`SpellStorage.kt`** — `computeCasterLevel()` и `getSlotTotal()` теперь делегируют в `SlotTables`. Старый `SLOT_TABLE` (который был мультиклассовой таблицей, притворявшейся универсальной) удалён. Нетто: −26 строк, логика стала явной.
+- **Миграция существующих персонажей** бесплатна: `applySlotTable()` уже клампит `used` к новому `total` (для Паладина 5: `used=3, total=3` → стало `total=4`, лишних `used` нет).
 
 ---
 
@@ -250,6 +299,8 @@ automatically.
 
 | Version | What's new | Date |
 |---------|-----------|------|
+| **v2.7.0** | Корректный расчёт ячеек для монокласса (10 PHB-таблиц), смена 1/3 формулы с ceil на PHB-floor, индикатор режима в HomeScreen, 36 unit-тестов | 2026-07-13 |
+| **v2.6.1** | Полный перевод UI на русский + английский + in-app переключатель языка | 2026-07-12 |
 | **v2.6.0** | Official sources only (487 файлов), build-time whitelist для классов/подклассов, фильтр подклассов по выбранному классу, multi-select компонентов | 2026-07-04 |
 | **v2.5.4** | Fix: slots stretch only in width (removed `aspectRatio`; height fixed at 48/38dp) | 2026-07-03 |
 | **v2.5.3** | Custom = ClassCard (shared `GridCard`); slots now distribute across the row width | 2026-07-02 |

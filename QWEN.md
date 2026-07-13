@@ -14,7 +14,7 @@ D&D 5e следить за ячейками заклинаний, пакт-ма�
 установки APK работает полностью офлайн).
 
 - **applicationId / namespace**: `com.example.spelltracker`
-- **Текущая версия**: v2.6.0 (`versionCode = 16`)
+- **Текущая версия**: v2.7.0 (`versionCode = 18`)
 - **Min SDK**: 24 (Android 7.0). **Target/Compile SDK**: 36 (Android 16).
 - **Язык UI**: русский. Все строки — в `app/src/main/res/values/strings.xml`,
   плюс хардкод русских строк внутри `*Screen.kt` (см. раздел Conventions).
