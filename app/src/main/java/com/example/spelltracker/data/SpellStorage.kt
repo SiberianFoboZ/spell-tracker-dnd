@@ -83,31 +83,36 @@ class SpellStorage private constructor(context: Context) {
     // ─────────── Caster level по PHB ───────────
 
     /**
-     * Полный caster level для определения таблицы ячеек заклинаний.
-     * Колдун в формуле не участвует — у него собственная пакт-магия.
+     * Полный caster level для определения таблицы ячеек заклинаний
+     * в мультиклассе. Колдун в формуле не участвует — у него собственная
+     * пакт-магия.
+     *
+     * Делегирует в [SlotTables.computeCasterLevel] — формула PHB p.165:
+     *   - full caster (factor ≥ 1.0)       → +lvl
+     *   - 1/3 caster (Этап 26: floor)      → +lvl / 3
+     *   - half caster roundUp (artificer)  → +(lvl+1)/2
+     *   - half caster                      → +lvl/2
+     *
+     * **Этап 26** (2026-07-13): 1/3 формула изменена с `(lvl+2)/3` (ceil,
+     * проектный house rule из Этапа 19) на `lvl/3` (PHB floor) — по
+     * просьбе пользователя. Также добавлены отдельные PHB-таблицы
+     * для монокласса, см. [SlotTables.MONOCLASS_TABLES].
      */
-    fun computeCasterLevel(): Int {
-        var total = 0
-        for (info in Classes.ALL) {
-            if (info.factor <= 0.0) continue
-            val lvl = _classLevels.value[info.id] ?: 0
-            total += when {
-                info.factor >= 1.0 -> lvl
-                info.isThirdCaster -> (lvl + 2) / 3
-                info.roundUp -> (lvl + 1) / 2
-                else -> lvl / 2
-            }
-        }
-        return total.coerceIn(0, 20)
-    }
+    fun computeCasterLevel(): Int =
+        SlotTables.computeCasterLevel(_classLevels.value)
 
     fun getWarlockLevel(): Int = _classLevels.value["warlock"] ?: 0
 
-    /** Максимум ячеек по уровню заклинания для текущего caster level. */
-    fun getSlotTotal(spellLevel: Int): Int {
-        val table = SLOT_TABLE[computeCasterLevel()]
-        return table[spellLevel]
-    }
+    /**
+     * Максимум ячеек N-го уровня для текущего набора классов.
+     *
+     * Учитывает режим ([SlotTables.SlotMode]):
+     *   - [SlotTables.SlotMode.Monoclass]  — индивидуальная PHB-таблица класса
+     *   - [SlotTables.SlotMode.Multiclass] — мультикласс-таблица при итоговом CL
+     *   - [SlotTables.SlotMode.None]       — 0
+     */
+    fun getSlotTotal(spellLevel: Int): Int =
+        SlotTables.getSlotTotal(_classLevels.value, spellLevel)
 
     fun getSlotUsed(spellLevel: Int): Int = _usedSlots.value[spellLevel] ?: 0
 
@@ -514,37 +519,6 @@ class SpellStorage private constructor(context: Context) {
                 INSTANCE ?: SpellStorage(context.applicationContext).also { INSTANCE = it }
             }
         }
-
-        /**
-         * Таблица ячеек заклинаний по PHB.
-         * Индексы: SLOT_TABLE[casterLevel][spellLevel] = число ячеек.
-         * spellLevel 0 не используется, 1..9 — обычные уровни.
-         * casterLevel 0 = не заклинатель, все нули.
-         */
-        val SLOT_TABLE: Array<IntArray> = arrayOf(
-            // lvl\spell  0  1  2  3  4  5  6  7  8  9
-            intArrayOf(   0, 0, 0, 0, 0, 0, 0, 0, 0, 0),  //  0
-            intArrayOf(   0, 2, 0, 0, 0, 0, 0, 0, 0, 0),  //  1
-            intArrayOf(   0, 3, 0, 0, 0, 0, 0, 0, 0, 0),  //  2
-            intArrayOf(   0, 4, 2, 0, 0, 0, 0, 0, 0, 0),  //  3
-            intArrayOf(   0, 4, 3, 0, 0, 0, 0, 0, 0, 0),  //  4
-            intArrayOf(   0, 4, 3, 2, 0, 0, 0, 0, 0, 0),  //  5
-            intArrayOf(   0, 4, 3, 3, 0, 0, 0, 0, 0, 0),  //  6
-            intArrayOf(   0, 4, 3, 3, 1, 0, 0, 0, 0, 0),  //  7
-            intArrayOf(   0, 4, 3, 3, 2, 0, 0, 0, 0, 0),  //  8
-            intArrayOf(   0, 4, 3, 3, 3, 1, 0, 0, 0, 0),  //  9
-            intArrayOf(   0, 4, 3, 3, 3, 2, 0, 0, 0, 0),  // 10
-            intArrayOf(   0, 4, 3, 3, 3, 2, 1, 0, 0, 0),  // 11
-            intArrayOf(   0, 4, 3, 3, 3, 2, 1, 0, 0, 0),  // 12
-            intArrayOf(   0, 4, 3, 3, 3, 2, 1, 1, 0, 0),  // 13
-            intArrayOf(   0, 4, 3, 3, 3, 2, 1, 1, 0, 0),  // 14
-            intArrayOf(   0, 4, 3, 3, 3, 2, 1, 1, 1, 0),  // 15
-            intArrayOf(   0, 4, 3, 3, 3, 2, 1, 1, 1, 0),  // 16
-            intArrayOf(   0, 4, 3, 3, 3, 2, 1, 1, 1, 1),  // 17
-            intArrayOf(   0, 4, 3, 3, 3, 3, 1, 1, 1, 1),  // 18
-            intArrayOf(   0, 4, 3, 3, 3, 3, 2, 1, 1, 1),  // 19
-            intArrayOf(   0, 4, 3, 3, 3, 3, 2, 2, 1, 1),  // 20
-        )
 
         /**
          * Пакт-магия колдуна: WARLOCK_SLOTS[warlockLevel] = {число ячеек, уровень ячеек}.

@@ -40,6 +40,10 @@
 
     <!-- ─── Главный экран: заголовок + caster level ─── -->
     <string name="home_effective_caster_level_caption">УРОВЕНЬ ЗАКЛИНАТЕЛЯ</string>
+    <!-- Этап 26: подпись под большой цифрой. %1$s — имя класса (для монокласса). -->
+    <string name="home_mode_monoclass_format">Монокласс · %1$s</string>
+    <string name="home_mode_multiclass">Мультикласс</string>
+    <string name="home_mode_none">Нет заклинателя</string>
 
     <!-- ─── Главный экран: секция «Классы» ─── -->
     <string name="home_section_classes">Классы</string>

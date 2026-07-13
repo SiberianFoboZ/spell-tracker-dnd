@@ -272,7 +272,7 @@ fun HomeScreen(
                     verticalArrangement = Arrangement.spacedBy(16.dp),
                 ) {
                     item { Header() }
-                    item { EffectiveLevelPanel(state.casterLevel) }
+                    item { EffectiveLevelPanel(state.casterLevel, state.spellMode) }
                     // Этап 20: секция «Классы» свёрнута по умолчанию,
                     // чтобы разгрузить главный экран. Заголовок кликабельный
                     // — раскрывает/скрывает сетку классов с анимацией.
@@ -400,16 +400,41 @@ private fun Header() {
 }
 
 // =============================================================
-// Панель caster level
+// Панель caster level (Этап 26: + индикатор режима)
 // =============================================================
 
+/**
+ * Большая золотая цифра + подпись режима («Монокласс · Паладин» /
+ * «Мультикласс» / «Нет заклинателя»).
+ *
+ * **Этап 26**: добавлен параметр [mode]. Семантика [casterLevel]
+ * меняется в зависимости от режима (см. [HomeState.casterLevel]):
+ *   - Monoclass → фактический уровень выбранного класса
+ *   - Multiclass → caster level по мультиклассовой формуле
+ *   - None → 0
+ *
+ * Подпись под цифрой резолвится в Composable через [stringResource],
+ * потому что имя класса локализуется (см. [ClassNames]).
+ */
 @Composable
-private fun EffectiveLevelPanel(casterLevel: Int) {
+private fun EffectiveLevelPanel(casterLevel: Int, mode: SpellMode) {
     val animated by animateIntAsState(
         targetValue = casterLevel,
         animationSpec = tween(durationMillis = 350),
         label = "casterLevel",
     )
+    // Подпись режима. Для Monoclass нужно подставить локализованное
+    // имя класса, для остальных режимов — статичные строки.
+    val modeLabel: String = when (mode) {
+        SpellMode.None -> stringResource(R.string.home_mode_none)
+        SpellMode.Multiclass -> stringResource(R.string.home_mode_multiclass)
+        is SpellMode.Monoclass -> {
+            val className = Classes.BY_ID[mode.classId]?.nameRes()
+                ?.let { stringResource(it) }
+                ?: mode.classId   // fallback на raw id, если класс не найден
+            stringResource(R.string.home_mode_monoclass_format, className)
+        }
+    }
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -431,6 +456,16 @@ private fun EffectiveLevelPanel(casterLevel: Int) {
                 color = AppColors.Gold,
                 fontSize = 64.sp,
                 fontWeight = FontWeight.Black,
+            )
+            Spacer(Modifier.height(6.dp))
+            // Этап 26: подпись режима под цифрой. Gold полу-прозрачный
+            // (AlphaLow), чтобы не отвлекал от главной цифры, но давал
+            // контекст (что именно показывает число).
+            Text(
+                text = modeLabel,
+                color = AppColors.Gold.copy(alpha = 0.7f),
+                fontSize = 13.sp,
+                fontWeight = FontWeight.Medium,
             )
         }
     }

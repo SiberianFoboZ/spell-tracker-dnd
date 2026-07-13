@@ -30,6 +30,10 @@
 
     <!-- ─── Home: header + caster level ─── -->
     <string name="home_effective_caster_level_caption">CASTER LEVEL</string>
+    <!-- Этап 26: subtitle under the big number. %1$s = class name (monoclass). -->
+    <string name="home_mode_monoclass_format">Single class · %1$s</string>
+    <string name="home_mode_multiclass">Multiclass</string>
+    <string name="home_mode_none">No caster</string>
 
     <!-- ─── Home: Classes section ─── -->
     <string name="home_section_classes">Classes</string>
