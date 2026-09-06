@@ -14,7 +14,7 @@ D&D 5e следить за ячейками заклинаний, пакт-ма�
 установки APK работает полностью офлайн).
 
 - **applicationId / namespace**: `com.example.spelltracker`
-- **Текущая версия**: v2.7.0 (`versionCode = 18`)
+- **Текущая версия**: v2.8.0 (`versionCode = 19`)
 - **Min SDK**: 24 (Android 7.0). **Target/Compile SDK**: 36 (Android 16).
 - **Язык UI**: русский. Все строки — в `app/src/main/res/values/strings.xml`,
   плюс хардкод русских строк внутри `*Screen.kt` (см. раздел Conventions).
@@ -89,9 +89,13 @@ Spelltracker/
 │       ├── java/com/example/spelltracker/
 │       │   ├── MainActivity.kt
 │       │   ├── data/                       # слои данных
+│       │   │   ├── Character.kt            # CharacterData + JSON сериализация
 │       │   │   ├── Classes.kt              # 11 классов (9 PHB + 2 mystic)
 │       │   │   ├── ClassFilter.kt          # matches(spell, SpellFilterState)
 │       │   │   ├── ComponentFlag.kt        # V / S / M / RC для multi-select
+│       │   │   ├── CustomSlot.kt           # кастомные ячейки (Breath, Lay on Hands, ...)
+│       │   │   ├── DieType.kt              # d6/d8/d10/d12/★ для CustomSlot
+│       │   │   ├── HpState.kt              # HpState + HitDiceState + HitDie (Этап HP)
 │       │   │   ├── Spell.kt                # @Entity (24 поля)
 │       │   │   ├── SpellDao.kt
 │       │   │   ├── SpellDatabase.kt        # version=5, fallbackToDestructive
@@ -99,12 +103,19 @@ Spelltracker/
 │       │   │   ├── SpellMenuConfig.kt      # 33 источника / 8 школ / ComponentFlag
 │       │   │   ├── SpellParser.kt          # читает единый normalized.json
 │       │   │   ├── SpellRepository.kt      # Room + ensureInitialized + orphan cleanup
-│       │   │   ├── SpellStorage.kt         # SharedPreferences + multi-character
+│       │   │   ├── SpellStorage.kt         # SharedPreferences + multi-character + HP
 │       │   │   └── TriState.kt             # YES / NO / ANY для ritual / concentration
+│       │   ├── util/
+│       │   │   └── Xoroshiro128Plus.kt     # PRNG для бросков кубиков (Этап HP)
 │       │   └── ui/
+│       │       ├── characters/             # CharactersScreen + CharactersViewModel
+│       │       ├── common/                 # swipeableNavigation (карусельный свайп)
+│       │       ├── customslot/             # EditCustomSlotScreen + ViewModel
 │       │       ├── detail/                 # SpellDetailScreen + SpellHtml (HTML→AnnotatedString)
 │       │       ├── home/                   # HomeScreen + HomeViewModel
+│       │       ├── hp/                     # HpScreen + HpDialogs + HpViewModel (Этап HP)
 │       │       ├── nav/AppNavigation.kt
+│       │       ├── settings/               # SettingsScreen + язык
 │       │       ├── spells/                 # SpellsScreen + SpellsViewModel
 │       │       └── theme/                  # Color, Theme, Type
 │       └── res/values/                     # strings.xml, themes.xml
@@ -237,13 +248,91 @@ HomeViewModel / SpellsViewModel / SpellDetailViewModel
 `HomeState.pactSlot: SlotInfo?` — `null`, если warlockLevel == 0
 или `WARLOCK_SLOTS[warlockLevel][0] == 0`.
 
-**Отдых (Этап 15):**
+**Отдых (Этап 15, расширен Этапом HP):**
 - `shortRest()` → сбрасывает только `usedPactSlots`. Арканумы
   остаются (если есть потраченные арканумы — эмитится
   `HomeEvent.ArcanumShortRestBlocked` → Snackbar-предупреждение).
 - `longRest()` → сбрасывает `usedSlots[1..9]` + `usedPactSlots` +
-  `usedArcanums[6..9]`. Class levels и prepared — **сохраняются**.
+  `usedArcanums[6..9]` + кастомные слоты (`used=0`) + **HP: current =
+  max, temp = 0, hitDice.spent = 0** (см. Этап HP ниже). Class levels
+  и prepared — **сохраняются**.
 - В `SpellStorage.resetAllUsed()` (debug-only) — `prefs.edit().clear()`.
+
+### 4.8 Этап HP: трекер ХП и Hit Dice (v2.8.0)
+
+**Проблема**: Spell Tracker исторически был заточен под кастеров
+(ячейки заклинаний, пакт-магия, арканумы), но игроку нужны и
+базовые ресурсы — текущие/максимальные хиты, временные хиты (по PHB
+поглощают урон первыми и не складываются), и Hit Dice для короткого
+отдыха. Кастерские классы — частный случай; трекер должен работать
+и для немаг. персонажей тоже.
+
+**Решение — отдельный экран «Хиты»**:
+1. **Новые модели в data-слое**:
+   - `HpState(maxHp, currentHp, tempHp)` — обычные + temp HP.
+   - `HitDiceState(total, spent, die: HitDie, conMod)` — Hit Dice пул.
+   - `HitDie.{D6, D8, D10, D12}` — размеры кубика; `HitDiceState.healingPerDie()`
+     оставлено как `max(1, die + conMod)`, но логика PHB-формулы теперь
+     в `SpellStorage.spendHitDice(count, rolls)`.
+2. **Хранение**: `CharacterData.hp: HpAndHitDice` — атомарный блоб,
+   сериализуется в JSON-поле `hp` под ключом `char_data_${id}`. Для
+   существующих персонажей (без поля) — безопасный default через
+   `optJSONObject("hp")?.let { hpStateFromJson(it) } ?: HpState()`.
+3. **StateFlow**: новый `SpellStorage.hpAndHitDice: StateFlow<HpAndHitDice>`
+   — атомарный snapshot, мутации `setMaxHp/setCurrentHp/adjustCurrentHp/
+   setTempHp/adjustTempHp/updateHitDice/adjustHitDiceTotal/adjustHitDiceConMod/
+   spendHitDice`. Каждая мутация вызывает `persistCurrentCharacter()`.
+4. **Формула хилинга** (PHB-faithful): `heal = sum(rolls) + conMod * count`,
+   минимум `count` HP (PHB: «regain at least 1 HP per die»). Heal клампится
+   в `0..maxHp - currentHp`. Каждый кубик бросается отдельно.
+5. **Long rest**: `current = max`, `temp = 0`, **`hitDice.spent = 0`**
+   (все кубики доступны — отход от строгого PHB `ceil(total/2)`, по
+   выбору пользователя).
+6. **PRNG**: `util/Xoroshiro128Plus.kt` — public domain реализация
+   xoroshiro128+ (период 2^128−1), unbiased rejection sampling.
+   Singleton `Xoroshiro128Plus.instance` через `lazy`. Причина
+   замены — стандартный `java.util.Random` (LCG, 48-bit) даёт
+   субъективно «статичные» средние при коротких сериях.
+7. **UI — `HpScreen.kt`**:
+   - Карточка «Здоровье» (текущее/max HP в подложке `BgDark.copy(α=0.6f)`)
+   - Карточка «Кость здоровья» (тип кубика, available, conMod)
+   - Bottom-bar `RestButtonsBar` (точный клон из HomeScreen) —
+     короткий отдых открывает диалог «Потратить кубик», длинный —
+     сбрасывает HP и Hit Dice
+   - **Кнопка «Потратить» удалена из карточки Hit Dice** — точка входа
+     одна (short rest в bottom-bar), карточка только информационная
+   - Стиль: радиальный градиент `ScreenGradient`, скругления 12.dp
+     (как строки ячеек), системный Snackbar (без custom override)
+8. **Диалог `HitDiceSpendDialog`**:
+   - Поле количества кубиков 1..available
+   - Кнопка «Бросить» (иконка `Casino`) — бросает сразу `count`
+     кубиков через `Xoroshiro128Plus`, результат — список «3, 5, 7»
+   - Превью: «Бросок: d8», список, «+ CON × 3 = +6»,
+     «Итого восстановлено: 21 HP»
+   - Кнопка «Применить» (вместо старой «Потратить»)
+9. **Навигация — карусельный свайп**:
+   - Экран Хитов открывается **свайпом влево** с HomeScreen
+     (раньше это был экран «Персонажи»).
+   - Карусель: `Home ↔ HP ↔ Characters ↔ Home` (зациклена).
+     Settings вынесен из карусели — открывается только шестерёнкой
+     в Home TopAppBar.
+   - Логика свайпа — `Modifier.swipeableNavigation(...)` в
+     `ui/common/HorizontalSwipeHandler.kt`. Совместимо с
+     вертикальной прокруткой (Compose отменяет горизонтальный
+     жест при вертикальном драге).
+10. **Локализация**: новые ключи в `values/strings.xml` (RU) и
+    `values-en/strings.xml` (EN): `hp_title`, `hp_section_hp`,
+    `hp_section_hit_dice`, `hp_current_label`, `hp_max_label`,
+    `hp_temp_label`, `hp_temp_description`, `hp_value_format`,
+    `hp_temp_value_format`, `hp_empty_hint`, `hp_edit_dialog_title`,
+    `hp_edit_field_*`, `hp_edit_apply`, `hp_edit_decrease_*/increase_*`,
+    `hit_dice_label_*`, `hit_dice_value_*_format`, `hit_dice_con_mod_format`,
+    `hit_dice_spend_title/body/button`, `hit_dice_no_available/no_max_hp/
+    not_set`, `hp_snackbar_long_rest_done`, `hp_snackbar_hit_dice_spent`,
+    `hp_long_rest_action`, `hit_dice_roll_button/_content_description`,
+    `hit_dice_rolls_format`, `hit_dice_rolls_label`,
+    `hit_dice_con_bonus_format`, `hit_dice_total_heal_format`,
+    `hit_dice_apply`.
 
 ### 4.5 Фильтр подклассов (новое — Этап N+1)
 
@@ -714,6 +803,14 @@ Workflow при изменении схемы:
 | Навигация | `ui/nav/AppNavigation.kt` |
 | Снимок состояния главного экрана | `ui/home/HomeViewModel.kt` → `HomeState` |
 | Single source of truth (state) | `data/SpellStorage.kt` |
+| HP и Hit Dice (модели) | `data/HpState.kt` → `HpState`, `HitDiceState`, `HitDie` |
+| Экран Хиты | `ui/hp/HpScreen.kt` + `HpViewModel.kt` |
+| Диалоги HP/Hit Dice | `ui/hp/HpDialogs.kt` |
+| Карусельный свайп (3 экрана) | `ui/common/HorizontalSwipeHandler.kt` → `Modifier.swipeableNavigation` |
+| PRNG для бросков кубиков | `util/Xoroshiro128Plus.kt` |
+| Мульти-персонажи | `data/Character.kt` + `ui/characters/CharactersScreen.kt` |
+| Кастомные ячейки | `data/CustomSlot.kt` + `ui/customslot/EditCustomSlotScreen.kt` |
+| Настройки (язык) | `ui/settings/SettingsScreen.kt` |
 | CI / Release | `.github/workflows/release.yml` |
 | Версии | `gradle/libs.versions.toml` |
 | AGP / KSP gotchas | комментарии в `build.gradle.kts`, `settings.gradle.kts`, `gradle.properties` |

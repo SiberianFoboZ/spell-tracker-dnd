@@ -328,4 +328,68 @@
     <!-- ─── Settings screen (gear icon in Home TopAppBar) ─── -->
     <string name="settings_title">Settings</string>
     <string name="settings_open_content_description">Open settings</string>
+
+    <!-- ═══════════════════════════════════════════════════════════ -->
+    <!-- HP / Hit Dice screen (swipe left from HomeScreen)           -->
+    <!-- ═══════════════════════════════════════════════════════════ -->
+    <string name="hp_title">Hit Points</string>
+    <string name="hp_section_hp">Health</string>
+    <string name="hp_section_hit_dice">Hit Dice</string>
+    <string name="hp_current_label">Current</string>
+    <string name="hp_max_label">Maximum</string>
+    <string name="hp_temp_label">Temporary</string>
+    <string name="hp_temp_description">Temporary HP absorbs damage first and doesn\'t stack between sources</string>
+    <string name="hp_value_format">%1$d / %2$d</string>
+    <string name="hp_temp_value_format">+%1$d</string>
+    <string name="hp_empty_hint">Set your maximum HP — tap the \"Current\" row.</string>
+
+    <!-- ─── HP edit dialog ─── -->
+    <string name="hp_edit_dialog_title">Edit hit points</string>
+    <string name="hp_edit_field_current">Current HP</string>
+    <string name="hp_edit_field_max">Maximum HP</string>
+    <string name="hp_edit_field_temp">Temporary HP</string>
+    <string name="hp_edit_apply">Apply</string>
+    <string name="hp_edit_decrease_1">-1</string>
+    <string name="hp_edit_increase_1">+1</string>
+    <string name="hp_edit_decrease_5">-5</string>
+    <string name="hp_edit_increase_5">+5</string>
+
+    <!-- ─── Hit Dice: types and settings ─── -->
+    <string name="hit_dice_label_die">Die type</string>
+    <string name="hit_dice_label_total">Total dice</string>
+    <string name="hit_dice_label_available">Available</string>
+    <string name="hit_dice_label_con_mod">Constitution modifier</string>
+    <string name="hit_dice_value_total_format">%1$d %2$s</string>
+    <string name="hit_dice_value_available_format">%1$d available of %2$d</string>
+    <string name="hit_dice_con_mod_format">%1$+d</string>
+    <string name="hit_dice_spend_title">Spend a Hit Die</string>
+    <string name="hit_dice_spend_body">How many dice to spend? Each restores %1$d HP (%2$d + CON %3$d).</string>
+    <string name="hit_dice_no_available">No Hit Dice available</string>
+    <string name="hit_dice_no_max_hp">Set maximum HP first</string>
+    <string name="hit_dice_not_set">Set die type, total, and Constitution modifier — tap the row.</string>
+
+    <!-- ─── HP screen: snackbars ─── -->
+    <string name="hp_snackbar_long_rest_done">Health restored</string>
+    <!-- Snackbar after spending Hit Dice.
+         %1$d = healed HP, %2$d = die size, %3$s = rolls list (e.g. "3, 5, 7"),
+         %4$+d = sum CON bonus, %5$d = dice count. -->
+    <string name="hp_snackbar_hit_dice_spent">Restored %1$d HP (d%2$d: %3$s + CON × %5$d = %4$+d)</string>
+
+    <!-- ─── HP screen: long-rest button in TopAppBar (no longer used) ─── -->
+    <string name="hp_long_rest_action">Long rest</string>
+    <string name="hp_long_rest_done_toast">Long rest: HP and Hit Dice restored</string>
+
+    <!-- ─── Hit Dice: roll the die in the dialog ─── -->
+    <string name="hit_dice_roll_button">Roll</string>
+    <string name="hit_dice_roll_button_content_description">Roll the dice</string>
+    <!-- Rolls list: «3, 5, 7» (comma-separated numbers). -->
+    <string name="hit_dice_rolls_format">%1$s</string>
+    <!-- Label «Roll: d8» above the list. %1$d = die size. -->
+    <string name="hit_dice_rolls_label">Roll: d%1$d</string>
+    <!-- Label «+ CON × 3» under the list (conMod * count). %1$+d = sum bonus. -->
+    <string name="hit_dice_con_bonus_format">+ CON × %1$d = %2$+d</string>
+    <!-- «Total restored: X HP». %1$d = sum heal. -->
+    <string name="hit_dice_total_heal_format">Total restored: %1$d HP</string>
+    <!-- «Apply» button (replaces old «Spend» — unified style with other dialogs). -->
+    <string name="hit_dice_apply">Apply</string>
 </resources>

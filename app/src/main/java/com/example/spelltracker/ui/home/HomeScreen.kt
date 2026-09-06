@@ -12,7 +12,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
-import androidx.compose.foundation.gestures.detectHorizontalDragGestures
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.Arrangement
@@ -83,7 +82,6 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.input.pointer.pointerInput
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -95,6 +93,7 @@ import androidx.compose.ui.unit.sp
 import com.example.spelltracker.R
 import com.example.spelltracker.data.Classes
 import com.example.spelltracker.nameRes
+import com.example.spelltracker.ui.common.swipeableNavigation
 import com.example.spelltracker.ui.theme.AppColors
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
@@ -135,19 +134,16 @@ fun HomeScreen(
     onOpenSpells: () -> Unit,
     onEditCustomSlot: (Long) -> Unit,
     onOpenCharacters: () -> Unit,
+    onOpenHp: () -> Unit,
     onOpenSettings: () -> Unit,
 ) {
     val state by viewModel.state.collectAsState()
     val snackbarHostState = remember { SnackbarHostState() }
     var restDialog by remember { mutableStateOf<RestKind?>(null) }
-    // Этап 22: свайп влево → открыть экран «Персонажи».
-    // Аккумулируем горизонтальное смещение, при превышении порога —
-    // вызываем onOpenCharacters. Свайп не мешает вертикальному
-    // скроллу LazyColumn: detectHorizontalDragGestures отменяется,
-    // если палец сначала идёт по вертикали.
-    var accumulatedDragX by remember { mutableStateOf(0f) }
-    val swipeThresholdPx = with(LocalDensity.current) { 80.dp.toPx() }
-    // Этап 20: сворачивание «Классы» (по умолчанию свёрнуто).
+    // Этап HP+: карусельный свайп. Линейка: Home ↔ HP ↔ Characters ↔
+    // Settings ↔ Home (зациклено). Свайп влево → следующий (HP),
+    // свайп вправо → предыдущий (Characters). Логика жестов вынесена
+    // в [com.example.spelltracker.ui.common.swipeableNavigation].
     var classesExpanded by rememberSaveable { mutableStateOf(false) }
     // Этап 20: модалка добавления пользовательской ячейки.
     var showAddCustomSlotSheet by remember { mutableStateOf(false) }
@@ -250,21 +246,12 @@ fun HomeScreen(
                     modifier = Modifier
                         .weight(1f)
                         .fillMaxWidth()
-                        // Этап 22: свайп влево — навигация на «Персонажи».
-                        .pointerInput(Unit) {
-                            detectHorizontalDragGestures(
-                                onDragStart = { accumulatedDragX = 0f },
-                                onDragEnd = {
-                                    if (accumulatedDragX < -swipeThresholdPx) {
-                                        onOpenCharacters()
-                                    }
-                                    accumulatedDragX = 0f
-                                },
-                                onDragCancel = { accumulatedDragX = 0f },
-                            ) { _, dragAmount ->
-                                accumulatedDragX += dragAmount
-                            }
-                        },
+                        // Этап HP+: общий свайп-хендлер (см. ui/common).
+                        // Линейка: ↔ HP, ↔ Characters.
+                        .swipeableNavigation(
+                            onSwipeLeft  = onOpenHp,
+                            onSwipeRight = onOpenCharacters,
+                        ),
                     contentPadding = PaddingValues(
                         start = 16.dp, end = 16.dp,
                         top = 8.dp, bottom = 88.dp,   // bottom space под FAB

@@ -4,7 +4,7 @@
 
 **Android app for tracking D&D 5e spell slots per PHB rules**
 
-[![Release](https://img.shields.io/badge/release-v2.7.0-7c3aed?style=flat-square&logo=github)](https://github.com/SiberianFoboZ/spell-tracker-dnd/releases/tag/v2.7.0)
+[![Release](https://img.shields.io/badge/release-v2.8.0-7c3aed?style=flat-square&logo=github)](https://github.com/SiberianFoboZ/spell-tracker-dnd/releases/tag/v2.8.0)
 [![License](https://img.shields.io/badge/license-MIT-22c55e?style=flat-square)](LICENSE)
 [![Android](https://img.shields.io/badge/Android-7.0--16-3DDC84?style=flat-square&logo=android&logoColor=white)](https://developer.android.com)
 [![Kotlin](https://img.shields.io/badge/Kotlin-2.0.21-7F52FF?style=flat-square&logo=kotlin&logoColor=white)](https://kotlinlang.org)
@@ -17,12 +17,73 @@
 ## What is this
 
 **Spell Tracker** is a minimalist helper for D&D 5e casters: it shows the current
-state of spell slots, pact magic, and arcanums on a single screen. No accounts, no
-analytics, no internet — only local data that survives app restarts.
+state of spell slots, pact magic, arcanums, hit points, and Hit Dice on a single
+screen. No accounts, no analytics, no internet — only local data that survives
+app restarts.
 
-Current version: **v2.7.0** — accurate PHB slot tables for monoclass,
-mode indicator in HomeScreen, 36 unit tests for spell-slot math.
+Current version: **v2.8.0** — separate HP/Hit Dice screen, PHB-faithful
+per-die roll formula, Xoroshiro128+ PRNG, carousel swipe navigation
+between Home ↔ HP ↔ Characters.
 Russian + English UI with an in-app language switcher.
+
+### ✨ Features at a glance
+
+- **Spell slots**: PHB tables for monoclass + multiclass, with the Pact Magic
+  split into its own row, arcanums (VI–IX) restoring only on long rest.
+- **Custom slots** (added in v2.4.0): generic tracker for Breath, Rage, Lay on
+  Hands, Channel Divinity, etc. — pick die type, total, rest cycle.
+- **Hit points & Hit Dice** (v2.8.0): separate HP screen reachable via
+  swipe-left from Home. Tracks current/max HP, temporary HP, and a manual
+  Hit Dice pool (d6/d8/d10/d12) — independent of class, works for any
+  martial character too. PHB-faithful heal formula:
+  `heal = sum(rolls) + CON × count` (each die rolled separately).
+  Long rest restores `current = max`, temp = 0, and **all** Hit Dice
+  (`spent = 0`, by design — the user can still switch to PHB-strict
+  `ceil(total/2)` in a future build).
+  PRNG: Xoroshiro128+ (period 2^128−1) for unbiased dice rolls.
+- **Carousel navigation** (v2.8.0): swipe horizontally between
+  Home ↔ HP ↔ Characters. Settings stays out of the carousel and
+  opens via the gear icon in Home TopAppBar.
+- **Multi-character** support with per-character state (v2.2.0).
+- **Filterable spellbook** of 487 PHB/UA/spell-book entries with multi-axis
+  filter (class, level, school, source, ritual, concentration, components,
+  saving throw).
+- **In-app language switcher**: Russian + English, persisted via per-app
+  locale config (Android 13+) or `LocaleStorage` SharedPreferences fallback.
+
+---
+
+## 🆕 What's new in v2.8.0
+
+### ❤️ Отдельный экран HP / Hit Dice
+- **Текущие / максимальные / временные хиты** — отдельная секция,
+  не привязанная к caster-классам (полезно для воинов, варваров,
+  плутов, плутов-аркановых и т.п.).
+- **Hit Dice** — ручной пул `d6/d8/d10/d12` × `total`, `spent`,
+  `CON modifier`. Свой кубик для каждого персонажа, не вычисляется
+  из классов (намеренно: игрок сам контролирует starting HP).
+- **Формула хилинга PHB**: `heal = sum(rolls) + CON × count`,
+  минимум `count` HP. Heal клампится в `0..maxHp - currentHp`.
+- **Каждый кубик бросается отдельно** (по PHB) — кнопка «Бросить»
+  в диалоге выдаёт список бросков, например «3, 5, 7 → 15 + CON × 3 = +21».
+- **PRNG**: `util/Xoroshiro128Plus.kt` (public domain, период 2^128−1,
+  unbiased rejection sampling). Заменил `java.util.Random`, который
+  давал субъективно «статичные» средние при коротких сериях.
+
+### 🎨 Дизайн
+- Экран Хитов в **едином стиле с HomeScreen**: радиальный градиент,
+  скругления 12.dp (как строки ячеек заклинаний), системный Snackbar
+  без ручного override, topbar на `BgDark` без контрастного прямоугольника.
+- Кнопка «Потратить» удалена из карточки Hit Dice — единственная
+  точка входа для траты кубиков это «Короткий отдых» в нижнем баре
+  (точный клон `RestButtonsBar` из Home).
+
+### 🧭 Навигация
+- Карусельный свайп: `Home ↔ HP ↔ Characters ↔ Home` (зациклено).
+  Settings вынесен из карусели — открывается только шестерёнкой.
+- `Modifier.swipeableNavigation(...)` в `ui/common/HorizontalSwipeHandler.kt` —
+  общий хендлер для всех экранов, совместим с вертикальной прокруткой
+  (Compose автоматически отменяет горизонтальный жест при вертикальном драге).
 
 ---
 
@@ -240,7 +301,7 @@ cd spell-tracker-dnd
 
 # Build release APK
 ./gradlew assembleRelease
-# → app/build/outputs/apk/release/spell-tracker-v2.6.0.apk
+# → app/build/outputs/apk/release/spell-tracker-v2.8.0.apk
 ```
 
 Windows (PowerShell):
@@ -252,7 +313,7 @@ Windows (PowerShell):
 ### Install on a device
 
 ```bash
-adb install -r app/build/outputs/apk/release/spell-tracker-v2.6.0.apk
+adb install -r app/build/outputs/apk/release/spell-tracker-v2.8.0.apk
 ```
 
 ### Release APK signing (Stage 23)
@@ -299,6 +360,7 @@ automatically.
 
 | Version | What's new | Date |
 |---------|-----------|------|
+| **v2.8.0** | Отдельный экран HP / Hit Dice (current/max/temp + Hit Dice пул), PHB-формула хилинга `sum(rolls) + CON × count`, Xoroshiro128+ PRNG, карусельный свайп Home ↔ HP ↔ Characters ↔ Home | 2026-09-07 |
 | **v2.7.0** | Корректный расчёт ячеек для монокласса (10 PHB-таблиц), смена 1/3 формулы с ceil на PHB-floor, индикатор режима в HomeScreen, 36 unit-тестов | 2026-07-13 |
 | **v2.6.1** | Полный перевод UI на русский + английский + in-app переключатель языка | 2026-07-12 |
 | **v2.6.0** | Official sources only (487 файлов), build-time whitelist для классов/подклассов, фильтр подклассов по выбранному классу, multi-select компонентов | 2026-07-04 |

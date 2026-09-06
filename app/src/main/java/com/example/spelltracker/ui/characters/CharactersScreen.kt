@@ -72,6 +72,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.spelltracker.R
 import com.example.spelltracker.data.Character
+import com.example.spelltracker.ui.common.swipeableNavigation
 import com.example.spelltracker.ui.theme.AppColors
 
 /**
@@ -97,6 +98,8 @@ import com.example.spelltracker.ui.theme.AppColors
 fun CharactersScreen(
     viewModel: CharactersViewModel,
     onBack: () -> Unit,
+    onSwipeLeft: () -> Unit,
+    onSwipeRight: () -> Unit,
 ) {
     val characters by viewModel.characters.collectAsState()
     val activeId by viewModel.activeCharacterId.collectAsState()
@@ -159,7 +162,11 @@ fun CharactersScreen(
             Box(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(padding),
+                    .padding(padding)
+                    .swipeableNavigation(
+                        onSwipeLeft  = onSwipeLeft,
+                        onSwipeRight = onSwipeRight,
+                    ),
                 contentAlignment = Alignment.Center,
             ) {
                 Text(
@@ -172,7 +179,11 @@ fun CharactersScreen(
             LazyColumn(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(padding),
+                    .padding(padding)
+                    .swipeableNavigation(
+                        onSwipeLeft  = onSwipeLeft,
+                        onSwipeRight = onSwipeRight,
+                    ),
                 contentPadding = PaddingValues(16.dp, 12.dp, 16.dp, 96.dp),
                 verticalArrangement = Arrangement.spacedBy(8.dp),
             ) {

@@ -100,6 +100,9 @@ fun SettingsScreen(
         },
         containerColor = AppColors.BgDark,
     ) { padding ->
+        // Этап HP+: Settings не участвует в карусельном свайпе —
+        // открывается через шестерёнку в Home TopAppBar. Свайп внутри
+        // окна может мешать вертикальному скроллу LazyColumn.
         Box(
             modifier = Modifier
                 .fillMaxSize()

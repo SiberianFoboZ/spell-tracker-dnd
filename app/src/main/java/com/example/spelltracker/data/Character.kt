@@ -23,6 +23,12 @@ data class CharacterData(
     val usedArcanums: Map<Int, Boolean> = emptyMap(),
     val customSlots: List<CustomSlot> = emptyList(),
     val prepared: Set<Long> = emptySet(),
+    /**
+     * Этап HP: полное состояние здоровья и Hit Dice для этого персонажа.
+     * По умолчанию — нулевые HP и пустые Hit Dice; пользователь задаёт
+     * вручную при первом открытии HP-экрана. См. [HpState] и [HitDiceState].
+     */
+    val hp: HpAndHitDice = HpAndHitDice(HpState(), HitDiceState()),
 )
 
 /**
@@ -55,6 +61,10 @@ internal fun characterDataToJson(data: CharacterData): String {
     obj.put("prepared", JSONArray().apply {
         data.prepared.forEach { put(it) }
     })
+    // Этап HP: блок `hp` хранит maxHp/currentHp/tempHp + hitDice.
+    // optString пустого значения в hpStateFromJson даст дефолт, так что
+    // отсутствующий ключ у старых персонажей безопасен.
+    obj.put("hp", hpStateToJson(data.hp))
     return obj.toString()
 }
 
@@ -91,6 +101,9 @@ internal fun characterDataFromJson(json: String?): CharacterData {
             usedArcanums = usedArcanums,
             customSlots = customSlotsFromJson(obj.optString("customSlots", "")),
             prepared = prepared,
+            // Этап HP: парсим блок `hp` (опционально — отсутствует у
+            // персонажей, созданных до этого этапа; даёт дефолт).
+            hp = hpStateFromJson(obj.optJSONObject("hp")),
         )
     } catch (e: Exception) {
         CharacterData()

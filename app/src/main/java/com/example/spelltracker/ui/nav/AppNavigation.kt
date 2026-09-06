@@ -27,6 +27,8 @@ import com.example.spelltracker.ui.detail.SpellDetailScreen
 import com.example.spelltracker.ui.detail.SpellDetailViewModel
 import com.example.spelltracker.ui.home.HomeScreen
 import com.example.spelltracker.ui.home.HomeViewModel
+import com.example.spelltracker.ui.hp.HpScreen
+import com.example.spelltracker.ui.hp.HpViewModel
 import com.example.spelltracker.ui.settings.SettingsScreen
 import com.example.spelltracker.ui.spells.SpellsScreen
 import com.example.spelltracker.ui.spells.SpellsViewModel
@@ -90,21 +92,44 @@ fun AppNavigation() {
                 onOpenSpells = { nav.navigate(Routes.SPELLS) },
                 onEditCustomSlot = { id -> nav.navigate(Routes.customSlotEdit(id)) },
                 onOpenCharacters = { nav.navigate(Routes.CHARACTERS) },
+                onOpenHp = { nav.navigate(Routes.HP) },
                 onOpenSettings = { nav.navigate(Routes.SETTINGS) },
             )
         }
 
+        // Этап HP: свайп влево с HomeScreen → Хиты; «Назад» →
+        // возвращаемся на Home, дальше пользователь снова может свайпнуть
+        // вправо к Персонажам.
+        //
+        // Этап HP+: карусельный свайп. С экрана Хитов свайп влево →
+        // Characters, вправо → Home (loop).
+        composable(Routes.HP) {
+            val vm: HpViewModel = viewModel()
+            HpScreen(
+                viewModel = vm,
+                onBack = { nav.popBackStack() },
+                onSwipeLeft  = { nav.navigate(Routes.CHARACTERS) },
+                onSwipeRight = { nav.navigate(Routes.HOME) },
+            )
+        }
+
         // Этап 22: экран мульти-персонажей. Свайп влево из HomeScreen.
+        // Этап HP+: карусель Home ↔ HP ↔ Characters ↔ Home.
+        // Свайп влево → Home (loop), вправо → HP.
         composable(Routes.CHARACTERS) {
             val factory = CharactersViewModel.Factory(application)
             val vm: CharactersViewModel = viewModel(factory = factory)
             CharactersScreen(
                 viewModel = vm,
                 onBack = { nav.popBackStack() },
+                onSwipeLeft  = { nav.navigate(Routes.HOME) },
+                onSwipeRight = { nav.navigate(Routes.HP) },
             )
         }
 
         // Этап 26: экран настроек. Шестерёнка в Home TopAppBar.
+        // Без свайпа — открывается точечно, чтобы не плодить лишние
+        // маршруты в карусели (Этап HP+).
         composable(Routes.SETTINGS) {
             SettingsScreen(
                 currentTag = currentLocaleTag(context),
@@ -165,6 +190,8 @@ object Routes {
     const val CUSTOM_SLOT_EDIT_PATTERN = "customslot/{id}"
     // Этап 22: экран мульти-персонажей
     const val CHARACTERS               = "characters"
+    // Этап HP: экран HP/Hit Dice (свайп влево с Home)
+    const val HP                       = "hp"
     // Этап 26: экран настроек
     const val SETTINGS                 = "settings"
 

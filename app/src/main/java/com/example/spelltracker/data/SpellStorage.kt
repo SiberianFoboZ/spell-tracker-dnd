@@ -65,6 +65,15 @@ class SpellStorage private constructor(context: Context) {
     private val _prepared = MutableStateFlow<Set<Long>>(emptySet())
     val prepared: StateFlow<Set<Long>> = _prepared.asStateFlow()
 
+    // ─────────── HP и Hit Dice (Этап HP) ───────────
+    //
+    // Хранится как один агрегированный снимок [HpAndHitDice], потому что
+    // HP и Hit Dice живут вместе в JSON-блобе CharacterData. Реактивность
+    // обеспечивается одним MutableStateFlow вместо двух — обновляются
+    // всегда атомарно.
+    private val _hpAndHitDice = MutableStateFlow(HpAndHitDice(HpState(), HitDiceState()))
+    val hpAndHitDice: StateFlow<HpAndHitDice> = _hpAndHitDice.asStateFlow()
+
     // ─────────── Персонажи (Этап 22) ───────────
 
     private val _characters = MutableStateFlow<List<Character>>(emptyList())
@@ -161,6 +170,15 @@ class SpellStorage private constructor(context: Context) {
         _usedArcanums.value = ARCANUM_LEVELS.associateWith { false }
         _customSlots.value = emptyList()
         _prepared.value = emptySet()
+        // Этап HP: debug-only сброс возвращает HP к max, temp = 0,
+        // Hit Dice — все доступны. Сам maxHp/conMod/die — сохраняются
+        // (это настройки, а не «потраченные» ресурсы).
+        _hpAndHitDice.update { current ->
+            current.copy(
+                hp = current.hp.copy(currentHp = current.hp.maxHp, tempHp = 0),
+                hitDice = current.hitDice.copy(spent = 0),
+            )
+        }
         persistCurrentCharacter()
     }
 
@@ -255,6 +273,20 @@ class SpellStorage private constructor(context: Context) {
             // Long rest — восстанавливаем ВСЕ кастомные ячейки.
             list.map { it.copy(used = 0) }
         }
+        // Этап HP: long rest восстанавливает HP по правилам PHB:
+        // current = max, temp HP = 0, spent Hit Dice = 0 (ВСЕ кубики доступны).
+        // По просьбе пользователя — «длинный отдых восстановит все кости
+        // кубов». Это расходится со строгим PHB (где spent -= ceil(total/2)),
+        // но удобнее для соло/домашней партии. HP-логика — PHB-faithful.
+        _hpAndHitDice.update { current ->
+            current.copy(
+                hp = current.hp.copy(
+                    currentHp = current.hp.maxHp,
+                    tempHp = 0,
+                ),
+                hitDice = current.hitDice.copy(spent = 0),
+            )
+        }
         persistCurrentCharacter()
     }
 
@@ -331,6 +363,154 @@ class SpellStorage private constructor(context: Context) {
             }
         }
         persistCurrentCharacter()
+    }
+
+    // ─────────── HP и Hit Dice (Этап HP) ───────────
+    //
+    // Все мутации ниже идут атомарно через [_hpAndHitDice.update], потому
+    // что HP и Hit Dice — один блоб в [CharacterData]. После update
+    // обязательно вызываем [persistCurrentCharacter].
+
+    /** Установить max HP. currentHp клампится в 0..newMax. */
+    fun setMaxHp(value: Int) {
+        val clamped = value.coerceIn(0, 9999)
+        _hpAndHitDice.update { current ->
+            current.copy(hp = current.hp.copy(
+                maxHp = clamped,
+                currentHp = current.hp.currentHp.coerceIn(0, clamped),
+            ))
+        }
+        persistCurrentCharacter()
+    }
+
+    /** Установить current HP напрямую (из модалки). Клампится в 0..maxHp. */
+    fun setCurrentHp(value: Int) {
+        val max = _hpAndHitDice.value.hp.maxHp
+        _hpAndHitDice.update { current ->
+            current.copy(hp = current.hp.copy(currentHp = value.coerceIn(0, max)))
+        }
+        persistCurrentCharacter()
+    }
+
+    /**
+     * Прибавить дельту к current HP (от кнопок ±1 / ±5).
+     * Клампится в 0..maxHp.
+     */
+    fun adjustCurrentHp(delta: Int) {
+        val snap = _hpAndHitDice.value.hp
+        val newVal = (snap.currentHp + delta).coerceIn(0, snap.maxHp)
+        if (newVal == snap.currentHp) return
+        _hpAndHitDice.update { it.copy(hp = it.hp.copy(currentHp = newVal)) }
+        persistCurrentCharacter()
+    }
+
+    /**
+     * Установить temp HP (из модалки). temp HP поглощает урон первым;
+     * если новый temp > старого, заменяем; если меньше — вычитаем разницу
+     * из currentHp. Так работают правила PHB по stacking temporary HP.
+     */
+    fun setTempHp(value: Int) {
+        val clamped = value.coerceIn(0, 9999)
+        val snap = _hpAndHitDice.value.hp
+        val newCurrent = if (clamped >= snap.tempHp) {
+            snap.currentHp
+        } else {
+            (snap.currentHp - (snap.tempHp - clamped)).coerceAtLeast(0)
+        }
+        _hpAndHitDice.update { it.copy(hp = it.hp.copy(
+            tempHp = clamped,
+            currentHp = newCurrent,
+        )) }
+        persistCurrentCharacter()
+    }
+
+    /** Прибавить дельту к temp HP (от кнопок ±). Клампится в 0..9999. */
+    fun adjustTempHp(delta: Int) {
+        val snap = _hpAndHitDice.value.hp
+        val newVal = (snap.tempHp + delta).coerceIn(0, 9999)
+        if (newVal == snap.tempHp) return
+        // Соблюдаем правило PHB: новый temp не может увеличить currentHp.
+        val newCurrent = if (newVal >= snap.tempHp) {
+            snap.currentHp
+        } else {
+            (snap.currentHp - (snap.tempHp - newVal)).coerceAtLeast(0)
+        }
+        _hpAndHitDice.update { it.copy(hp = it.hp.copy(
+            tempHp = newVal,
+            currentHp = newCurrent,
+        )) }
+        persistCurrentCharacter()
+    }
+
+    // ─────────── Hit Dice ───────────
+
+    /** Задать Hit Dice одной транзакцией: total/spent/die/conMod. */
+    fun updateHitDice(state: HitDiceState) {
+        _hpAndHitDice.update { it.copy(hitDice = state.copy(
+            spent = state.spent.coerceIn(0, state.total),
+        )) }
+        persistCurrentCharacter()
+    }
+
+    /** Прибавить дельту к total Hit Dice (от кнопок ± в настройках HD). */
+    fun adjustHitDiceTotal(delta: Int) {
+        val snap = _hpAndHitDice.value.hitDice
+        val newTotal = (snap.total + delta).coerceIn(0, 200)
+        val newSpent = snap.spent.coerceAtMost(newTotal)
+        _hpAndHitDice.update { it.copy(hitDice = it.hitDice.copy(
+            total = newTotal,
+            spent = newSpent,
+        )) }
+        persistCurrentCharacter()
+    }
+
+    /** Прибавить дельту к conMod (от кнопок ± в настройках HD). */
+    fun adjustHitDiceConMod(delta: Int) {
+        val snap = _hpAndHitDice.value.hitDice
+        val newCon = (snap.conMod + delta).coerceIn(-10, 10)
+        if (newCon == snap.conMod) return
+        _hpAndHitDice.update { it.copy(hitDice = it.hitDice.copy(conMod = newCon)) }
+        persistCurrentCharacter()
+    }
+
+    /**
+     * Потратить [count] Hit Dice на коротком отдыхе (PHB).
+     *
+     * Хилинг считается **по PHB**: каждый кубик бросается отдельно,
+     * результаты складываются, плюс `conMod` за каждый кубик.
+     *
+     *   heal = sum(rolls) + conMod * count
+     *
+     * Например, d8 CON=2 при бросках [3, 5, 7]:
+     *   heal = (3 + 5 + 7) + 2 * 3 = 15 + 6 = 21 HP.
+     *
+     * Если [rolls] не заданы (например, UI просит «бросить и применить»
+     * в один шаг), вызывающий код сам бросает [count] чисел через
+     * [com.example.spelltracker.util.Xoroshiro128Plus] и передаёт их.
+     *
+     * @param rolls список значений на кубиках (длина == count).
+     *              Если null или неверной длины — метод возвращает 0
+     *              и не списывает кубики.
+     * @return сколько HP фактически восстановлено (для Snackbar).
+     */
+    fun spendHitDice(count: Int, rolls: List<Int>? = null): Int {
+        val snap = _hpAndHitDice.value
+        val hd = snap.hitDice
+        if (count <= 0 || hd.available < count) return 0
+        if (rolls == null || rolls.size != count) return 0
+        val perDieCon = hd.conMod * count
+        val rolledSum = rolls.sum()
+        val totalHeal = (rolledSum + perDieCon).coerceAtLeast(count) // минимум 1 HP за каждый кубик
+        val maxHealable = (snap.hp.maxHp - snap.hp.currentHp).coerceAtLeast(0)
+        val actualHeal = totalHeal.coerceAtMost(maxHealable)
+        _hpAndHitDice.update { current ->
+            current.copy(
+                hp = current.hp.copy(currentHp = current.hp.currentHp + actualHeal),
+                hitDice = current.hitDice.copy(spent = current.hitDice.spent + count),
+            )
+        }
+        persistCurrentCharacter()
+        return actualHeal
     }
 
     // ─────────── Управление персонажами (Этап 22) ───────────
@@ -459,6 +639,8 @@ class SpellStorage private constructor(context: Context) {
         _usedArcanums.value = data.usedArcanums
         _customSlots.value = data.customSlots
         _prepared.value = data.prepared
+        // Этап HP: HP/Hit Dice загружаются атомарно из общего блоба.
+        _hpAndHitDice.value = data.hp
     }
 
     /** Сериализовать текущие StateFlow'ы в blob активного персонажа. */
@@ -471,6 +653,7 @@ class SpellStorage private constructor(context: Context) {
             usedArcanums = _usedArcanums.value,
             customSlots = _customSlots.value,
             prepared = _prepared.value,
+            hp = _hpAndHitDice.value,
         )
         prefs.edit().putString(charDataKey(id), characterDataToJson(data)).apply()
     }

@@ -341,4 +341,68 @@
     <!-- ─── Настройки (Экран «Settings», шестерёнка в Home TopAppBar) ─── -->
     <string name="settings_title">Настройки</string>
     <string name="settings_open_content_description">Открыть настройки</string>
+
+    <!-- ═══════════════════════════════════════════════════════════ -->
+    <!-- Экран HP / Hit Dice (свайп влево с HomeScreen)              -->
+    <!-- ═══════════════════════════════════════════════════════════ -->
+    <string name="hp_title">Хиты</string>
+    <string name="hp_section_hp">Здоровье</string>
+    <string name="hp_section_hit_dice">Кость здоровья (Hit Dice)</string>
+    <string name="hp_current_label">Текущие</string>
+    <string name="hp_max_label">Максимум</string>
+    <string name="hp_temp_label">Временные</string>
+    <string name="hp_temp_description">Временные хиты поглощают урон первыми и не складываются между собой</string>
+    <string name="hp_value_format">%1$d / %2$d</string>
+    <string name="hp_temp_value_format">+%1$d</string>
+    <string name="hp_empty_hint">Задайте максимум хитов — нажмите на строку «Текущие».</string>
+
+    <!-- ─── Диалог редактирования HP ─── -->
+    <string name="hp_edit_dialog_title">Изменить хиты</string>
+    <string name="hp_edit_field_current">Текущие хиты</string>
+    <string name="hp_edit_field_max">Максимум хитов</string>
+    <string name="hp_edit_field_temp">Временные хиты</string>
+    <string name="hp_edit_apply">Применить</string>
+    <string name="hp_edit_decrease_1">-1</string>
+    <string name="hp_edit_increase_1">+1</string>
+    <string name="hp_edit_decrease_5">-5</string>
+    <string name="hp_edit_increase_5">+5</string>
+
+    <!-- ─── Hit Dice: типы и настройка ─── -->
+    <string name="hit_dice_label_die">Тип кубика</string>
+    <string name="hit_dice_label_total">Всего кубиков</string>
+    <string name="hit_dice_label_available">Доступно</string>
+    <string name="hit_dice_label_con_mod">Модификатор Телосложения</string>
+    <string name="hit_dice_value_total_format">%1$d %2$s</string>
+    <string name="hit_dice_value_available_format">%1$d доступно из %2$d</string>
+    <string name="hit_dice_con_mod_format">%1$+d</string>
+    <string name="hit_dice_spend_title">Потратить кость здоровья</string>
+    <string name="hit_dice_spend_body">Сколько кубиков потратить? Каждый восстанавливает %1$d HP (%2$d + CON %3$d).</string>
+    <string name="hit_dice_no_available">Нет доступных костей здоровья</string>
+    <string name="hit_dice_no_max_hp">Сначала задайте максимум хитов</string>
+    <string name="hit_dice_not_set">Задайте тип кубика, общее количество и модификатор Телосложения — нажмите на строку.</string>
+
+    <!-- ─── Экран HP: снекбары ─── -->
+    <string name="hp_snackbar_long_rest_done">Здоровье восстановлено</string>
+    <!-- Снекбар после траты Hit Dice.
+         %1$d = восстановлено HP, %2$d = размер кубика, %3$s = список бросков
+         (например «3, 5, 7»), %4$+d = суммарный бонус CON, %5$d = кол-во кубиков. -->
+    <string name="hp_snackbar_hit_dice_spent">Восстановлено %1$d HP (d%2$d: %3$s + CON × %5$d = %4$+d)</string>
+
+    <!-- ─── Экран HP: кнопка «Длинный отдых» в TopAppBar (больше не используется) ─── -->
+    <string name="hp_long_rest_action">Длинный отдых</string>
+    <string name="hp_long_rest_done_toast">Длинный отдых: HP и кости восстановлены</string>
+
+    <!-- ─── Hit Dice: бросок кубика в диалоге ─── -->
+    <string name="hit_dice_roll_button">Бросить</string>
+    <string name="hit_dice_roll_button_content_description">Бросить кубики</string>
+    <!-- Список бросков: «3, 5, 7» (числа через запятую). -->
+    <string name="hit_dice_rolls_format">%1$s</string>
+    <!-- Лейбл «Бросок: d8» над списком. %1$d = размер кубика. -->
+    <string name="hit_dice_rolls_label">Бросок: d%1$d</string>
+    <!-- Лейбл «+ CON × 3» под списком (conMod * count). %1$+d = суммарный бонус. -->
+    <string name="hit_dice_con_bonus_format">+ CON × %1$d = %2$+d</string>
+    <!-- Формула «Итого восстановлено: X HP». %1$d = суммарный heal. -->
+    <string name="hit_dice_total_heal_format">Итого восстановлено: %1$d HP</string>
+    <!-- Кнопка «Применить» (вместо старой «Потратить» — единый стиль с остальными диалогами). -->
+    <string name="hit_dice_apply">Применить</string>
 </resources>
